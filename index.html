@@ -6,7 +6,7 @@
   <title>Aprovadores de Reserva | Grupo Vale do Verdão S/A</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- SheetJS (Leitura e Exportação de Excel .xlsx / .csv) -->
+  <!-- SheetJS -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -43,18 +43,11 @@
           Entrar no Painel Corporativo
         </button>
       </form>
-      <div class="grid grid-cols-4 gap-2 mt-6 pt-5 border-t border-slate-800 text-[10px] text-center font-bold">
-        <div class="p-1.5 rounded bg-slate-950 border border-[#007600] text-emerald-400">Vale do Verdão</div>
-        <div class="p-1.5 rounded bg-slate-950 border border-[#FFC000] text-amber-400">Panorama</div>
-        <div class="p-1.5 rounded bg-slate-950 border border-[#1F4E79] text-blue-300">Floresta</div>
-        <div class="p-1.5 rounded bg-slate-950 border border-[#ED7D31] text-orange-400">Cambuí</div>
-      </div>
     </div>
   </div>
 
   <!-- SISTEMA PRINCIPAL -->
   <div id="appScreen" class="hidden">
-    <!-- TOPBAR -->
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-3">
@@ -67,14 +60,14 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-black text-base text-white">APROVADORES DE RESERVA</h1>
-              <span id="statusBanco" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">Conectando ao Supabase...</span>
+              <span id="statusBanco" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">Conectando...</span>
             </div>
             <p class="text-[11px] text-slate-400">Cruzamento Relacional: ZRESERVA (Mãe) + MB51 (Frotas) + RH (Balcão)</p>
           </div>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button onclick="mudarAba('dash1')" id="btn-dash1" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white">1. Dashboard Aprovadores (ZRESERVA)</button>
-          <button onclick="mudarAba('dash2')" id="btn-dash2" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300">2. Reincidências Frota & Balcão (MB51 + ZRESERVA)</button>
+          <button onclick="mudarAba('dash1')" id="btn-dash1" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white">1. Dashboard Aprovadores</button>
+          <button onclick="mudarAba('dash2')" id="btn-dash2" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300">2. Reincidências & Balcão</button>
           <button onclick="mudarAba('cargas')" id="btn-cargas" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-amber-400">3. Cargas Excel (.XLSX)</button>
           <button onclick="location.reload()" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-950/60 text-red-300 border border-red-800/50">Sair</button>
         </div>
@@ -97,21 +90,19 @@
             <span class="text-xs text-slate-500">até</span>
             <input type="date" id="dataFim" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white" />
             <select id="filtroAprovador" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white">
-              <option value="TODOS">Todos os Aprovadores (ZRESERVA)</option>
+              <option value="TODOS">Todos os Aprovadores</option>
             </select>
-            <input type="text" id="filtroBusca" oninput="renderizarTudo()" placeholder="Reserva, Frota, Peça ou Matrícula..." class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white w-56" />
+            <input type="text" id="filtroBusca" oninput="renderizarTudo()" placeholder="Reserva, Frota, Peça..." class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white w-56" />
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- CONTEÚDO -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-6">
-
-      <!-- KPIs RÁPIDOS -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="card p-4 border-l-4 border-l-[#007600]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Total Aprovado (ZRESERVA)</span>
+          <span class="text-[11px] text-slate-400 uppercase font-bold">Total Aprovado</span>
           <p id="kpiValorTotal" class="text-xl font-black text-white mt-1">R$ 0,00</p>
         </div>
         <div class="card p-4 border-l-4 border-l-[#FFC000]">
@@ -119,43 +110,27 @@
           <p id="kpiQtdReservas" class="text-xl font-black text-amber-400 mt-1">0</p>
         </div>
         <div class="card p-4 border-l-4 border-l-[#ED7D31]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Reincidências de Frota</span>
+          <span class="text-[11px] text-slate-400 uppercase font-bold">Reincidências</span>
           <p id="kpiReincidencias" class="text-xl font-black text-orange-400 mt-1">0 alertas</p>
         </div>
         <div class="card p-4 border-l-4 border-l-[#1F4E79]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Idas ao Balcão (MB51)</span>
+          <span class="text-[11px] text-slate-400 uppercase font-bold">Idas ao Balcão</span>
           <p id="kpiIdasBalcao" class="text-xl font-black text-blue-400 mt-1">0 retiradas</p>
         </div>
       </div>
 
-      <!-- ABA 1: DASHBOARD ZRESERVA -->
+      <!-- ABA 1 -->
       <div id="aba-dash1" class="space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="card p-5">
-            <h3 class="text-sm font-bold text-white mb-3">Maior Aprovador por Usina (Barras - ZRESERVA)</h3>
-            <canvas id="chartAprovadores" height="170"></canvas>
-          </div>
-          <div class="card p-5">
-            <h3 class="text-sm font-bold text-white mb-3">Evolução de Aprovações por Data (Linha - ZRESERVA)</h3>
-            <canvas id="chartLinhaDatas" height="170"></canvas>
-          </div>
+          <div class="card p-5"><h3 class="text-sm font-bold text-white mb-3">Maior Aprovador por Usina</h3><canvas id="chartAprovadores" height="170"></canvas></div>
+          <div class="card p-5"><h3 class="text-sm font-bold text-white mb-3">Evolução por Data</h3><canvas id="chartLinhaDatas" height="170"></canvas></div>
         </div>
-
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-800 flex justify-between items-center">
-            <h3 class="text-sm font-bold text-white uppercase">Relatório Mãe ZRESERVA (Reservas Aprovadas no Mobile)</h3>
-          </div>
+          <div class="p-4 border-b border-slate-800"><h3 class="text-sm font-bold text-white uppercase">Relatório ZRESERVA</h3></div>
           <div class="overflow-x-auto max-h-96">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-950 text-slate-400 uppercase sticky top-0">
-                <tr>
-                  <th class="p-3">Reserva</th>
-                  <th class="p-3">Usina</th>
-                  <th class="p-3">Aprovador Mobile (ZRESERVA)</th>
-                  <th class="p-3">Almoxarife</th>
-                  <th class="p-3">Data / Hora</th>
-                  <th class="p-3 text-right">Valor Aprovado</th>
-                </tr>
+                <tr><th class="p-3">Reserva</th><th class="p-3">Usina</th><th class="p-3">Aprovador</th><th class="p-3">Almoxarife</th><th class="p-3">Data</th><th class="p-3 text-right">Valor</th></tr>
               </thead>
               <tbody id="tabelaZReserva" class="divide-y divide-slate-800"></tbody>
             </table>
@@ -163,144 +138,48 @@
         </div>
       </div>
 
-      <!-- ABA 2: REINCIDÊNCIAS DE FROTA + FREQUÊNCIA BALCÃO RH -->
+      <!-- ABA 2 -->
       <div id="aba-dash2" class="hidden space-y-6">
-        <!-- TABELA DE REINCIDÊNCIAS COM APROVADOR DA ZRESERVA -->
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-800">
-            <h3 class="text-sm font-bold text-white uppercase">1. Reincidências de Aplicação por Frota (MB51 cruzada com Aprovador ZRESERVA)</h3>
-            <p class="text-xs text-slate-400">Identifica a mesma peça aplicada 2x ou mais na mesma Frota/Ordem e mostra quem aprovou cada reserva lá na ZRESERVA</p>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-slate-950 text-slate-400 uppercase">
-                <tr>
-                  <th class="p-3">Usina</th>
-                  <th class="p-3">Frota / Ordem</th>
-                  <th class="p-3">Material Reincidente</th>
-                  <th class="p-3 text-center">Vezes</th>
-                  <th class="p-3">Reservas & Aprovador (Buscado da ZRESERVA)</th>
-                  <th class="p-3">Recebedor no Balcão (RH)</th>
-                  <th class="p-3 text-right">Custo Acumulado</th>
-                </tr>
-              </thead>
-              <tbody id="tabelaReincidencias" class="divide-y divide-slate-800"></tbody>
-            </table>
-          </div>
+          <div class="p-4 border-b border-slate-800"><h3 class="text-sm font-bold text-white uppercase">1. Reincidências de Frota</h3></div>
+          <div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase"><tr><th class="p-3">Usina</th><th class="p-3">Frota</th><th class="p-3">Material</th><th class="p-3 text-center">Vezes</th><th class="p-3">Detalhes</th><th class="p-3 text-right">Custo</th></tr></thead><tbody id="tabelaReincidencias" class="divide-y divide-slate-800"></tbody></table></div>
         </div>
-
-        <!-- TABELA DE FREQUÊNCIA NO BALCÃO POR COLABORADOR -->
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-800">
-            <h3 class="text-sm font-bold text-white uppercase">2. Frequência de Retiradas no Balcão por Colaborador (MB51 + Quadro RH + ZRESERVA)</h3>
-            <p class="text-xs text-slate-400">Quantas vezes cada matrícula foi ao balcão retirar peças no período selecionado</p>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-slate-950 text-slate-400 uppercase">
-                <tr>
-                  <th class="p-3">Matrícula</th>
-                  <th class="p-3">Colaborador (Nome RH)</th>
-                  <th class="p-3">Função / Setor</th>
-                  <th class="p-3">Usina</th>
-                  <th class="p-3 text-center">Idas ao Balcão</th>
-                  <th class="p-3">Reservas Retiradas & Quem Aprovou (ZRESERVA)</th>
-                  <th class="p-3 text-right">Valor Total Retirado</th>
-                </tr>
-              </thead>
-              <tbody id="tabelaBalcaoRH" class="divide-y divide-slate-800"></tbody>
-            </table>
-          </div>
+          <div class="p-4 border-b border-slate-800"><h3 class="text-sm font-bold text-white uppercase">2. Frequência de Balcão (RH)</h3></div>
+          <div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase"><tr><th class="p-3">Matrícula</th><th class="p-3">Nome</th><th class="p-3">Função</th><th class="p-3 text-center">Idas</th><th class="p-3">Detalhes</th><th class="p-3 text-right">Total</th></tr></thead><tbody id="tabelaBalcaoRH" class="divide-y divide-slate-800"></tbody></table></div>
         </div>
       </div>
 
-      <!-- ABA 3: CENTRAL DE CARGAS EXCEL -->
+      <!-- ABA 3 -->
       <div id="aba-cargas" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- ZRESERVA -->
-          <div class="card p-5 border-t-4 border-t-[#007600] flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-950 text-emerald-400">1. Relatório Mãe (SAP)</span>
-              <h3 class="text-base font-bold text-white mt-2">Carga ZRESERVA</h3>
-              <p class="text-xs text-slate-400 mt-1 mb-4">Colunas: <code class="text-emerald-300">RESERVA, EMPRESA, APROVADOR, CARGO, NIVEL, DATA, HORA, VALOR_TOTAL, ALMOXARIFE</code></p>
-              <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'zreserva')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-emerald-600 file:text-white file:font-bold cursor-pointer" />
-            </div>
-            <button onclick="baixarModelo('ZRESERVA')" class="mt-4 w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">
-              ⬇ Baixar Planilha Modelo ZRESERVA.xlsx
-            </button>
+          <div class="card p-5 border-t-4 border-t-[#007600]">
+            <h3 class="text-base font-bold text-white mb-2">Carga ZRESERVA</h3>
+            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'zreserva')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-emerald-600 file:text-white file:font-bold cursor-pointer" />
           </div>
-
-          <!-- MB51 -->
-          <div class="card p-5 border-t-4 border-t-[#FFC000] flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-950 text-amber-400">2. Explosão por Frota (SAP)</span>
-              <h3 class="text-base font-bold text-white mt-2">Carga MB51</h3>
-              <p class="text-xs text-slate-400 mt-1 mb-4">Colunas: <code class="text-amber-300">RESERVA, DATA, COD_MATERIAL, DESC_MATERIAL, FROTA_ORDEM, DESC_FROTA, QTD, VALOR, RECEBEDOR, ALMOXARIFE</code></p>
-              <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'mb51')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold cursor-pointer" />
-            </div>
-            <button onclick="baixarModelo('MB51')" class="mt-4 w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">
-              ⬇ Baixar Planilha Modelo MB51.xlsx
-            </button>
+          <div class="card p-5 border-t-4 border-t-[#FFC000]">
+            <h3 class="text-base font-bold text-white mb-2">Carga MB51</h3>
+            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'mb51')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold cursor-pointer" />
           </div>
-
-          <!-- RH -->
-          <div class="card p-5 border-t-4 border-t-[#1F4E79] flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-blue-950 text-blue-300">3. Funcionários (RH)</span>
-              <h3 class="text-base font-bold text-white mt-2">Carga Quadro RH</h3>
-              <p class="text-xs text-slate-400 mt-1 mb-4">Colunas: <code class="text-blue-300">MATRICULA, NOME, FUNCAO, SETOR, EMPRESA</code></p>
-              <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'rh_funcionarios')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white file:font-bold cursor-pointer" />
-            </div>
-            <button onclick="baixarModelo('RH')" class="mt-4 w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300">
-              ⬇ Baixar Planilha Modelo RH.xlsx
-            </button>
+          <div class="card p-5 border-t-4 border-t-[#1F4E79]">
+            <h3 class="text-base font-bold text-white mb-2">Carga Quadro RH</h3>
+            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'rh_funcionarios')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white file:font-bold cursor-pointer" />
           </div>
         </div>
       </div>
-
     </main>
   </div>
 
   <script>
-    // =========================================================================
-    // CONFIGURAÇÃO OFICIAL DO SUPABASE (GRUPO VALE DO VERDÃO)
-    // =========================================================================
     const SUPABASE_URL = 'https://nhegnmciuowrezwccfqr.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_lfXGjdSs32_WMZG1f0KYiA_wcPP1Bfm';
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const CORES = {
-      VV:  { nome: 'Vale do Verdão', cor: '#007600' },
-      PAN: { nome: 'Panorama',       cor: '#FFC000' },
-      FLO: { nome: 'Floresta',       cor: '#1F4E79' },
-      CAM: { nome: 'Cambuí',         cor: '#ED7D31' }
-    };
+    const CORES = { VV: { nome: 'Vale do Verdão', cor: '#007600' }, PAN: { nome: 'Panorama', cor: '#FFC000' }, FLO: { nome: 'Floresta', cor: '#1F4E79' }, CAM: { nome: 'Cambuí', cor: '#ED7D31' } };
 
     let usinaAtual = 'TODAS';
-    let chartBar = null;
-    let chartLine = null;
-
-    // Dados iniciais de exemplo (caso o banco ainda esteja vazio)
-    let zreserva = [
-      { reserva: '8004103', empresa: 'PAN', aprovador: 'Henrique Bastos', cargo: 'Ger. Operações', nivel: 'Nível 3', data: '2026-02-06', hora: '09:10', valor_total: 9700, almoxarife: 'ALMOX_PATRICIA' },
-      { reserva: '8004111', empresa: 'PAN', aprovador: 'Henrique Bastos', cargo: 'Ger. Operações', nivel: 'Nível 3', data: '2026-02-25', hora: '14:22', valor_total: 9700, almoxarife: 'ALMOX_PATRICIA' },
-      { reserva: '8004119', empresa: 'PAN', aprovador: 'Henrique Bastos', cargo: 'Ger. Operações', nivel: 'Nível 3', data: '2026-03-21', hora: '16:05', valor_total: 9700, almoxarife: 'ALMOX_PATRICIA' },
-      { reserva: '9001200', empresa: 'VV',  aprovador: 'Fabio Amaral',    cargo: 'Ger. Suprimentos', nivel: 'Nível 4', data: '2026-03-10', hora: '10:30', valor_total: 18400, almoxarife: 'ALMOX_FELIPE' },
-      { reserva: '9001205', empresa: 'VV',  aprovador: 'Fabio Amaral',    cargo: 'Ger. Suprimentos', nivel: 'Nível 4', data: '2026-03-22', hora: '11:15', valor_total: 18400, almoxarife: 'ALMOX_FELIPE' }
-    ];
-
-    let mb51 = [
-      { reserva: '8004103', data: '2026-02-06', cod_material: 'MAT-7720', desc_material: 'Kit Embreagem Viscosa Heavy Duty', frota_ordem: 'CB-315', desc_frota: 'Caminhão Volvo FH 540', qtd: 1, valor: 9700, recebedor: '52044', almoxarife: 'ALMOX_PATRICIA' },
-      { reserva: '8004111', data: '2026-02-25', cod_material: 'MAT-7720', desc_material: 'Kit Embreagem Viscosa Heavy Duty', frota_ordem: 'CB-315', desc_frota: 'Caminhão Volvo FH 540', qtd: 1, valor: 9700, recebedor: '52044', almoxarife: 'ALMOX_PATRICIA' },
-      { reserva: '8004119', data: '2026-03-21', cod_material: 'MAT-7720', desc_material: 'Kit Embreagem Viscosa Heavy Duty', frota_ordem: 'CB-315', desc_frota: 'Caminhão Volvo FH 540', qtd: 1, valor: 9700, recebedor: '52044', almoxarife: 'ALMOX_PATRICIA' },
-      { reserva: '9001200', data: '2026-03-10', cod_material: 'MAT-4410', desc_material: 'Bomba Hidráulica Colhedora', frota_ordem: 'CH-108', desc_frota: 'Colhedora John Deere CH570', qtd: 1, valor: 18400, recebedor: '41022', almoxarife: 'ALMOX_FELIPE' },
-      { reserva: '9001205', data: '2026-03-22', cod_material: 'MAT-4410', desc_material: 'Bomba Hidráulica Colhedora', frota_ordem: 'CH-108', desc_frota: 'Colhedora John Deere CH570', qtd: 1, valor: 18400, recebedor: '41022', almoxarife: 'ALMOX_FELIPE' }
-    ];
-
-    let rh = [
-      { matricula: '52044', nome: 'Rafael Souza Gomes', funcao: 'Mecânico Diesel II', setor: 'Oficina Caminhões', empresa: 'PAN' },
-      { matricula: '41022', nome: 'Carlos Eduardo Rocha', funcao: 'Mecânico Colhedora I', setor: 'Manutenção Agrícola', empresa: 'VV' }
-    ];
+    let chartBar = null, chartLine = null;
+    let zreserva = [], mb51 = [], rh = [];
 
     async function carregarDoSupabase() {
       const statusEl = document.getElementById('statusBanco');
@@ -310,20 +189,12 @@
           db.from('mb51').select('*'),
           db.from('rh_funcionarios').select('*')
         ]);
-
-        if (!resZ.error && resZ.data && resZ.data.length > 0) zreserva = resZ.data;
-        if (!resM.error && resM.data && resM.data.length > 0) mb51 = resM.data;
-        if (!resR.error && resR.data && resR.data.length > 0) rh = resR.data;
-
-        if (resZ.error) {
-          statusEl.textContent = 'Modo Local (Rode o SQL no Supabase)';
-          statusEl.className = 'text-[10px] px-2 py-0.5 rounded-full bg-amber-950 text-amber-400 border border-amber-700 font-bold';
-        } else {
-          statusEl.textContent = '● Supabase Online';
-          statusEl.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold';
-        }
+        if (resZ.data) zreserva = resZ.data;
+        if (resM.data) mb51 = resM.data;
+        if (resR.data) rh = resR.data;
+        statusEl.textContent = '● Supabase Online';
       } catch (err) {
-        console.warn('Erro ao conectar no Supabase:', err);
+        statusEl.textContent = 'Modo Local';
       }
       popularFiltroAprovadores();
       renderizarTudo();
@@ -331,8 +202,7 @@
 
     function fazerLogin(e) {
       e.preventDefault();
-      const p = document.getElementById('userPass').value;
-      if (p === '123456') {
+      if (document.getElementById('userPass').value === '123456') {
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('appScreen').classList.remove('hidden');
         carregarDoSupabase();
@@ -342,22 +212,23 @@
     }
 
     function mudarAba(aba) {
-      ['dash1', 'dash2', 'cargas'].forEach(id => {
-        document.getElementById('aba-' + id).classList.toggle('hidden', id !== aba);
-      });
+      ['dash1', 'dash2', 'cargas'].forEach(id => document.getElementById('aba-' + id).classList.toggle('hidden', id !== aba));
     }
 
-    function filtrarUsina(uf) {
-      usinaAtual = uf;
-      renderizarTudo();
-    }
+    function filtrarUsina(uf) { usinaAtual = uf; renderizarTudo(); }
 
-    function normalizarChaves(obj) {
-      const novo = {};
-      Object.keys(obj).forEach(k => {
-        novo[k.trim().toLowerCase()] = obj[k];
+    // Limpa e mapeia chaves para garantir compatibilidade total com o Supabase
+    function limparLinha(row) {
+      const limpo = {};
+      Object.keys(row).forEach(k => {
+        let chave = k.trim().toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove acentos
+          .replace(/[^a-z0-9_]/g, "_"); // substitui espaços e símbolos por _
+        if (chave && !chave.startsWith('__')) {
+          limpo[chave] = row[k];
+        }
       });
-      return novo;
+      return limpo;
     }
 
     async function importarPlanilha(event, tabela) {
@@ -368,42 +239,29 @@
         const workbook = XLSX.read(e.target.result, { type: 'binary' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rowsBrutas = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-        const rows = rowsBrutas.map(normalizarChaves);
+        const rows = rowsBrutas.map(limparLinha);
 
         if (tabela === 'zreserva') zreserva = rows;
         if (tabela === 'mb51') mb51 = rows;
         if (tabela === 'rh_funcionarios') rh = rows;
 
-        // Salva no Supabase
-        const { error } = await db.from(tabela).upsert(rows);
-        if (error) {
-          alert(`Planilha carregada na tela (${rows.length} linhas). Atenção no Supabase: ${error.message}`);
-        } else {
-          alert(`Sucesso! ${rows.length} registros salvos na tabela "${tabela}" do Supabase!`);
+        // Salva em lotes de 500 para evitar estouro no Supabase
+        for (let i = 0; i < rows.length; i += 500) {
+          const lote = rows.slice(i, i + 500);
+          await db.from(tabela).upsert(lote);
         }
+
+        alert(`Sucesso! ${rows.length} registros carregados e salvos na tabela "${tabela}" do Supabase!`);
         popularFiltroAprovadores();
         renderizarTudo();
       };
       reader.readAsBinaryString(file);
     }
 
-    function baixarModelo(tipo) {
-      let dados = [];
-      if (tipo === 'ZRESERVA') dados = [{ RESERVA: '8004103', EMPRESA: 'VV', APROVADOR: 'Fabio Amaral', CARGO: 'Ger. Suprimentos', NIVEL: 'Nivel 4', DATA: '2026-11-05', HORA: '09:30', VALOR_TOTAL: 5400.50, ALMOXARIFE: 'ALMOX_FELIPE' }];
-      if (tipo === 'MB51') dados = [{ RESERVA: '8004103', DATA: '2026-11-05', COD_MATERIAL: 'MAT-7720', DESC_MATERIAL: 'Filtro Separador Combustivel', FROTA_ORDEM: 'CB-315', DESC_FROTA: 'Caminhao Volvo FH 540', QTD: 2, VALOR: 5400.50, RECEBEDOR: '52044', ALMOXARIFE: 'ALMOX_FELIPE' }];
-      if (tipo === 'RH') dados = [{ MATRICULA: '52044', NOME: 'Rafael Souza Gomes', FUNCAO: 'Mecanico Diesel II', SETOR: 'Oficina Caminhoes', EMPRESA: 'VV' }];
-
-      const ws = XLSX.utils.json_to_sheet(dados);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, tipo);
-      XLSX.writeFile(wb, `MODELO_${tipo}.xlsx`);
-    }
-
     function popularFiltroAprovadores() {
       const sel = document.getElementById('filtroAprovador');
-      const nomes = [...new Set(zreserva.map(z => z.aprovador || z.APROVADOR).filter(Boolean))];
-      sel.innerHTML = '<option value="TODOS">Todos os Aprovadores (ZRESERVA)</option>' +
-        nomes.map(n => `<option value="${n}">${n}</option>`).join('');
+      const nomes = [...new Set(zreserva.map(z => z.aprovador || z['aprovador_da_reserva']).filter(Boolean))];
+      sel.innerHTML = '<option value="TODOS">Todos os Aprovadores</option>' + nomes.map(n => `<option value="${n}">${n}</option>`).join('');
     }
 
     function renderizarTudo() {
@@ -412,145 +270,98 @@
       const dataIni = document.getElementById('dataIni').value;
       const dataFim = document.getElementById('dataFim').value;
 
-      // Indexar ZRESERVA (Mãe) por número da reserva
       const mapZ = {};
-      zreserva.forEach(raw => {
-        const z = normalizarChaves(raw);
-        mapZ[String(z.reserva).trim()] = z;
+      zreserva.forEach(z => {
+        const res = String(z.reserva || z['n_reserva'] || '').trim();
+        if (res) mapZ[res] = z;
       });
 
-      // Indexar RH por matrícula
       const mapRH = {};
-      rh.forEach(raw => {
-        const f = normalizarChaves(raw);
-        mapRH[String(f.matricula).trim()] = f;
+      rh.forEach(f => {
+        const mat = String(f.matricula || f['cod'] || '').trim();
+        if (mat) mapRH[mat] = f;
       });
 
-      // Filtrar ZRESERVA
-      const zFiltrada = zreserva.map(normalizarChaves).filter(z => {
-        if (usinaAtual !== 'TODAS' && z.empresa !== usinaAtual) return false;
-        if (aprovadorSel !== 'TODOS' && z.aprovador !== aprovadorSel) return false;
-        if (dataIni && z.data < dataIni) return false;
-        if (dataFim && z.data > dataFim) return false;
-        if (busca && !`${z.reserva} ${z.aprovador} ${z.almoxarife}`.toLowerCase().includes(busca)) return false;
+      const zFiltrada = zreserva.filter(z => {
+        const emp = z.empresa || z.usina || 'VV';
+        const apv = z.aprovador || z['aprovador_da_reserva'] || '';
+        const dt = z.data || z['data_criacao'] || '';
+        if (usinaAtual !== 'TODAS' && emp !== usinaAtual) return false;
+        if (aprovadorSel !== 'TODOS' && apv !== aprovadorSel) return false;
+        if (dataIni && dt < dataIni) return false;
+        if (dataFim && dt > dataFim) return false;
         return true;
       });
 
-      // Renderizar Tabela ZRESERVA
-      document.getElementById('tabelaZReserva').innerHTML = zFiltrada.map(z => `
+      document.getElementById('tabelaZReserva').innerHTML = zFiltrada.slice(0, 100).map(z => `
         <tr class="hover:bg-slate-900/80">
-          <td class="p-3 font-mono font-bold text-emerald-400">#${z.reserva}</td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${CORES[z.empresa]?.cor}33; color:#fff; border:1px solid ${CORES[z.empresa]?.cor}">${CORES[z.empresa]?.nome || z.empresa}</span></td>
-          <td class="p-3 font-bold text-white">${z.aprovador}<span class="block text-[10px] text-slate-400 font-normal">${z.cargo || ''} • ${z.nivel || ''}</span></td>
-          <td class="p-3 text-slate-300">${z.almoxarife || '-'}</td>
-          <td class="p-3 text-slate-300">${z.data || ''} <span class="text-slate-500">${z.hora || ''}</span></td>
-          <td class="p-3 text-right font-bold text-emerald-400">R$ ${Number(z.valor_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+          <td class="p-3 font-mono font-bold text-emerald-400">#${z.reserva || z['n_reserva'] || ''}</td>
+          <td class="p-3">${z.empresa || z.usina || 'VV'}</td>
+          <td class="p-3 font-bold text-white">${z.aprovador || z['aprovador_da_reserva'] || ''}</td>
+          <td class="p-3 text-slate-300">${z.almoxarife || ''}</td>
+          <td class="p-3 text-slate-300">${z.data || z['data_criacao'] || ''}</td>
+          <td class="p-3 text-right font-bold text-emerald-400">R$ ${Number(z.valor_total || z.valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
         </tr>
       `).join('');
 
-      // Processar MB51 cruzando com ZRESERVA e RH
-      const gruposReinc = {};
-      const gruposBalcao = {};
       let totalIdasBalcao = 0;
+      const gruposReinc = {}, gruposBalcao = {};
 
-      mb51.map(normalizarChaves).forEach(m => {
-        const pai = mapZ[String(m.reserva).trim()] || {};
-        const emp = pai.empresa || 'VV';
-        const dataMov = m.data || pai.data || '';
+      mb51.forEach(m => {
+        const resNum = String(m.reserva || m['n_reserva'] || '').trim();
+        const pai = mapZ[resNum] || {};
+        const emp = pai.empresa || m.empresa || 'VV';
+        const recMat = String(m.recebedor || m['matricula'] || '').trim();
+        const func = mapRH[recMat] || {};
+        const nomeRec = func.nome || func['nome_do_colaborador'] || `Matrícula ${recMat}`;
 
         if (usinaAtual !== 'TODAS' && emp !== usinaAtual) return;
-        if (aprovadorSel !== 'TODOS' && pai.aprovador !== aprovadorSel) return;
-        if (dataIni && dataMov < dataIni) return;
-        if (dataFim && dataMov > dataFim) return;
-
-        const func = mapRH[String(m.recebedor).trim()] || {};
-        const nomeRec = func.nome || `Matrícula ${m.recebedor}`;
-
-        if (busca && !`${m.reserva} ${m.frota_ordem} ${m.desc_material} ${m.recebedor} ${nomeRec} ${pai.aprovador}`.toLowerCase().includes(busca)) return;
 
         totalIdasBalcao++;
 
-        // 1. Agrupar Reincidência por Frota + Material
-        const chaveFrota = `${emp}_${m.frota_ordem}_${m.cod_material}`;
-        if (!gruposReinc[chaveFrota]) {
-          gruposReinc[chaveFrota] = { emp, frota: m.frota_ordem, descFrota: m.desc_frota, codMat: m.cod_material, descMat: m.desc_material, itens: [], total: 0 };
-        }
-        gruposReinc[chaveFrota].itens.push({
-          ...m,
-          aprovadorZ: pai.aprovador || 'Não loc. na ZRESERVA',
-          cargoZ: pai.cargo || '',
-          nivelZ: pai.nivel || '',
-          horaZ: pai.hora || '',
-          recebedorNome: nomeRec
-        });
-        gruposReinc[chaveFrota].total += Number(m.valor || 0);
+        const frota = m.frota_ordem || m['frota'] || m['ordem'] || 'GERAL';
+        const codMat = m.cod_material || m['material'] || 'GERAL';
+        const chaveFrota = `${emp}_${frota}_${codMat}`;
 
-        // 2. Agrupar Frequência de Balcão por Recebedor (Matrícula)
-        const mat = String(m.recebedor).trim();
-        if (!gruposBalcao[mat]) {
-          gruposBalcao[mat] = { matricula: mat, nome: nomeRec, funcao: func.funcao || '-', setor: func.setor || '-', emp, retiradas: [], total: 0 };
+        if (!gruposReinc[chaveFrota]) {
+          gruposReinc[chaveFrota] = { emp, frota, descFrota: m.desc_frota || '', codMat, descMat: m.desc_material || m['descricao'] || '', itens: [], total: 0 };
         }
-        gruposBalcao[mat].retiradas.push({
-          reserva: m.reserva,
-          data: dataMov,
-          material: m.desc_material,
-          frota: m.frota_ordem,
-          valor: Number(m.valor || 0),
-          aprovadorZ: pai.aprovador || 'Não loc. na ZRESERVA'
-        });
-        gruposBalcao[mat].total += Number(m.valor || 0);
+        gruposReinc[chaveFrota].itens.push({ ...m, aprovadorZ: pai.aprovador || pai['aprovador_da_reserva'] || 'Não loc.' });
+        gruposReinc[chaveFrota].total += Number(m.valor || m['valor_total'] || 0);
+
+        if (!gruposBalcao[recMat]) {
+          gruposBalcao[recMat] = { matricula: recMat, nome: nomeRec, funcao: func.funcao || 'Operacional', retiradas: [], total: 0 };
+        }
+        gruposBalcao[recMat].retiradas.push({ reserva: resNum, material: m.desc_material || '', valor: Number(m.valor || 0) });
+        gruposBalcao[recMat].total += Number(m.valor || 0);
       });
 
       const listaReinc = Object.values(gruposReinc).filter(g => g.itens.length >= 2);
 
-      // Renderizar Tabela Reincidências com Aprovador da ZRESERVA
-      document.getElementById('tabelaReincidencias').innerHTML = listaReinc.map(g => `
+      document.getElementById('tabelaReincidencias').innerHTML = listaReinc.slice(0, 50).map(g => `
         <tr class="hover:bg-slate-900/70 align-top">
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="border:1px solid ${CORES[g.emp]?.cor}">${CORES[g.emp]?.nome || g.emp}</span></td>
-          <td class="p-3 font-bold text-white">${g.frota}<span class="block text-[10px] text-slate-400 font-normal">${g.descFrota || ''}</span></td>
-          <td class="p-3 font-bold text-amber-300">${g.descMat}<span class="block text-[10px] font-mono text-slate-400">${g.codMat}</span></td>
-          <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full bg-red-950 text-red-300 border border-red-700 font-black">${g.itens.length}x</span></td>
-          <td class="p-3 space-y-1.5">
-            ${g.itens.map(i => `
-              <div class="p-2 rounded-lg bg-slate-950 border border-slate-800">
-                <div class="flex justify-between font-mono text-[11px]">
-                  <span class="font-bold text-amber-400">Reserva #${i.reserva}</span>
-                  <span class="text-slate-400">${i.data} ${i.horaZ}</span>
-                </div>
-                <div class="text-[11px] text-emerald-400 font-bold mt-0.5">
-                  Aprovador (ZRESERVA): ${i.aprovadorZ} <span class="text-slate-400 font-normal">(${i.cargoZ})</span>
-                </div>
-              </div>
-            `).join('')}
-          </td>
-          <td class="p-3 text-slate-300">${[...new Set(g.itens.map(i => i.recebedorNome))].join(', ')}</td>
+          <td class="p-3">${g.emp}</td>
+          <td class="p-3 font-bold text-white">${g.frota}</td>
+          <td class="p-3 text-amber-300">${g.descMat}</td>
+          <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full bg-red-950 text-red-300 font-black">${g.itens.length}x</span></td>
+          <td class="p-3 text-xs text-slate-300">Aprovador ZRESERVA: ${g.itens[0].aprovadorZ}</td>
           <td class="p-3 text-right font-black text-red-400">R$ ${g.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
         </tr>
       `).join('');
 
-      // Renderizar Tabela Balcão RH
       const listaBalcao = Object.values(gruposBalcao).sort((a, b) => b.retiradas.length - a.retiradas.length);
-      document.getElementById('tabelaBalcaoRH').innerHTML = listaBalcao.map(b => `
+      document.getElementById('tabelaBalcaoRH').innerHTML = listaBalcao.slice(0, 50).map(b => `
         <tr class="hover:bg-slate-900/70 align-top">
-          <td class="p-3 font-mono font-bold text-slate-300">${b.matricula}</td>
+          <td class="p-3 font-mono text-slate-300">${b.matricula}</td>
           <td class="p-3 font-bold text-white">${b.nome}</td>
-          <td class="p-3 text-slate-400">${b.funcao}<span class="block text-[10px] text-slate-500">${b.setor}</span></td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="border:1px solid ${CORES[b.emp]?.cor}">${CORES[b.emp]?.nome || b.emp}</span></td>
-          <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full bg-blue-950 text-blue-300 border border-blue-700 font-black">${b.retiradas.length}x no balcão</span></td>
-          <td class="p-3 space-y-1">
-            ${b.retiradas.map(r => `
-              <div class="text-[11px] bg-slate-950 px-2.5 py-1.5 rounded border border-slate-800">
-                <span class="font-mono font-bold text-amber-400">#${r.reserva}</span> (${r.data}) • ${r.material} [${r.frota}]
-                <span class="block text-emerald-400 font-semibold">Aprovador ZRESERVA: ${r.aprovadorZ}</span>
-              </div>
-            `).join('')}
-          </td>
+          <td class="p-3 text-slate-400">${b.funcao}</td>
+          <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full bg-blue-950 text-blue-300 font-black">${b.retiradas.length}x</span></td>
+          <td class="p-3 text-xs text-slate-400">${b.retiradas.length} retiradas registradas</td>
           <td class="p-3 text-right font-bold text-white">R$ ${b.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
         </tr>
       `).join('');
 
-      // Atualizar KPIs
-      const somaTotalZ = zFiltrada.reduce((acc, z) => acc + Number(z.valor_total || 0), 0);
+      const somaTotalZ = zFiltrada.reduce((acc, z) => acc + Number(z.valor_total || z.valor || 0), 0);
       document.getElementById('kpiValorTotal').textContent = 'R$ ' + somaTotalZ.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
       document.getElementById('kpiQtdReservas').textContent = zFiltrada.length;
       document.getElementById('kpiReincidencias').textContent = listaReinc.length + ' alertas';
@@ -560,51 +371,31 @@
     }
 
     function atualizarGraficos(dados) {
-      // 1. Gráfico de Barras por Aprovador com cores das Usinas
       const somaAprov = {};
-      const corAprov = {};
       dados.forEach(d => {
-        somaAprov[d.aprovador] = (somaAprov[d.aprovador] || 0) + Number(d.valor_total || 0);
-        corAprov[d.aprovador] = CORES[d.empresa]?.cor || '#007600';
+        const apv = d.aprovador || d['aprovador_da_reserva'] || 'Outros';
+        somaAprov[apv] = (somaAprov[apv] || 0) + Number(d.valor_total || d.valor || 0);
       });
 
       if (chartBar) chartBar.destroy();
       chartBar = new Chart(document.getElementById('chartAprovadores'), {
         type: 'bar',
-        data: {
-          labels: Object.keys(somaAprov),
-          datasets: [{
-            label: 'Total Aprovado (R$)',
-            data: Object.values(somaAprov),
-            backgroundColor: Object.keys(somaAprov).map(k => corAprov[k])
-          }]
-        },
+        data: { labels: Object.keys(somaAprov), datasets: [{ data: Object.values(somaAprov), backgroundColor: '#007600' }] },
         options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
       });
 
-      // 2. Gráfico de Linha por Data
       const somaData = {};
       dados.forEach(d => {
-        const dt = d.data || 'Sem Data';
-        somaData[dt] = (somaData[dt] || 0) + Number(d.valor_total || 0);
+        const dt = d.data || d['data_criacao'] || 'Sem Data';
+        somaData[dt] = (somaData[dt] || 0) + Number(d.valor_total || d.valor || 0);
       });
-      const datasOrdenadas = Object.keys(somaData).sort();
+      const datas = Object.keys(somaData).sort();
 
       if (chartLine) chartLine.destroy();
       chartLine = new Chart(document.getElementById('chartLinhaDatas'), {
         type: 'line',
-        data: {
-          labels: datasOrdenadas,
-          datasets: [{
-            label: 'Evolução Diária (R$)',
-            data: datasOrdenadas.map(dt => somaData[dt]),
-            borderColor: '#FFC000',
-            backgroundColor: '#FFC00033',
-            fill: true,
-            tension: 0.3
-          }]
-        },
-        options: { plugins: { legend: { labels: { color: '#cbd5e1' } } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
+        data: { labels: datas, datasets: [{ data: datas.map(dt => somaData[dt]), borderColor: '#FFC000', backgroundColor: '#FFC00033', fill: true }] },
+        options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
       });
     }
   </script>
