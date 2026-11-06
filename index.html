@@ -4,13 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aprovadores de Reserva | Grupo Vale do Verdão S/A</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- SheetJS -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { background-color: #0b1120; color: #f1f5f9; font-family: 'Inter', system-ui, sans-serif; }
@@ -19,7 +15,7 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- TELA DE LOGIN RESTRITO -->
+  <!-- LOGIN -->
   <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
     <div class="card max-w-md w-full p-8 shadow-2xl">
       <div class="flex items-center gap-3 mb-6">
@@ -46,21 +42,18 @@
     </div>
   </div>
 
-  <!-- SISTEMA PRINCIPAL -->
+  <!-- SISTEMA -->
   <div id="appScreen" class="hidden">
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-3">
           <div class="flex h-8 rounded overflow-hidden">
-            <span class="w-2 bg-[#007600]"></span>
-            <span class="w-2 bg-[#FFC000]"></span>
-            <span class="w-2 bg-[#1F4E79]"></span>
-            <span class="w-2 bg-[#ED7D31]"></span>
+            <span class="w-2 bg-[#007600]"></span><span class="w-2 bg-[#FFC000]"></span><span class="w-2 bg-[#1F4E79]"></span><span class="w-2 bg-[#ED7D31]"></span>
           </div>
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-black text-base text-white">APROVADORES DE RESERVA</h1>
-              <span id="statusBanco" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">Conectando...</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">● Sistema Operacional</span>
             </div>
             <p class="text-[11px] text-slate-400">Cruzamento Relacional: ZRESERVA (Mãe) + MB51 (Frotas) + RH (Balcão)</p>
           </div>
@@ -74,7 +67,7 @@
       </div>
     </header>
 
-    <!-- FILTROS GLOBAIS -->
+    <!-- FILTROS -->
     <section class="max-w-7xl mx-auto px-4 pt-5">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -155,15 +148,18 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="card p-5 border-t-4 border-t-[#007600]">
             <h3 class="text-base font-bold text-white mb-2">Carga ZRESERVA</h3>
+            <p id="status-zreserva" class="text-xs text-emerald-400 mb-2 font-mono">0 linhas carregadas</p>
             <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'zreserva')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-emerald-600 file:text-white file:font-bold cursor-pointer" />
           </div>
           <div class="card p-5 border-t-4 border-t-[#FFC000]">
             <h3 class="text-base font-bold text-white mb-2">Carga MB51</h3>
+            <p id="status-mb51" class="text-xs text-amber-400 mb-2 font-mono">0 linhas carregadas</p>
             <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'mb51')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold cursor-pointer" />
           </div>
           <div class="card p-5 border-t-4 border-t-[#1F4E79]">
             <h3 class="text-base font-bold text-white mb-2">Carga Quadro RH</h3>
-            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'rh_funcionarios')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white file:font-bold cursor-pointer" />
+            <p id="status-rh" class="text-xs text-blue-400 mb-2 font-mono">0 linhas carregadas</p>
+            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'rh')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white file:font-bold cursor-pointer" />
           </div>
         </div>
       </div>
@@ -171,41 +167,16 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://nhegnmciuowrezwccfqr.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_lfXGjdSs32_WMZG1f0KYiA_wcPP1Bfm';
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    const CORES = { VV: { nome: 'Vale do Verdão', cor: '#007600' }, PAN: { nome: 'Panorama', cor: '#FFC000' }, FLO: { nome: 'Floresta', cor: '#1F4E79' }, CAM: { nome: 'Cambuí', cor: '#ED7D31' } };
-
     let usinaAtual = 'TODAS';
     let chartBar = null, chartLine = null;
     let zreserva = [], mb51 = [], rh = [];
-
-    async function carregarDoSupabase() {
-      const statusEl = document.getElementById('statusBanco');
-      try {
-        const [resZ, resM, resR] = await Promise.all([
-          db.from('zreserva').select('*'),
-          db.from('mb51').select('*'),
-          db.from('rh_funcionarios').select('*')
-        ]);
-        if (resZ.data) zreserva = resZ.data;
-        if (resM.data) mb51 = resM.data;
-        if (resR.data) rh = resR.data;
-        statusEl.textContent = '● Supabase Online';
-      } catch (err) {
-        statusEl.textContent = 'Modo Local';
-      }
-      popularFiltroAprovadores();
-      renderizarTudo();
-    }
 
     function fazerLogin(e) {
       e.preventDefault();
       if (document.getElementById('userPass').value === '123456') {
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('appScreen').classList.remove('hidden');
-        carregarDoSupabase();
+        renderizarTudo();
       } else {
         document.getElementById('loginError').classList.remove('hidden');
       }
@@ -217,41 +188,33 @@
 
     function filtrarUsina(uf) { usinaAtual = uf; renderizarTudo(); }
 
-    // Limpa e mapeia chaves para garantir compatibilidade total com o Supabase
-    function limparLinha(row) {
-      const limpo = {};
-      Object.keys(row).forEach(k => {
-        let chave = k.trim().toLowerCase()
-          .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove acentos
-          .replace(/[^a-z0-9_]/g, "_"); // substitui espaços e símbolos por _
-        if (chave && !chave.startsWith('__')) {
-          limpo[chave] = row[k];
-        }
+    function normalizarObjeto(obj) {
+      const res = {};
+      Object.keys(obj).forEach(k => {
+        const chaveLimpa = k.trim().toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]/g, "_");
+        res[chaveLimpa] = obj[k];
+        res[k.trim().toLowerCase()] = obj[k];
+        res[k.trim()] = obj[k];
       });
-      return limpo;
+      return res;
     }
 
-    async function importarPlanilha(event, tabela) {
+    function importarPlanilha(event, tipo) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = async (e) => {
+      reader.onload = (e) => {
         const workbook = XLSX.read(e.target.result, { type: 'binary' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rowsBrutas = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-        const rows = rowsBrutas.map(limparLinha);
+        const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' }).map(normalizarObjeto);
 
-        if (tabela === 'zreserva') zreserva = rows;
-        if (tabela === 'mb51') mb51 = rows;
-        if (tabela === 'rh_funcionarios') rh = rows;
+        if (tipo === 'zreserva') { zreserva = rows; document.getElementById('status-zreserva').textContent = rows.length + ' linhas carregadas'; }
+        if (tipo === 'mb51') { mb51 = rows; document.getElementById('status-mb51').textContent = rows.length + ' linhas carregadas'; }
+        if (tipo === 'rh') { rh = rows; document.getElementById('status-rh').textContent = rows.length + ' linhas carregadas'; }
 
-        // Salva em lotes de 500 para evitar estouro no Supabase
-        for (let i = 0; i < rows.length; i += 500) {
-          const lote = rows.slice(i, i + 500);
-          await db.from(tabela).upsert(lote);
-        }
-
-        alert(`Sucesso! ${rows.length} registros carregados e salvos na tabela "${tabela}" do Supabase!`);
+        alert(`Sucesso! ${rows.length} linhas carregadas na memória com sucesso!`);
         popularFiltroAprovadores();
         renderizarTudo();
       };
@@ -260,7 +223,7 @@
 
     function popularFiltroAprovadores() {
       const sel = document.getElementById('filtroAprovador');
-      const nomes = [...new Set(zreserva.map(z => z.aprovador || z['aprovador_da_reserva']).filter(Boolean))];
+      const nomes = [...new Set(zreserva.map(z => z.aprovador || z['aprovador da reserva'] || z['aprovador_da_reserva']).filter(Boolean))];
       sel.innerHTML = '<option value="TODOS">Todos os Aprovadores</option>' + nomes.map(n => `<option value="${n}">${n}</option>`).join('');
     }
 
@@ -272,35 +235,35 @@
 
       const mapZ = {};
       zreserva.forEach(z => {
-        const res = String(z.reserva || z['n_reserva'] || '').trim();
+        const res = String(z.reserva || z['n_reserva'] || z['n reserva'] || '').trim();
         if (res) mapZ[res] = z;
       });
 
       const mapRH = {};
       rh.forEach(f => {
-        const mat = String(f.matricula || f['cod'] || '').trim();
+        const mat = String(f.matricula || f['matricula_funcionario'] || f['cod'] || '').trim();
         if (mat) mapRH[mat] = f;
       });
 
       const zFiltrada = zreserva.filter(z => {
-        const emp = z.empresa || z.usina || 'VV';
-        const apv = z.aprovador || z['aprovador_da_reserva'] || '';
-        const dt = z.data || z['data_criacao'] || '';
-        if (usinaAtual !== 'TODAS' && emp !== usinaAtual) return false;
+        const emp = String(z.empresa || z.usina || z.centro || 'VV').toUpperCase();
+        const apv = z.aprovador || z['aprovador da reserva'] || z['aprovador_da_reserva'] || '';
+        const dt = z.data || z['data criacao reserva'] || z['data_criacao'] || '';
+        if (usinaAtual !== 'TODAS' && !emp.includes(usinaAtual)) return false;
         if (aprovadorSel !== 'TODOS' && apv !== aprovadorSel) return false;
-        if (dataIni && dt < dataIni) return false;
-        if (dataFim && dt > dataFim) return false;
+        if (dataIni && dt && dt < dataIni) return false;
+        if (dataFim && dt && dt > dataFim) return false;
         return true;
       });
 
       document.getElementById('tabelaZReserva').innerHTML = zFiltrada.slice(0, 100).map(z => `
         <tr class="hover:bg-slate-900/80">
           <td class="p-3 font-mono font-bold text-emerald-400">#${z.reserva || z['n_reserva'] || ''}</td>
-          <td class="p-3">${z.empresa || z.usina || 'VV'}</td>
-          <td class="p-3 font-bold text-white">${z.aprovador || z['aprovador_da_reserva'] || ''}</td>
-          <td class="p-3 text-slate-300">${z.almoxarife || ''}</td>
-          <td class="p-3 text-slate-300">${z.data || z['data_criacao'] || ''}</td>
-          <td class="p-3 text-right font-bold text-emerald-400">R$ ${Number(z.valor_total || z.valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+          <td class="p-3">${z.empresa || z.usina || z.centro || 'VV'}</td>
+          <td class="p-3 font-bold text-white">${z.aprovador || z['aprovador da reserva'] || z['aprovador_da_reserva'] || '-'}</td>
+          <td class="p-3 text-slate-300">${z.almoxarife || z['usuario'] || '-'}</td>
+          <td class="p-3 text-slate-300">${z.data || z['data criacao reserva'] || '-'}</td>
+          <td class="p-3 text-right font-bold text-emerald-400">R$ ${Number(z.valor_total || z.valor || z['valor total'] || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
         </tr>
       `).join('');
 
@@ -310,30 +273,30 @@
       mb51.forEach(m => {
         const resNum = String(m.reserva || m['n_reserva'] || '').trim();
         const pai = mapZ[resNum] || {};
-        const emp = pai.empresa || m.empresa || 'VV';
-        const recMat = String(m.recebedor || m['matricula'] || '').trim();
+        const emp = String(pai.empresa || m.empresa || m.centro || 'VV').toUpperCase();
+        const recMat = String(m.recebedor || m['matricula'] || m['codigo'] || '').trim();
         const func = mapRH[recMat] || {};
-        const nomeRec = func.nome || func['nome_do_colaborador'] || `Matrícula ${recMat}`;
+        const nomeRec = func.nome || func['nome_do_colaborador'] || func['nome'] || `Matrícula ${recMat}`;
 
-        if (usinaAtual !== 'TODAS' && emp !== usinaAtual) return;
+        if (usinaAtual !== 'TODAS' && !emp.includes(usinaAtual)) return;
 
         totalIdasBalcao++;
 
-        const frota = m.frota_ordem || m['frota'] || m['ordem'] || 'GERAL';
-        const codMat = m.cod_material || m['material'] || 'GERAL';
+        const frota = m.frota_ordem || m['frota'] || m['ordem'] || m['frota_ordem'] || 'GERAL';
+        const codMat = m.cod_material || m['material'] || m['codigo_material'] || 'GERAL';
         const chaveFrota = `${emp}_${frota}_${codMat}`;
 
         if (!gruposReinc[chaveFrota]) {
-          gruposReinc[chaveFrota] = { emp, frota, descFrota: m.desc_frota || '', codMat, descMat: m.desc_material || m['descricao'] || '', itens: [], total: 0 };
+          gruposReinc[chaveFrota] = { emp, frota, descFrota: m.desc_frota || m['descricao_frota'] || '', codMat, descMat: m.desc_material || m['descricao'] || m['descricao_material'] || '', itens: [], total: 0 };
         }
-        gruposReinc[chaveFrota].itens.push({ ...m, aprovadorZ: pai.aprovador || pai['aprovador_da_reserva'] || 'Não loc.' });
-        gruposReinc[chaveFrota].total += Number(m.valor || m['valor_total'] || 0);
+        gruposReinc[chaveFrota].itens.push({ ...m, aprovadorZ: pai.aprovador || pai['aprovador da reserva'] || 'Não loc.' });
+        gruposReinc[chaveFrota].total += Number(m.valor || m['valor_total'] || m['montante'] || 0);
 
         if (!gruposBalcao[recMat]) {
-          gruposBalcao[recMat] = { matricula: recMat, nome: nomeRec, funcao: func.funcao || 'Operacional', retiradas: [], total: 0 };
+          gruposBalcao[recMat] = { matricula: recMat, nome: nomeRec, funcao: func.funcao || func['cargo'] || 'Operacional', retiradas: [], total: 0 };
         }
-        gruposBalcao[recMat].retiradas.push({ reserva: resNum, material: m.desc_material || '', valor: Number(m.valor || 0) });
-        gruposBalcao[recMat].total += Number(m.valor || 0);
+        gruposBalcao[recMat].retiradas.push({ reserva: resNum, material: m.desc_material || m['descricao'] || '', valor: Number(m.valor || m['valor_total'] || 0) });
+        gruposBalcao[recMat].total += Number(m.valor || m['valor_total'] || 0);
       });
 
       const listaReinc = Object.values(gruposReinc).filter(g => g.itens.length >= 2);
@@ -361,11 +324,11 @@
         </tr>
       `).join('');
 
-      const somaTotalZ = zFiltrada.reduce((acc, z) => acc + Number(z.valor_total || z.valor || 0), 0);
+      const somaTotalZ = zFiltrada.reduce((acc, z) => acc + Number(z.valor_total || z.valor || z['valor total'] || 0), 0);
       document.getElementById('kpiValorTotal').textContent = 'R$ ' + somaTotalZ.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
       document.getElementById('kpiQtdReservas').textContent = zFiltrada.length;
       document.getElementById('kpiReincidencias').textContent = listaReinc.length + ' alertas';
-      document.getElementById('kpiIdasBalcao').textContent = totalIdasBalcao + ' retiradas';
+      document.getElementById('kpiIdasBalcao').textContent = (mb51.length > 0 ? mb51.length : totalIdasBalcao) + ' retiradas';
 
       atualizarGraficos(zFiltrada);
     }
@@ -373,7 +336,7 @@
     function atualizarGraficos(dados) {
       const somaAprov = {};
       dados.forEach(d => {
-        const apv = d.aprovador || d['aprovador_da_reserva'] || 'Outros';
+        const apv = d.aprovador || d['aprovador da reserva'] || d['aprovador_da_reserva'] || 'Outros';
         somaAprov[apv] = (somaAprov[apv] || 0) + Number(d.valor_total || d.valor || 0);
       });
 
@@ -386,7 +349,7 @@
 
       const somaData = {};
       dados.forEach(d => {
-        const dt = d.data || d['data_criacao'] || 'Sem Data';
+        const dt = d.data || d['data criacao reserva'] || d['data_criacao'] || 'Sem Data';
         somaData[dt] = (somaData[dt] || 0) + Number(d.valor_total || d.valor || 0);
       });
       const datas = Object.keys(somaData).sort();
