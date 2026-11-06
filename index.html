@@ -24,20 +24,20 @@
           <h1 class="text-2xl font-black text-white">Aprovadores de Reserva</h1>
         </div>
       </div>
-      <form onsubmit="fazerLogin(event)" class="space-y-4">
+      <div class="space-y-4">
         <div>
           <label class="text-xs font-bold uppercase text-slate-400">Usuário Corporativo</label>
-          <input id="userEmail" type="text" value="admin@valedoverdao.com.br" class="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white" required />
+          <input id="userEmail" type="text" value="admin@valedoverdao.com.br" class="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white" />
         </div>
         <div>
           <label class="text-xs font-bold uppercase text-slate-400">Senha de Acesso</label>
-          <input id="userPass" type="password" value="123456" class="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white" required />
+          <input id="userPass" type="password" value="123456" class="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white" />
         </div>
         <p id="loginError" class="text-xs text-red-400 hidden">Usuário ou senha inválidos!</p>
-        <button type="submit" class="w-full py-3.5 rounded-xl bg-[#007600] hover:bg-emerald-600 font-bold text-sm text-white transition shadow-lg">
+        <button onclick="fazerLoginDireto()" class="w-full py-3.5 rounded-xl bg-[#007600] hover:bg-emerald-600 font-bold text-sm text-white transition shadow-lg cursor-pointer">
           Entrar no Painel Corporativo
         </button>
-      </form>
+      </div>
     </div>
   </div>
 
@@ -156,4 +156,32 @@
           </div>
           <div class="card p-5 border-t-4 border-t-[#1F4E79]">
             <h3 class="text-base font-bold text-white mb-1">Carga Quadro RH</h3>
-            <p id="status-rh" class="text-xs text-blue-400 mb-
+            <p id="status-rh" class="text-xs text-blue-400 mb-2 font-mono">0 linhas carregadas</p>
+            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'rh')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white file:font-bold cursor-pointer" />
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let usinaAtual = 'TODAS';
+    let chartBar = null, chartLine = null;
+    let zreserva = [], mb51 = [], rh = [];
+
+    function fazerLoginDireto() {
+      const p = document.getElementById('userPass').value;
+      if (p === '123456') {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('appScreen').classList.remove('hidden');
+        renderizarTudo();
+      } else {
+        document.getElementById('loginError').classList.remove('hidden');
+      }
+    }
+
+    function mudarAba(aba) {
+      ['dash1', 'dash2', 'cargas'].forEach(id => document.getElementById('aba-' + id).classList.toggle('hidden', id !== aba));
+    }
+
+    function filtrarUsina(uf) { usinaAtual =
