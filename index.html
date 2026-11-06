@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { background-color: #0b1120; color: #f1f5f9; font-family: 'Inter', system-ui, sans-serif; }
     .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 1rem; }
@@ -27,7 +26,7 @@
       </div>
       <form onsubmit="fazerLogin(event)" class="space-y-4">
         <div>
-          <label class="text-xs font-bold uppercase text-slate-400">Usuário / E-mail Corporativo</label>
+          <label class="text-xs font-bold uppercase text-slate-400">Usuário Corporativo</label>
           <input id="userEmail" type="text" value="admin@valedoverdao.com.br" class="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white" required />
         </div>
         <div>
@@ -53,15 +52,15 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-black text-base text-white">APROVADORES DE RESERVA</h1>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">● Sistema Operacional</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">● Pronto para SAP Bruto</span>
             </div>
-            <p class="text-[11px] text-slate-400">Cruzamento Relacional: ZRESERVA (Mãe) + MB51 (Frotas) + RH (Balcão)</p>
+            <p class="text-[11px] text-slate-400">Leitura Direta de Relatórios SAP (ZRESERVA & MB51) + RH</p>
           </div>
         </div>
         <div class="flex flex-wrap gap-2">
           <button onclick="mudarAba('dash1')" id="btn-dash1" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white">1. Dashboard Aprovadores</button>
           <button onclick="mudarAba('dash2')" id="btn-dash2" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300">2. Reincidências & Balcão</button>
-          <button onclick="mudarAba('cargas')" id="btn-cargas" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-amber-400">3. Cargas Excel (.XLSX)</button>
+          <button onclick="mudarAba('cargas')" id="btn-cargas" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-amber-400">3. Cargas Excel SAP (.XLSX)</button>
           <button onclick="location.reload()" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-950/60 text-red-300 border border-red-800/50">Sair</button>
         </div>
       </div>
@@ -72,11 +71,10 @@
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="flex flex-wrap gap-2">
-            <button onclick="filtrarUsina('TODAS')" id="uf-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900">Todas as Usinas</button>
-            <button onclick="filtrarUsina('VV')" id="uf-VV" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#007600] text-white" style="background:#00760033">1. Vale do Verdão</button>
-            <button onclick="filtrarUsina('PAN')" id="uf-PAN" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#FFC000] text-amber-300" style="background:#FFC00033">2. Panorama</button>
-            <button onclick="filtrarUsina('FLO')" id="uf-FLO" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#1F4E79] text-blue-200" style="background:#1F4E7966">3. Floresta</button>
-            <button onclick="filtrarUsina('CAM')" id="uf-CAM" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#ED7D31] text-orange-300" style="background:#ED7D3133">4. Cambuí</button>
+            <button onclick="filtrarUsina('TODAS')" id="uf-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900">Todas</button>
+            <button onclick="filtrarUsina('2000')" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#007600] text-white" style="background:#00760033">Centro 2000 (VV)</button>
+            <button onclick="filtrarUsina('3000')" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#FFC000] text-amber-300" style="background:#FFC00033">Centro 3000 (PAN)</button>
+            <button onclick="filtrarUsina('4000')" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#1F4E79] text-blue-200" style="background:#1F4E7966">Centro 4000 (FLO)</button>
           </div>
           <div class="flex flex-wrap gap-2 items-center">
             <input type="date" id="dataIni" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white" />
@@ -85,7 +83,7 @@
             <select id="filtroAprovador" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white">
               <option value="TODOS">Todos os Aprovadores</option>
             </select>
-            <input type="text" id="filtroBusca" oninput="renderizarTudo()" placeholder="Reserva, Frota, Peça..." class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white w-56" />
+            <input type="text" id="filtroBusca" oninput="renderizarTudo()" placeholder="Reserva, Frota, Material..." class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white w-56" />
           </div>
         </div>
       </div>
@@ -99,7 +97,7 @@
           <p id="kpiValorTotal" class="text-xl font-black text-white mt-1">R$ 0,00</p>
         </div>
         <div class="card p-4 border-l-4 border-l-[#FFC000]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Reservas Liberadas</span>
+          <span class="text-[11px] text-slate-400 uppercase font-bold">Reservas Carregadas</span>
           <p id="kpiQtdReservas" class="text-xl font-black text-amber-400 mt-1">0</p>
         </div>
         <div class="card p-4 border-l-4 border-l-[#ED7D31]">
@@ -107,23 +105,23 @@
           <p id="kpiReincidencias" class="text-xl font-black text-orange-400 mt-1">0 alertas</p>
         </div>
         <div class="card p-4 border-l-4 border-l-[#1F4E79]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Idas ao Balcão</span>
-          <p id="kpiIdasBalcao" class="text-xl font-black text-blue-400 mt-1">0 retiradas</p>
+          <span class="text-[11px] text-slate-400 uppercase font-bold">Movimentos (MB51)</span>
+          <p id="kpiIdasBalcao" class="text-xl font-black text-blue-400 mt-1">0</p>
         </div>
       </div>
 
       <!-- ABA 1 -->
       <div id="aba-dash1" class="space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="card p-5"><h3 class="text-sm font-bold text-white mb-3">Maior Aprovador por Usina</h3><canvas id="chartAprovadores" height="170"></canvas></div>
-          <div class="card p-5"><h3 class="text-sm font-bold text-white mb-3">Evolução por Data</h3><canvas id="chartLinhaDatas" height="170"></canvas></div>
+          <div class="card p-5"><h3 class="text-sm font-bold text-white mb-3">Valor por Aprovador</h3><canvas id="chartAprovadores" height="170"></canvas></div>
+          <div class="card p-5"><h3 class="text-sm font-bold text-white mb-3">Evolução Diária</h3><canvas id="chartLinhaDatas" height="170"></canvas></div>
         </div>
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-800"><h3 class="text-sm font-bold text-white uppercase">Relatório ZRESERVA</h3></div>
+          <div class="p-4 border-b border-slate-800"><h3 class="text-sm font-bold text-white uppercase">Dados ZRESERVA Brutos do SAP</h3></div>
           <div class="overflow-x-auto max-h-96">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-950 text-slate-400 uppercase sticky top-0">
-                <tr><th class="p-3">Reserva</th><th class="p-3">Usina</th><th class="p-3">Aprovador</th><th class="p-3">Almoxarife</th><th class="p-3">Data</th><th class="p-3 text-right">Valor</th></tr>
+                <tr><th class="p-3">Reserva</th><th class="p-3">Centro</th><th class="p-3">Data</th><th class="p-3">Aprovador</th><th class="p-3 text-right">Valor</th></tr>
               </thead>
               <tbody id="tabelaZReserva" class="divide-y divide-slate-800"></tbody>
             </table>
@@ -134,12 +132,12 @@
       <!-- ABA 2 -->
       <div id="aba-dash2" class="hidden space-y-6">
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-800"><h3 class="text-sm font-bold text-white uppercase">1. Reincidências de Frota</h3></div>
-          <div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase"><tr><th class="p-3">Usina</th><th class="p-3">Frota</th><th class="p-3">Material</th><th class="p-3 text-center">Vezes</th><th class="p-3">Detalhes</th><th class="p-3 text-right">Custo</th></tr></thead><tbody id="tabelaReincidencias" class="divide-y divide-slate-800"></tbody></table></div>
+          <div class="p-4 border-b border-slate-800"><h3 class="text-sm font-bold text-white uppercase">1. Reincidências de Peças por Frota/Ordem</h3></div>
+          <div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase"><tr><th class="p-3">Centro</th><th class="p-3">Frota / Ordem</th><th class="p-3">Material</th><th class="p-3 text-center">Vezes</th><th class="p-3 text-right">Custo Acumulado</th></tr></thead><tbody id="tabelaReincidencias" class="divide-y divide-slate-800"></tbody></table></div>
         </div>
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-800"><h3 class="text-sm font-bold text-white uppercase">2. Frequência de Balcão (RH)</h3></div>
-          <div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase"><tr><th class="p-3">Matrícula</th><th class="p-3">Nome</th><th class="p-3">Função</th><th class="p-3 text-center">Idas</th><th class="p-3">Detalhes</th><th class="p-3 text-right">Total</th></tr></thead><tbody id="tabelaBalcaoRH" class="divide-y divide-slate-800"></tbody></table></div>
+          <div class="p-4 border-b border-slate-800"><h3 class="text-sm font-bold text-white uppercase">2. Frequência de Retiradas por Matrícula</h3></div>
+          <div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="bg-slate-950 text-slate-400 uppercase"><tr><th class="p-3">Matrícula</th><th class="p-3">Nome / Recebedor</th><th class="p-3 text-center">Retiradas</th><th class="p-3 text-right">Total Retirado</th></tr></thead><tbody id="tabelaBalcaoRH" class="divide-y divide-slate-800"></tbody></table></div>
         </div>
       </div>
 
@@ -147,17 +145,20 @@
       <div id="aba-cargas" class="hidden space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="card p-5 border-t-4 border-t-[#007600]">
-            <h3 class="text-base font-bold text-white mb-2">Carga ZRESERVA</h3>
+            <h3 class="text-base font-bold text-white mb-1">Carga ZRESERVA (SAP Bruto)</h3>
+            <p class="text-[11px] text-slate-400 mb-3">Lê direto: <i>Numero da Reserva, Data da Reserva, Centro, Aprovador...</i></p>
             <p id="status-zreserva" class="text-xs text-emerald-400 mb-2 font-mono">0 linhas carregadas</p>
             <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'zreserva')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-emerald-600 file:text-white file:font-bold cursor-pointer" />
           </div>
           <div class="card p-5 border-t-4 border-t-[#FFC000]">
-            <h3 class="text-base font-bold text-white mb-2">Carga MB51</h3>
+            <h3 class="text-base font-bold text-white mb-1">Carga MB51 (SAP Bruto)</h3>
+            <p class="text-[11px] text-slate-400 mb-3">Lê direto: <i>Numero da Reserva, Material, Quantidade, Montante, Recebedor...</i></p>
             <p id="status-mb51" class="text-xs text-amber-400 mb-2 font-mono">0 linhas carregadas</p>
             <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'mb51')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold cursor-pointer" />
           </div>
           <div class="card p-5 border-t-4 border-t-[#1F4E79]">
-            <h3 class="text-base font-bold text-white mb-2">Carga Quadro RH</h3>
+            <h3 class="text-base font-bold text-white mb-1">Carga Quadro RH</h3>
+            <p class="text-[11px] text-slate-400 mb-3">Lê direto: <i>Matricula, Nome, Funcao...</i></p>
             <p id="status-rh" class="text-xs text-blue-400 mb-2 font-mono">0 linhas carregadas</p>
             <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'rh')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white file:font-bold cursor-pointer" />
           </div>
@@ -188,17 +189,18 @@
 
     function filtrarUsina(uf) { usinaAtual = uf; renderizarTudo(); }
 
-    function normalizarObjeto(obj) {
-      const res = {};
-      Object.keys(obj).forEach(k => {
-        const chaveLimpa = k.trim().toLowerCase()
-          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-          .replace(/[^a-z0-9]/g, "_");
-        res[chaveLimpa] = obj[k];
-        res[k.trim().toLowerCase()] = obj[k];
-        res[k.trim()] = obj[k];
-      });
-      return res;
+    // Função universal inteligente que aceita QUALQUER nome de coluna do SAP (com acentos, espaços ou maiúsculas)
+    function extrairCampo(obj, chavesPossiveis) {
+      for (let chave of chavesPossiveis) {
+        for (let k of Object.keys(obj)) {
+          let kLimpa = k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "_");
+          let cLimpa = chave.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "_");
+          if (kLimpa === cLimpa || kLimpa.includes(cLimpa)) {
+            if (obj[k] !== undefined && obj[k] !== '') return obj[k];
+          }
+        }
+      }
+      return '';
     }
 
     function importarPlanilha(event, tipo) {
@@ -208,13 +210,13 @@
       reader.onload = (e) => {
         const workbook = XLSX.read(e.target.result, { type: 'binary' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' }).map(normalizarObjeto);
+        const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
         if (tipo === 'zreserva') { zreserva = rows; document.getElementById('status-zreserva').textContent = rows.length + ' linhas carregadas'; }
         if (tipo === 'mb51') { mb51 = rows; document.getElementById('status-mb51').textContent = rows.length + ' linhas carregadas'; }
         if (tipo === 'rh') { rh = rows; document.getElementById('status-rh').textContent = rows.length + ' linhas carregadas'; }
 
-        alert(`Sucesso! ${rows.length} linhas carregadas na memória com sucesso!`);
+        alert(`Sucesso! ${rows.length} linhas do SAP carregadas perfeitamente!`);
         popularFiltroAprovadores();
         renderizarTudo();
       };
@@ -223,7 +225,7 @@
 
     function popularFiltroAprovadores() {
       const sel = document.getElementById('filtroAprovador');
-      const nomes = [...new Set(zreserva.map(z => z.aprovador || z['aprovador da reserva'] || z['aprovador_da_reserva']).filter(Boolean))];
+      const nomes = [...new Set(zreserva.map(z => extrairCampo(z, ['aprovador', 'nome aprovador', 'usuario aprovacao'])).filter(Boolean))];
       sel.innerHTML = '<option value="TODOS">Todos os Aprovadores</option>' + nomes.map(n => `<option value="${n}">${n}</option>`).join('');
     }
 
@@ -235,100 +237,95 @@
 
       const mapZ = {};
       zreserva.forEach(z => {
-        const res = String(z.reserva || z['n_reserva'] || z['n reserva'] || '').trim();
+        const res = String(extrairCampo(z, ['numero da reserva', 'reserva', 'n_reserva'])).trim();
         if (res) mapZ[res] = z;
       });
 
       const mapRH = {};
       rh.forEach(f => {
-        const mat = String(f.matricula || f['matricula_funcionario'] || f['cod'] || '').trim();
+        const mat = String(extrairCampo(f, ['matricula', 'cod', 'funcionario'])).trim();
         if (mat) mapRH[mat] = f;
       });
 
       const zFiltrada = zreserva.filter(z => {
-        const emp = String(z.empresa || z.usina || z.centro || 'VV').toUpperCase();
-        const apv = z.aprovador || z['aprovador da reserva'] || z['aprovador_da_reserva'] || '';
-        const dt = z.data || z['data criacao reserva'] || z['data_criacao'] || '';
-        if (usinaAtual !== 'TODAS' && !emp.includes(usinaAtual)) return false;
+        const centro = String(extrairCampo(z, ['centro', 'plant', 'empresa'])).trim();
+        const apv = String(extrairCampo(z, ['aprovador', 'nome aprovador']));
+        const dt = String(extrairCampo(z, ['data da reserva', 'data', 'criacao']));
+
+        if (usinaAtual !== 'TODAS' && !centro.includes(usinaAtual)) return false;
         if (aprovadorSel !== 'TODOS' && apv !== aprovadorSel) return false;
-        if (dataIni && dt && dt < dataIni) return false;
-        if (dataFim && dt && dt > dataFim) return false;
         return true;
       });
 
+      // Renderizar Tabela ZRESERVA
       document.getElementById('tabelaZReserva').innerHTML = zFiltrada.slice(0, 100).map(z => `
         <tr class="hover:bg-slate-900/80">
-          <td class="p-3 font-mono font-bold text-emerald-400">#${z.reserva || z['n_reserva'] || ''}</td>
-          <td class="p-3">${z.empresa || z.usina || z.centro || 'VV'}</td>
-          <td class="p-3 font-bold text-white">${z.aprovador || z['aprovador da reserva'] || z['aprovador_da_reserva'] || '-'}</td>
-          <td class="p-3 text-slate-300">${z.almoxarife || z['usuario'] || '-'}</td>
-          <td class="p-3 text-slate-300">${z.data || z['data criacao reserva'] || '-'}</td>
-          <td class="p-3 text-right font-bold text-emerald-400">R$ ${Number(z.valor_total || z.valor || z['valor total'] || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+          <td class="p-3 font-mono font-bold text-emerald-400">#${extrairCampo(z, ['numero da reserva', 'reserva'])}</td>
+          <td class="p-3">${extrairCampo(z, ['centro', 'plant'])}</td>
+          <td class="p-3 text-slate-300">${extrairCampo(z, ['data da reserva', 'data'])}</td>
+          <td class="p-3 font-bold text-white">${extrairCampo(z, ['aprovador', 'nome aprovador'])}</td>
+          <td class="p-3 text-right font-bold text-emerald-400">R$ ${Number(extrairCampo(z, ['valor para aprovacao', 'valor', 'montante']) || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
         </tr>
       `).join('');
 
-      let totalIdasBalcao = 0;
+      let totalMov = 0;
       const gruposReinc = {}, gruposBalcao = {};
 
       mb51.forEach(m => {
-        const resNum = String(m.reserva || m['n_reserva'] || '').trim();
-        const pai = mapZ[resNum] || {};
-        const emp = String(pai.empresa || m.empresa || m.centro || 'VV').toUpperCase();
-        const recMat = String(m.recebedor || m['matricula'] || m['codigo'] || '').trim();
+        const resNum = String(extrairCampo(m, ['numero da reserva', 'reserva'])).trim();
+        const centro = String(extrairCampo(m, ['centro', 'plant'])).trim();
+        const recMat = String(extrairCampo(m, ['recebedor', 'matricula', 'usuario'])).trim();
         const func = mapRH[recMat] || {};
-        const nomeRec = func.nome || func['nome_do_colaborador'] || func['nome'] || `Matrícula ${recMat}`;
+        const nomeRec = extrairCampo(func, ['nome', 'colaborador']) || `Matrícula ${recMat}`;
 
-        if (usinaAtual !== 'TODAS' && !emp.includes(usinaAtual)) return;
+        if (usinaAtual !== 'TODAS' && !centro.includes(usinaAtual)) return;
+        totalMov++;
 
-        totalIdasBalcao++;
-
-        const frota = m.frota_ordem || m['frota'] || m['ordem'] || m['frota_ordem'] || 'GERAL';
-        const codMat = m.cod_material || m['material'] || m['codigo_material'] || 'GERAL';
-        const chaveFrota = `${emp}_${frota}_${codMat}`;
+        const frota = String(extrairCampo(m, ['numero da ordem de servico', 'ordem', 'frota', 'equipamento'])).trim() || 'GERAL';
+        const material = String(extrairCampo(m, ['material', 'texto breve de material', 'descricao'])).trim() || 'GERAL';
+        const chaveFrota = `${centro}_${frota}_${material}`;
+        const valMov = Number(extrairCampo(m, ['montante', 'valor', 'valor em moeda do documento']) || 0);
 
         if (!gruposReinc[chaveFrota]) {
-          gruposReinc[chaveFrota] = { emp, frota, descFrota: m.desc_frota || m['descricao_frota'] || '', codMat, descMat: m.desc_material || m['descricao'] || m['descricao_material'] || '', itens: [], total: 0 };
+          gruposReinc[chaveFrota] = { centro, frota, material, itens: [], total: 0 };
         }
-        gruposReinc[chaveFrota].itens.push({ ...m, aprovadorZ: pai.aprovador || pai['aprovador da reserva'] || 'Não loc.' });
-        gruposReinc[chaveFrota].total += Number(m.valor || m['valor_total'] || m['montante'] || 0);
+        gruposReinc[chaveFrota].itens.push(m);
+        gruposReinc[chaveFrota].total += valMov;
 
         if (!gruposBalcao[recMat]) {
-          gruposBalcao[recMat] = { matricula: recMat, nome: nomeRec, funcao: func.funcao || func['cargo'] || 'Operacional', retiradas: [], total: 0 };
+          gruposBalcao[recMat] = { matricula: recMat, nome: nomeRec, retiradas: 0, total: 0 };
         }
-        gruposBalcao[recMat].retiradas.push({ reserva: resNum, material: m.desc_material || m['descricao'] || '', valor: Number(m.valor || m['valor_total'] || 0) });
-        gruposBalcao[recMat].total += Number(m.valor || m['valor_total'] || 0);
+        gruposBalcao[recMat].retiradas++;
+        gruposBalcao[recMat].total += valMov;
       });
 
       const listaReinc = Object.values(gruposReinc).filter(g => g.itens.length >= 2);
 
       document.getElementById('tabelaReincidencias').innerHTML = listaReinc.slice(0, 50).map(g => `
         <tr class="hover:bg-slate-900/70 align-top">
-          <td class="p-3">${g.emp}</td>
+          <td class="p-3">${g.centro}</td>
           <td class="p-3 font-bold text-white">${g.frota}</td>
-          <td class="p-3 text-amber-300">${g.descMat}</td>
+          <td class="p-3 text-amber-300">${g.material}</td>
           <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full bg-red-950 text-red-300 font-black">${g.itens.length}x</span></td>
-          <td class="p-3 text-xs text-slate-300">Aprovador ZRESERVA: ${g.itens[0].aprovadorZ}</td>
           <td class="p-3 text-right font-black text-red-400">R$ ${g.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
         </tr>
       `).join('');
 
-      const listaBalcao = Object.values(gruposBalcao).sort((a, b) => b.retiradas.length - a.retiradas.length);
+      const listaBalcao = Object.values(gruposBalcao).sort((a, b) => b.retiradas - a.retiradas);
       document.getElementById('tabelaBalcaoRH').innerHTML = listaBalcao.slice(0, 50).map(b => `
         <tr class="hover:bg-slate-900/70 align-top">
           <td class="p-3 font-mono text-slate-300">${b.matricula}</td>
           <td class="p-3 font-bold text-white">${b.nome}</td>
-          <td class="p-3 text-slate-400">${b.funcao}</td>
-          <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full bg-blue-950 text-blue-300 font-black">${b.retiradas.length}x</span></td>
-          <td class="p-3 text-xs text-slate-400">${b.retiradas.length} retiradas registradas</td>
+          <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full bg-blue-950 text-blue-300 font-black">${b.retiradas}x</span></td>
           <td class="p-3 text-right font-bold text-white">R$ ${b.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
         </tr>
       `).join('');
 
-      const somaTotalZ = zFiltrada.reduce((acc, z) => acc + Number(z.valor_total || z.valor || z['valor total'] || 0), 0);
+      const somaTotalZ = zFiltrada.reduce((acc, z) => acc + Number(extrairCampo(z, ['valor para aprovacao', 'valor', 'montante']) || 0), 0);
       document.getElementById('kpiValorTotal').textContent = 'R$ ' + somaTotalZ.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
       document.getElementById('kpiQtdReservas').textContent = zFiltrada.length;
       document.getElementById('kpiReincidencias').textContent = listaReinc.length + ' alertas';
-      document.getElementById('kpiIdasBalcao').textContent = (mb51.length > 0 ? mb51.length : totalIdasBalcao) + ' retiradas';
+      document.getElementById('kpiIdasBalcao').textContent = totalMov;
 
       atualizarGraficos(zFiltrada);
     }
@@ -336,31 +333,5 @@
     function atualizarGraficos(dados) {
       const somaAprov = {};
       dados.forEach(d => {
-        const apv = d.aprovador || d['aprovador da reserva'] || d['aprovador_da_reserva'] || 'Outros';
-        somaAprov[apv] = (somaAprov[apv] || 0) + Number(d.valor_total || d.valor || 0);
-      });
-
-      if (chartBar) chartBar.destroy();
-      chartBar = new Chart(document.getElementById('chartAprovadores'), {
-        type: 'bar',
-        data: { labels: Object.keys(somaAprov), datasets: [{ data: Object.values(somaAprov), backgroundColor: '#007600' }] },
-        options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
-      });
-
-      const somaData = {};
-      dados.forEach(d => {
-        const dt = d.data || d['data criacao reserva'] || d['data_criacao'] || 'Sem Data';
-        somaData[dt] = (somaData[dt] || 0) + Number(d.valor_total || d.valor || 0);
-      });
-      const datas = Object.keys(somaData).sort();
-
-      if (chartLine) chartLine.destroy();
-      chartLine = new Chart(document.getElementById('chartLinhaDatas'), {
-        type: 'line',
-        data: { labels: datas, datasets: [{ data: datas.map(dt => somaData[dt]), borderColor: '#FFC000', backgroundColor: '#FFC00033', fill: true }] },
-        options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
-      });
-    }
-  </script>
-</body>
-</html>
+        const apv = extrairCampo(d, ['aprovador', 'nome aprovador']) || 'Outros';
+        somaAprov[apv
