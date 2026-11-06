@@ -14,7 +14,7 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- LOGIN -->
+  <!-- TELA DE LOGIN -->
   <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
     <div class="card max-w-md w-full p-8 shadow-2xl">
       <div class="flex items-center gap-3 mb-6">
@@ -41,7 +41,7 @@
     </div>
   </div>
 
-  <!-- SISTEMA -->
+  <!-- SISTEMA PRINCIPAL -->
   <div id="appScreen" class="hidden">
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
@@ -52,9 +52,9 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-black text-base text-white">APROVADORES DE RESERVA</h1>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">● Pronto para SAP Bruto</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">● Sistema Operacional</span>
             </div>
-            <p class="text-[11px] text-slate-400">Leitura Direta de Relatórios SAP (ZRESERVA & MB51) + RH</p>
+            <p class="text-[11px] text-slate-400">Cruzamento Relacional: ZRESERVA (Mãe) + MB51 (Frotas) + RH (Balcão)</p>
           </div>
         </div>
         <div class="flex flex-wrap gap-2">
@@ -66,7 +66,7 @@
       </div>
     </header>
 
-    <!-- FILTROS -->
+    <!-- FILTROS GLOBAIS -->
     <section class="max-w-7xl mx-auto px-4 pt-5">
       <div class="card p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -146,192 +146,14 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="card p-5 border-t-4 border-t-[#007600]">
             <h3 class="text-base font-bold text-white mb-1">Carga ZRESERVA (SAP Bruto)</h3>
-            <p class="text-[11px] text-slate-400 mb-3">Lê direto: <i>Numero da Reserva, Data da Reserva, Centro, Aprovador...</i></p>
             <p id="status-zreserva" class="text-xs text-emerald-400 mb-2 font-mono">0 linhas carregadas</p>
             <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'zreserva')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-emerald-600 file:text-white file:font-bold cursor-pointer" />
           </div>
           <div class="card p-5 border-t-4 border-t-[#FFC000]">
             <h3 class="text-base font-bold text-white mb-1">Carga MB51 (SAP Bruto)</h3>
-            <p class="text-[11px] text-slate-400 mb-3">Lê direto: <i>Numero da Reserva, Material, Quantidade, Montante, Recebedor...</i></p>
             <p id="status-mb51" class="text-xs text-amber-400 mb-2 font-mono">0 linhas carregadas</p>
             <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'mb51')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold cursor-pointer" />
           </div>
           <div class="card p-5 border-t-4 border-t-[#1F4E79]">
             <h3 class="text-base font-bold text-white mb-1">Carga Quadro RH</h3>
-            <p class="text-[11px] text-slate-400 mb-3">Lê direto: <i>Matricula, Nome, Funcao...</i></p>
-            <p id="status-rh" class="text-xs text-blue-400 mb-2 font-mono">0 linhas carregadas</p>
-            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'rh')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white file:font-bold cursor-pointer" />
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script>
-    let usinaAtual = 'TODAS';
-    let chartBar = null, chartLine = null;
-    let zreserva = [], mb51 = [], rh = [];
-
-    function fazerLogin(e) {
-      e.preventDefault();
-      if (document.getElementById('userPass').value === '123456') {
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('appScreen').classList.remove('hidden');
-        renderizarTudo();
-      } else {
-        document.getElementById('loginError').classList.remove('hidden');
-      }
-    }
-
-    function mudarAba(aba) {
-      ['dash1', 'dash2', 'cargas'].forEach(id => document.getElementById('aba-' + id).classList.toggle('hidden', id !== aba));
-    }
-
-    function filtrarUsina(uf) { usinaAtual = uf; renderizarTudo(); }
-
-    // Função universal inteligente que aceita QUALQUER nome de coluna do SAP (com acentos, espaços ou maiúsculas)
-    function extrairCampo(obj, chavesPossiveis) {
-      for (let chave of chavesPossiveis) {
-        for (let k of Object.keys(obj)) {
-          let kLimpa = k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "_");
-          let cLimpa = chave.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "_");
-          if (kLimpa === cLimpa || kLimpa.includes(cLimpa)) {
-            if (obj[k] !== undefined && obj[k] !== '') return obj[k];
-          }
-        }
-      }
-      return '';
-    }
-
-    function importarPlanilha(event, tipo) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const workbook = XLSX.read(e.target.result, { type: 'binary' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-
-        if (tipo === 'zreserva') { zreserva = rows; document.getElementById('status-zreserva').textContent = rows.length + ' linhas carregadas'; }
-        if (tipo === 'mb51') { mb51 = rows; document.getElementById('status-mb51').textContent = rows.length + ' linhas carregadas'; }
-        if (tipo === 'rh') { rh = rows; document.getElementById('status-rh').textContent = rows.length + ' linhas carregadas'; }
-
-        alert(`Sucesso! ${rows.length} linhas do SAP carregadas perfeitamente!`);
-        popularFiltroAprovadores();
-        renderizarTudo();
-      };
-      reader.readAsBinaryString(file);
-    }
-
-    function popularFiltroAprovadores() {
-      const sel = document.getElementById('filtroAprovador');
-      const nomes = [...new Set(zreserva.map(z => extrairCampo(z, ['aprovador', 'nome aprovador', 'usuario aprovacao'])).filter(Boolean))];
-      sel.innerHTML = '<option value="TODOS">Todos os Aprovadores</option>' + nomes.map(n => `<option value="${n}">${n}</option>`).join('');
-    }
-
-    function renderizarTudo() {
-      const aprovadorSel = document.getElementById('filtroAprovador').value;
-      const busca = document.getElementById('filtroBusca').value.toLowerCase();
-      const dataIni = document.getElementById('dataIni').value;
-      const dataFim = document.getElementById('dataFim').value;
-
-      const mapZ = {};
-      zreserva.forEach(z => {
-        const res = String(extrairCampo(z, ['numero da reserva', 'reserva', 'n_reserva'])).trim();
-        if (res) mapZ[res] = z;
-      });
-
-      const mapRH = {};
-      rh.forEach(f => {
-        const mat = String(extrairCampo(f, ['matricula', 'cod', 'funcionario'])).trim();
-        if (mat) mapRH[mat] = f;
-      });
-
-      const zFiltrada = zreserva.filter(z => {
-        const centro = String(extrairCampo(z, ['centro', 'plant', 'empresa'])).trim();
-        const apv = String(extrairCampo(z, ['aprovador', 'nome aprovador']));
-        const dt = String(extrairCampo(z, ['data da reserva', 'data', 'criacao']));
-
-        if (usinaAtual !== 'TODAS' && !centro.includes(usinaAtual)) return false;
-        if (aprovadorSel !== 'TODOS' && apv !== aprovadorSel) return false;
-        return true;
-      });
-
-      // Renderizar Tabela ZRESERVA
-      document.getElementById('tabelaZReserva').innerHTML = zFiltrada.slice(0, 100).map(z => `
-        <tr class="hover:bg-slate-900/80">
-          <td class="p-3 font-mono font-bold text-emerald-400">#${extrairCampo(z, ['numero da reserva', 'reserva'])}</td>
-          <td class="p-3">${extrairCampo(z, ['centro', 'plant'])}</td>
-          <td class="p-3 text-slate-300">${extrairCampo(z, ['data da reserva', 'data'])}</td>
-          <td class="p-3 font-bold text-white">${extrairCampo(z, ['aprovador', 'nome aprovador'])}</td>
-          <td class="p-3 text-right font-bold text-emerald-400">R$ ${Number(extrairCampo(z, ['valor para aprovacao', 'valor', 'montante']) || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-        </tr>
-      `).join('');
-
-      let totalMov = 0;
-      const gruposReinc = {}, gruposBalcao = {};
-
-      mb51.forEach(m => {
-        const resNum = String(extrairCampo(m, ['numero da reserva', 'reserva'])).trim();
-        const centro = String(extrairCampo(m, ['centro', 'plant'])).trim();
-        const recMat = String(extrairCampo(m, ['recebedor', 'matricula', 'usuario'])).trim();
-        const func = mapRH[recMat] || {};
-        const nomeRec = extrairCampo(func, ['nome', 'colaborador']) || `Matrícula ${recMat}`;
-
-        if (usinaAtual !== 'TODAS' && !centro.includes(usinaAtual)) return;
-        totalMov++;
-
-        const frota = String(extrairCampo(m, ['numero da ordem de servico', 'ordem', 'frota', 'equipamento'])).trim() || 'GERAL';
-        const material = String(extrairCampo(m, ['material', 'texto breve de material', 'descricao'])).trim() || 'GERAL';
-        const chaveFrota = `${centro}_${frota}_${material}`;
-        const valMov = Number(extrairCampo(m, ['montante', 'valor', 'valor em moeda do documento']) || 0);
-
-        if (!gruposReinc[chaveFrota]) {
-          gruposReinc[chaveFrota] = { centro, frota, material, itens: [], total: 0 };
-        }
-        gruposReinc[chaveFrota].itens.push(m);
-        gruposReinc[chaveFrota].total += valMov;
-
-        if (!gruposBalcao[recMat]) {
-          gruposBalcao[recMat] = { matricula: recMat, nome: nomeRec, retiradas: 0, total: 0 };
-        }
-        gruposBalcao[recMat].retiradas++;
-        gruposBalcao[recMat].total += valMov;
-      });
-
-      const listaReinc = Object.values(gruposReinc).filter(g => g.itens.length >= 2);
-
-      document.getElementById('tabelaReincidencias').innerHTML = listaReinc.slice(0, 50).map(g => `
-        <tr class="hover:bg-slate-900/70 align-top">
-          <td class="p-3">${g.centro}</td>
-          <td class="p-3 font-bold text-white">${g.frota}</td>
-          <td class="p-3 text-amber-300">${g.material}</td>
-          <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full bg-red-950 text-red-300 font-black">${g.itens.length}x</span></td>
-          <td class="p-3 text-right font-black text-red-400">R$ ${g.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-        </tr>
-      `).join('');
-
-      const listaBalcao = Object.values(gruposBalcao).sort((a, b) => b.retiradas - a.retiradas);
-      document.getElementById('tabelaBalcaoRH').innerHTML = listaBalcao.slice(0, 50).map(b => `
-        <tr class="hover:bg-slate-900/70 align-top">
-          <td class="p-3 font-mono text-slate-300">${b.matricula}</td>
-          <td class="p-3 font-bold text-white">${b.nome}</td>
-          <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full bg-blue-950 text-blue-300 font-black">${b.retiradas}x</span></td>
-          <td class="p-3 text-right font-bold text-white">R$ ${b.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-        </tr>
-      `).join('');
-
-      const somaTotalZ = zFiltrada.reduce((acc, z) => acc + Number(extrairCampo(z, ['valor para aprovacao', 'valor', 'montante']) || 0), 0);
-      document.getElementById('kpiValorTotal').textContent = 'R$ ' + somaTotalZ.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-      document.getElementById('kpiQtdReservas').textContent = zFiltrada.length;
-      document.getElementById('kpiReincidencias').textContent = listaReinc.length + ' alertas';
-      document.getElementById('kpiIdasBalcao').textContent = totalMov;
-
-      atualizarGraficos(zFiltrada);
-    }
-
-    function atualizarGraficos(dados) {
-      const somaAprov = {};
-      dados.forEach(d => {
-        const apv = extrairCampo(d, ['aprovador', 'nome aprovador']) || 'Outros';
-        somaAprov[apv
+            <p id="status-rh" class="text-xs text-blue-400 mb-
