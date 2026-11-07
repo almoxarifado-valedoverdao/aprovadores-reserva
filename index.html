@@ -13,10 +13,9 @@
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #090d16; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    .linha-expansivel { transition: background-color 0.15s ease; }
-    .linha-expansivel:hover { background-color: rgba(30, 41, 59, 0.65); }
   </style>
   <script>
+    // FUNÇÃO DE LOGIN NO TOPO PARA NUNCA TRAVAR O BOTÃO VERDE
     function liberarAcessoPainel() {
       var campoSenha = document.getElementById('userPass');
       var senha = campoSenha ? String(campoSenha.value).trim() : '123456';
@@ -36,52 +35,18 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- TELA DE LOGIN COM LOGO OFICIAL GRUPO VALE DO VERDÃO -->
+  <!-- TELA DE LOGIN -->
   <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
-    <div class="card max-w-md w-full p-8 shadow-2xl relative overflow-hidden">
-      <div class="flex justify-end mb-2">
-        <span class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">v4.0 • Curva ABC & 12M</span>
-      </div>
-
-      <!-- LOGO GRUPO VALE DO VERDÃO (Suporta logo.jpg + Fallback SVG 3D Fiel) -->
-      <div class="flex flex-col items-center text-center mb-6">
-        <div class="w-32 h-32 rounded-2xl bg-gradient-to-b from-slate-800 to-slate-950 p-1.5 border border-slate-700 shadow-2xl flex items-center justify-center overflow-hidden mb-4">
-          <img src="logo.jpg" alt="Grupo Vale do Verdão" class="w-full h-full object-cover rounded-xl" onerror="this.style.display='none'; document.getElementById('svgLogoLogin').classList.remove('hidden');" />
-          <svg id="svgLogoLogin" class="hidden w-28 h-28" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="metalFrame" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#e2e8f0"/>
-                <stop offset="50%" stop-color="#94a3b8"/>
-                <stop offset="100%" stop-color="#475569"/>
-              </linearGradient>
-              <linearGradient id="dropGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="60%" stop-color="#cbd5e1"/>
-                <stop offset="100%" stop-color="#64748b"/>
-              </linearGradient>
-              <linearGradient id="waveTop" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#2e7d32"/>
-                <stop offset="50%" stop-color="#66bb6a"/>
-                <stop offset="100%" stop-color="#81c784"/>
-              </linearGradient>
-              <linearGradient id="waveBot" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#005005"/>
-                <stop offset="50%" stop-color="#007600"/>
-                <stop offset="100%" stop-color="#2e7d32"/>
-              </linearGradient>
-            </defs>
-            <rect x="35" y="18" width="130" height="145" rx="6" fill="url(#metalFrame)" stroke="#cbd5e1" stroke-width="3"/>
-            <rect x="47" y="30" width="106" height="120" rx="3" fill="#cbd5e1" stroke="#64748b" stroke-width="2"/>
-            <path d="M100 35 C100 35 128 82 128 103 C128 119 115 131 100 131 C85 131 72 119 72 103 C72 82 100 35 100 35 Z" fill="url(#dropGrad)" stroke="#64748b" stroke-width="2"/>
-            <path d="M95 52 C95 52 80 86 80 102 C80 112 87 120 96 122" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
-            <path d="M18 98 H62 C76 98 80 128 100 128 C120 128 124 98 138 98 H182" fill="none" stroke="url(#waveTop)" stroke-width="15" stroke-linecap="butt"/>
-            <path d="M18 122 H62 C76 122 80 152 100 152 C120 152 124 122 138 122 H182" fill="none" stroke="url(#waveBot)" stroke-width="15" stroke-linecap="butt"/>
-            <text x="100" y="184" text-anchor="middle" fill="#f8fafc" font-size="13.5" font-weight="900" font-family="sans-serif">Grupo Vale do Verdão</text>
-          </svg>
+    <div class="card max-w-md w-full p-8 shadow-2xl">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-3 h-10 rounded bg-[#007600]"></div>
+          <div>
+            <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold">Grupo Vale do Verdão S/A</span>
+            <h1 class="text-2xl font-black text-white">Aprovadores de Reserva</h1>
+          </div>
         </div>
-        <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold">Grupo Vale do Verdão S/A</span>
-        <h1 class="text-2xl font-black text-white mt-0.5">Aprovadores de Reserva</h1>
-        <p class="text-xs text-slate-400 mt-1">Gestão Corporativa de Almoxarifado & Auditoria SAP</p>
+        <span class="text-[10px] px-2 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">v3.0 • Acumulativo</span>
       </div>
 
       <div class="space-y-4">
@@ -113,33 +78,23 @@
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-          <!-- Mini Logo no Header -->
-          <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
-            <img src="logo.jpg" alt="Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('svgLogoHeader').classList.remove('hidden');" />
-            <svg id="svgLogoHeader" class="hidden w-9 h-9" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-              <rect x="35" y="20" width="130" height="150" rx="10" fill="#94a3b8"/>
-              <path d="M100 38 C100 38 130 85 130 108 C130 125 116 138 100 138 C84 138 70 125 70 108 C70 85 100 38 100 38 Z" fill="#ffffff"/>
-              <path d="M15 105 H62 C76 105 80 135 100 135 C120 135 124 105 138 105 H185" fill="none" stroke="#66bb6a" stroke-width="18"/>
-              <path d="M15 130 H62 C76 130 80 160 100 160 C120 160 124 130 138 130 H185" fill="none" stroke="#007600" stroke-width="18"/>
-            </svg>
-          </div>
           <div class="flex h-8 rounded overflow-hidden">
-            <span class="w-1.5 bg-[#007600]"></span>
-            <span class="w-1.5 bg-[#FFC000]"></span>
-            <span class="w-1.5 bg-[#1F4E79]"></span>
-            <span class="w-1.5 bg-[#ED7D31]"></span>
+            <span class="w-2 bg-[#007600]"></span>
+            <span class="w-2 bg-[#FFC000]"></span>
+            <span class="w-2 bg-[#1F4E79]"></span>
+            <span class="w-2 bg-[#ED7D31]"></span>
           </div>
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-black text-base text-white">APROVADORES DE RESERVA</h1>
-              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">● Base Sincronizada</span>
+              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">● Base Pronta (v3.0)</span>
             </div>
-            <p class="text-[11px] text-slate-400">Grupo Vale do Verdão S/A • Auditoria SAP (Curva ABC & Janela de 12 Meses)</p>
+            <p class="text-[11px] text-slate-400">ZRESERVA & MB51 (Acumulativas sem Duplicidade) + RH (Substituição Atualizada)</p>
           </div>
         </div>
         <div class="flex flex-wrap gap-2">
           <button type="button" onclick="mudarAba('dash1')" id="btn-dash1" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white">1. Dashboard Aprovadores (ZRESERVA)</button>
-          <button type="button" onclick="mudarAba('dash2')" id="btn-dash2" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300">2. Reincidências & Curva ABC (MB51)</button>
+          <button type="button" onclick="mudarAba('dash2')" id="btn-dash2" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300">2. Reincidências Frota & Material (MB51)</button>
           <button type="button" onclick="mudarAba('cargas')" id="btn-cargas" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-amber-400">3. Cargas Excel (.XLSX)</button>
           <button type="button" onclick="sairSistema()" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-950/60 text-red-300 border border-red-800/50">Sair</button>
         </div>
@@ -158,10 +113,6 @@
             <button type="button" onclick="filtrarUsina('4000')" id="uf-4000" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#ED7D31] text-orange-300" style="background:#ED7D3133">4000 • Cambuí</button>
           </div>
           <div class="flex flex-wrap gap-2 items-center">
-            <label class="flex items-center gap-1.5 text-xs text-emerald-300 bg-emerald-950/40 border border-emerald-800/80 px-3 py-1.5 rounded-lg cursor-pointer font-semibold" title="Filtra automaticamente apenas os últimos 12 meses a partir da data mais recente da planilha">
-              <input type="checkbox" id="filtroUltimos12M" checked onchange="renderizarTudo()" class="rounded text-emerald-500" />
-              Últimos 12 Meses
-            </label>
             <label class="flex items-center gap-1.5 text-xs text-slate-300 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg cursor-pointer">
               <input type="checkbox" id="ocultarAutomatico" onchange="renderizarTudo()" class="rounded text-emerald-500" />
               Ocultar "Automatico"
@@ -169,10 +120,10 @@
             <input type="date" id="dataIni" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white" />
             <span class="text-xs text-slate-500">até</span>
             <input type="date" id="dataFim" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-            <select id="filtroAprovador" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white max-w-[210px]">
+            <select id="filtroAprovador" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white max-w-[220px]">
               <option value="TODOS">Todos os Aprovadores</option>
             </select>
-            <input type="text" id="filtroBusca" oninput="renderizarTudo()" placeholder="Reserva, Frota (Ordem), Material..." class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white w-56" />
+            <input type="text" id="filtroBusca" oninput="renderizarTudo()" placeholder="Reserva, Frota (Ordem), Material..." class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white w-60" />
           </div>
         </div>
       </div>
@@ -189,14 +140,14 @@
           <span id="kpiSubValor" class="text-[10px] text-emerald-400">Valor Retirado: R$ 0,00</span>
         </div>
         <div class="card p-4 border-l-4 border-l-[#FFC000]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Reservas no Período</span>
+          <span class="text-[11px] text-slate-400 uppercase font-bold">Reservas Acumuladas</span>
           <p id="kpiQtdReservas" class="text-xl font-black text-amber-400 mt-1">0</p>
-          <span id="kpiJanela12M" class="text-[10px] text-slate-400">Acumulado sem duplicidade</span>
+          <span class="text-[10px] text-slate-400">Sem duplicidades na ZRESERVA</span>
         </div>
         <div class="card p-4 border-l-4 border-l-[#ED7D31]">
           <span class="text-[11px] text-slate-400 uppercase font-bold">Reincidências (Frota + Material)</span>
           <p id="kpiReincidencias" class="text-xl font-black text-orange-400 mt-1">0 alertas</p>
-          <span id="kpiValorCurvaA" class="text-[10px] text-orange-300">Curva A (80%): 0 itens</span>
+          <span class="text-[10px] text-slate-400">Mesma Peça ≥ 2x na mesma Ordem</span>
         </div>
         <div class="card p-4 border-l-4 border-l-[#1F4E79]">
           <span class="text-[11px] text-slate-400 uppercase font-bold">Movimentos Únicos (MB51)</span>
@@ -242,65 +193,26 @@
         </div>
       </div>
 
-      <!-- ABA 2: REINCIDÊNCIAS EXPANSÍVEIS COM CURVA ABC E BALCÃO RH -->
+      <!-- ABA 2: REINCIDÊNCIAS (RESERVA + ORDEM + MATERIAL) E BALCÃO RH -->
       <div id="aba-dash2" class="hidden space-y-6">
         <div class="card overflow-hidden">
-          <!-- Cabeçalho e Controles da Curva ABC -->
-          <div class="p-4 border-b border-slate-800 space-y-3">
-            <div class="flex flex-wrap justify-between items-start gap-3">
-              <div>
-                <h3 class="text-sm font-bold text-white uppercase">1. Auditoria de Reincidências por Frota (Ordem) e Material — Classificação Curva ABC</h3>
-                <p class="text-xs text-slate-400 mt-0.5">
-                  Clique em qualquer linha da Frota/Material para <strong class="text-emerald-400">expandir ou recolher</strong> as Reservas, Datas, Aprovadores e Recebedores (Últimos 12 Meses).
-                </p>
-              </div>
-              <span id="contadorReinc" class="text-xs font-bold text-orange-400"></span>
+          <div class="p-4 border-b border-slate-800 flex flex-wrap justify-between items-center gap-2">
+            <div>
+              <h3 class="text-sm font-bold text-white uppercase">1. Auditoria de Reincidências por Frota (Ordem) e Material (MB51 + ZRESERVA)</h3>
+              <p class="text-xs text-slate-400">Soma as colunas <strong class="text-amber-300">Nº reserva + Ordem (Frota) + Material</strong> na MB51 e busca o <strong class="text-emerald-400">Aprovador da Reserva</strong> na ZRESERVA</p>
             </div>
-
-            <!-- Botões de Filtro Curva ABC e Ordenação -->
-            <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800/80">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="text-[11px] font-bold uppercase text-slate-400 mr-1">Filtrar Curva ABC:</span>
-                <button type="button" onclick="filtrarCurvaABC('A')" id="btn-abc-A" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white shadow">
-                  Curva A • Maior Impacto (80% do Valor)
-                </button>
-                <button type="button" onclick="filtrarCurvaABC('B')" id="btn-abc-B" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-amber-300 border border-amber-700/50">
-                  Curva B • Médio (15%)
-                </button>
-                <button type="button" onclick="filtrarCurvaABC('C')" id="btn-abc-C" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700">
-                  Curva C • Baixo Valor (5%)
-                </button>
-                <button type="button" onclick="filtrarCurvaABC('TODAS')" id="btn-abc-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700">
-                  Todas (A + B + C)
-                </button>
-              </div>
-
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="text-[11px] font-bold uppercase text-slate-400">Ordenar por:</span>
-                <select id="ordemReinc" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-semibold">
-                  <option value="VALOR">Maior Valor Expressivo (R$)</option>
-                  <option value="VEZES">Maior Quantidade de Vezes</option>
-                </select>
-                <button type="button" onclick="alternarTodasLinhas(true)" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-200">
-                  Expandir Todas
-                </button>
-                <button type="button" onclick="alternarTodasLinhas(false)" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-200">
-                  Recolher Todas
-                </button>
-              </div>
-            </div>
+            <span id="contadorReinc" class="text-xs font-bold text-orange-400"></span>
           </div>
-
-          <div class="overflow-x-auto max-h-[560px]">
+          <div class="overflow-x-auto max-h-[500px]">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-950 text-slate-400 uppercase sticky top-0 z-10">
+              <thead class="bg-slate-950 text-slate-400 uppercase sticky top-0">
                 <tr>
                   <th class="p-3">Usina</th>
-                  <th class="p-3">Curva</th>
                   <th class="p-3">Frota (Ordem)</th>
                   <th class="p-3">Material & Descrição</th>
                   <th class="p-3 text-center">Vezes</th>
-                  <th class="p-3">Resumo Aprovadores / Ação</th>
+                  <th class="p-3">Reservas Envolvidas & Aprovador da Reserva (ZRESERVA)</th>
+                  <th class="p-3">Recebedor (RH) / Usuário Balcão</th>
                   <th class="p-3 text-right">Custo Total (MB51)</th>
                 </tr>
               </thead>
@@ -312,7 +224,7 @@
         <div class="card overflow-hidden">
           <div class="p-4 border-b border-slate-800">
             <h3 class="text-sm font-bold text-white uppercase">2. Frequência de Retiradas no Balcão por Colaborador (Recebedor ZRESERVA + RH)</h3>
-            <p class="text-xs text-slate-400">Ranking de colaboradores que mais retiraram reservas nos últimos 12 meses e quem aprovou</p>
+            <p class="text-xs text-slate-400">Ranking de colaboradores que mais retiraram reservas e quem aprovou</p>
           </div>
           <div class="overflow-x-auto max-h-[420px]">
             <table class="w-full text-left text-xs">
@@ -337,9 +249,9 @@
       <div id="aba-cargas" class="hidden space-y-6">
         <div class="card p-4 bg-emerald-950/20 border-emerald-800/50 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h4 class="text-sm font-bold text-emerald-400">Regra de Negócio Ativa: Cargas Acumulativas de Janeiro a Novembro (Sem Duplicidades)</h4>
+            <h4 class="text-sm font-bold text-emerald-400">Regra de Negócio Ativa: Cargas Acumulativas Inteligentes</h4>
             <p class="text-xs text-slate-300">
-              • <strong>ZRESERVA e MB51:</strong> São <u>acumulativas</u> (você pode carregar mês a mês ou janeiro a novembro completo; o sistema junta tudo e substitui apenas registros duplicados).<br/>
+              • <strong>ZRESERVA e MB51:</strong> São <u>acumulativas</u> (mantêm todo o histórico anterior e substituem apenas os registros duplicados).<br/>
               • <strong>FUNCIONÁRIOS (RH):</strong> É <u>substitutiva</u> (atualiza integralmente a lista de colaboradores a cada nova carga).
             </p>
           </div>
@@ -396,7 +308,6 @@
     };
 
     let usinaAtual = 'TODAS';
-    let curvaABCSel = 'A'; // Por padrão mostra a Curva A (maior valor expressivo)
     let chartBar = null, chartLine = null;
     let zreserva = [], mb51 = [], rh = [];
 
@@ -427,43 +338,8 @@
       renderizarTudo();
     }
 
-    function filtrarCurvaABC(curva) {
-      curvaABCSel = curva;
-      const estilos = {
-        A:     curva === 'A'     ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white shadow' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-red-300 border border-red-800/50',
-        B:     curva === 'B'     ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-amber-300 border border-amber-700/50',
-        C:     curva === 'C'     ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700',
-        TODAS: curva === 'TODAS' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900 shadow' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700'
-      };
-      document.getElementById('btn-abc-A').className = estilos.A;
-      document.getElementById('btn-abc-B').className = estilos.B;
-      document.getElementById('btn-abc-C').className = estilos.C;
-      document.getElementById('btn-abc-TODAS').className = estilos.TODAS;
-      renderizarTudo();
-    }
-
-    function toggleDetalhesReinc(idLinha) {
-      const el = document.getElementById('det-' + idLinha);
-      const icone = document.getElementById('ico-' + idLinha);
-      if (!el) return;
-      const estaOculto = el.classList.contains('hidden');
-      el.classList.toggle('hidden', !estaOculto);
-      if (icone) {
-        icone.textContent = estaOculto ? '▼ Ocultar Reservas' : '▶ Expandir Reservas';
-      }
-    }
-
-    function alternarTodasLinhas(expandir) {
-      document.querySelectorAll('[id^="det-reinc-"]').forEach(el => {
-        el.classList.toggle('hidden', !expandir);
-      });
-      document.querySelectorAll('[id^="ico-reinc-"]').forEach(ic => {
-        ic.textContent = expandir ? '▼ Ocultar Reservas' : '▶ Expandir Reservas';
-      });
-    }
-
     // =========================================================================
-    // BANCO DE DADOS LOCAL DO NAVEGADOR (INDEXEDDB - Mantém o banco v3)
+    // BANCO DE DADOS LOCAL DO NAVEGADOR (INDEXEDDB)
     // =========================================================================
     function abrirDB() {
       return new Promise((resolve, reject) => {
@@ -677,7 +553,7 @@
           alert(`MB51 (Acumulativa):\n• Linhas na planilha: ${novosM.length}\n• Novos movimentos adicionados: ${adicionados}\n• Duplicidades substituídas: ${duplicadosSubstituidos}\n• Total acumulado no banco: ${mb51.length}`);
         }
 
-        // 3. RH -> SUBSTITUIÇÃO SEMPRE
+        // 3. RH -> SUBSTITUIÇÃO SEMPRE (substitui toda a tabela anterior pela nova)
         if (tipo === 'rh') {
           rh = rows.map(r => ({
             matricula: limparID(extrair(r, ['Cod.Funcionário', 'Matricula', 'Cod Funcionario'])),
@@ -691,7 +567,7 @@
           alert(`Quadro RH (Substituição Total):\n• Base anterior substituída por ${rh.length} funcionários atualizados!`);
         }
 
-        document.getElementById('badgeStatus').textContent = '● Base Sincronizada';
+        document.getElementById('badgeStatus').textContent = '● Base Sincronizada (v3.0)';
         popularFiltroAprovadores();
         renderizarTudo();
         event.target.value = '';
@@ -708,35 +584,15 @@
       if (nomes.includes(atual)) sel.value = atual;
     }
 
-    // Calcula a data de corte de 12 meses atrás baseada na data mais recente da base
-    function obterDataCorte12Meses() {
-      let maxData = '';
-      zreserva.forEach(z => { if (z.data && z.data > maxData) maxData = z.data; });
-      mb51.forEach(m => { if (m.data && m.data > maxData) maxData = m.data; });
-      const ref = maxData ? new Date(maxData + 'T12:00:00') : new Date();
-      ref.setFullYear(ref.getFullYear() - 1);
-      return {
-        corte: ref.toISOString().split('T')[0],
-        max: maxData || new Date().toISOString().split('T')[0]
-      };
-    }
-
     // =========================================================================
-    // MOTOR DE CRUZAMENTO RELACIONAL + CURVA ABC + EXPANSÃO DE LINHAS
+    // MOTOR DE CRUZAMENTO RELACIONAL (ZRESERVA + MB51 + RH)
     // =========================================================================
     function renderizarTudo() {
       const aprovadorSel = document.getElementById('filtroAprovador').value;
       const ocultarAuto = document.getElementById('ocultarAutomatico').checked;
-      const usarUltimos12M = document.getElementById('filtroUltimos12M').checked;
       const busca = document.getElementById('filtroBusca').value.trim().toLowerCase();
       const dataIni = document.getElementById('dataIni').value;
       const dataFim = document.getElementById('dataFim').value;
-      const criterioOrdem = document.getElementById('ordemReinc') ? document.getElementById('ordemReinc').value : 'VALOR';
-
-      const info12M = obterDataCorte12Meses();
-      document.getElementById('kpiJanela12M').textContent = usarUltimos12M
-        ? `Janela 12M: ${info12M.corte} até ${info12M.max}`
-        : `Todo o histórico acumulado`;
 
       const mapZ = {};
       zreserva.forEach(z => { mapZ[z.reserva] = z; });
@@ -746,7 +602,6 @@
 
       const zFiltrada = zreserva.filter(z => {
         if (usinaAtual !== 'TODAS' && z.centro !== usinaAtual) return false;
-        if (usarUltimos12M && z.data && z.data < info12M.corte) return false;
         if (ocultarAuto && z.aprovador.toLowerCase() === 'automatico') return false;
         if (aprovadorSel !== 'TODOS' && z.aprovador !== aprovadorSel) return false;
         if (dataIni && z.data && z.data < dataIni) return false;
@@ -777,16 +632,13 @@
         `;
       }).join('');
 
-      // REINCIDÊNCIAS NA MB51 (ÚLTIMOS 12 MESES): Reserva + Ordem (Frota) + Material -> Aprovador ZRESERVA
+      // REINCIDÊNCIAS NA MB51: Reserva (1ª col) + Ordem (Frota) + Material -> Aprovador na ZRESERVA
       const gruposReinc = {};
       let qtdMovMB51 = 0;
       let somaMB51 = 0;
 
       mb51.forEach(m => {
         const pai = mapZ[m.reserva] || {};
-        const dataRef = m.data || pai.data || '';
-        if (usarUltimos12M && dataRef && dataRef < info12M.corte) return;
-
         const centroRef = m.centro || pai.centro || '1000';
         const aprovadorRef = pai.aprovador || 'Não loc. na ZRESERVA';
         const ordemFrota = m.ordem || pai.ordem || '';
@@ -797,8 +649,8 @@
         if (usinaAtual !== 'TODAS' && centroRef !== usinaAtual) return;
         if (ocultarAuto && aprovadorRef.toLowerCase() === 'automatico') return;
         if (aprovadorSel !== 'TODOS' && aprovadorRef !== aprovadorSel) return;
-        if (dataIni && dataRef && dataRef < dataIni) return;
-        if (dataFim && dataRef && dataRef > dataFim) return;
+        if (dataIni && m.data && m.data < dataIni) return;
+        if (dataFim && m.data && m.data > dataFim) return;
 
         if (busca) {
           const textoM = `${m.reserva} ${ordemFrota} ${m.material} ${m.desc_material} ${aprovadorRef} ${nomeRec}`.toLowerCase();
@@ -823,7 +675,7 @@
         }
         gruposReinc[chave].ocorrencias.push({
           reserva: m.reserva,
-          data: dataRef,
+          data: m.data,
           qtd: m.qtd,
           valor: m.valor,
           aprovador: aprovadorRef,
@@ -832,122 +684,40 @@
         gruposReinc[chave].custoTotal += m.valor;
       });
 
-      // Filtra apenas reincidências (>= 2 vezes) e calcula a Curva ABC pelo Valor Expressivo
-      const todasReinc = Object.values(gruposReinc)
+      const listaReinc = Object.values(gruposReinc)
         .filter(g => g.ocorrencias.length >= 2)
-        .sort((a, b) => b.custoTotal - a.custoTotal || b.ocorrencias.length - a.ocorrencias.length);
+        .sort((a, b) => b.ocorrencias.length - a.ocorrencias.length || b.custoTotal - a.custoTotal);
 
-      const somaTotalCustoReinc = todasReinc.reduce((acc, g) => acc + g.custoTotal, 0) || 1;
-      let acumuladoABC = 0;
-      let qtdCurvaA = 0, valorCurvaA = 0;
-
-      todasReinc.forEach((g, idx) => {
-        const percAntes = (acumuladoABC / somaTotalCustoReinc) * 100;
-        acumuladoABC += g.custoTotal;
-        const percDepois = (acumuladoABC / somaTotalCustoReinc) * 100;
-        g.percIndividual = (g.custoTotal / somaTotalCustoReinc) * 100;
-        g.percAcumulado = percDepois;
-
-        if (idx === 0 || percAntes <= 80) {
-          g.curva = 'A';
-          qtdCurvaA++;
-          valorCurvaA += g.custoTotal;
-        } else if (percAntes <= 95) {
-          g.curva = 'B';
-        } else {
-          g.curva = 'C';
-        }
-      });
-
-      // Aplica o filtro de Curva ABC selecionado pelo usuário (A, B, C ou TODAS)
-      let listaReinc = todasReinc.filter(g => curvaABCSel === 'TODAS' ? true : g.curva === curvaABCSel);
-
-      // Aplica ordenação escolhida (Maior Valor Expressivo ou Mais Vezes)
-      if (criterioOrdem === 'VEZES') {
-        listaReinc.sort((a, b) => b.ocorrencias.length - a.ocorrencias.length || b.custoTotal - a.custoTotal);
-      } else {
-        listaReinc.sort((a, b) => b.custoTotal - a.custoTotal || b.ocorrencias.length - a.ocorrencias.length);
-      }
-
-      document.getElementById('contadorReinc').textContent =
-        `Exibindo ${Math.min(150, listaReinc.length)} de ${listaReinc.length} itens na Curva ${curvaABCSel} (Total Geral: ${todasReinc.length})`;
-
-      document.getElementById('tabelaReincidencias').innerHTML = listaReinc.slice(0, 150).map((g, idx) => {
-        const idLinha = `reinc-${idx}`;
+      document.getElementById('contadorReinc').textContent = `${listaReinc.length} reincidências de Frota + Material (exibindo top 100)`;
+      document.getElementById('tabelaReincidencias').innerHTML = listaReinc.slice(0, 100).map(g => {
         const infoUsina = USINAS[g.centro] || { sigla: g.centro, cor: '#475569' };
-        const badgeCurva = g.curva === 'A'
-          ? '<span class="px-2 py-0.5 rounded bg-red-600/20 text-red-300 border border-red-500 font-black text-[11px]">Curva A</span>'
-          : (g.curva === 'B'
-              ? '<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500 font-bold text-[11px]">Curva B</span>'
-              : '<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-600 font-bold text-[11px]">Curva C</span>');
-
-        const aprovadoresResumo = [...new Set(g.ocorrencias.map(o => o.aprovador))].slice(0, 2).join(', ');
-        const qtdTotalPecas = g.ocorrencias.reduce((acc, o) => acc + o.qtd, 0);
-
+        const recebedoresUnicos = [...new Set(g.ocorrencias.map(o => o.recebedor))].slice(0, 4).join(', ');
         return `
-          <!-- LINHA COMPACTA E HOMOGÊNEA (CLIQUE PARA EXPANDIR) -->
-          <tr onclick="toggleDetalhesReinc('${idLinha}')" class="linha-expansivel cursor-pointer align-middle">
-            <td class="p-3 whitespace-nowrap">
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.cor}33; color:#fff; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span>
-            </td>
-            <td class="p-3 whitespace-nowrap">${badgeCurva}</td>
-            <td class="p-3 font-mono font-black text-white text-sm whitespace-nowrap">${g.ordem}</td>
+          <tr class="hover:bg-slate-900/70 align-top">
+            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.cor}33; color:#fff; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span></td>
+            <td class="p-3 font-mono font-black text-white text-sm">${g.ordem}</td>
             <td class="p-3">
-              <span class="font-bold text-amber-300 block leading-tight">${g.desc_material}</span>
-              <span class="font-mono text-[11px] text-slate-400">Cód: ${g.material} • Qtd Acumulada: ${qtdTotalPecas} un</span>
+              <span class="font-bold text-amber-300 block">${g.desc_material}</span>
+              <span class="font-mono text-[11px] text-slate-400">Cód. Material: ${g.material}</span>
             </td>
-            <td class="p-3 text-center whitespace-nowrap">
+            <td class="p-3 text-center">
               <span class="px-2.5 py-1 rounded-full bg-red-950 text-red-300 border border-red-700 font-black">${g.ocorrencias.length}x</span>
             </td>
-            <td class="p-3">
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-[11px] text-emerald-400 font-semibold truncate max-w-[210px]" title="${aprovadoresResumo}">Aprov: ${aprovadoresResumo}</span>
-                <span id="ico-${idLinha}" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-bold whitespace-nowrap border border-slate-700">
-                  ▶ Expandir Reservas
-                </span>
-              </div>
+            <td class="p-3 space-y-1.5 max-w-md">
+              ${g.ocorrencias.slice(0, 6).map(o => `
+                <div class="p-2 rounded bg-slate-950 border border-slate-800 flex flex-wrap justify-between items-center gap-2 text-[11px]">
+                  <span class="font-mono font-bold text-amber-400">Reserva #${o.reserva} <span class="text-slate-400 font-normal">(${o.data} • Qtd: ${o.qtd})</span></span>
+                  <span class="text-emerald-400 font-bold">Aprovador: ${o.aprovador}</span>
+                </div>
+              `).join('')}
+              ${g.ocorrencias.length > 6 ? `<div class="text-[10px] text-slate-400 italic">+ ${g.ocorrencias.length - 6} reservas adicionais...</div>` : ''}
             </td>
-            <td class="p-3 text-right whitespace-nowrap">
-              <span class="font-black text-red-400 text-sm block">R$ ${g.custoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              <span class="text-[10px] text-slate-500">${g.percIndividual.toFixed(1)}% do valor</span>
-            </td>
-          </tr>
-
-          <!-- PAINEL EXPANSÍVEL COM AS RESERVAS ENVOLVIDAS -->
-          <tr id="det-${idLinha}" class="hidden bg-slate-950/90">
-            <td colspan="7" class="p-4 border-l-4 border-l-amber-400">
-              <div class="flex flex-wrap justify-between items-center mb-2">
-                <span class="text-xs font-bold text-white uppercase">
-                  Detalhamento das ${g.ocorrencias.length} retiradas • Frota <span class="text-amber-300">${g.ordem}</span> • Material <span class="text-amber-300">${g.material} (${g.desc_material})</span>
-                </span>
-                <span class="text-[11px] text-slate-400">Participação Acumulada Pareto: ${g.percAcumulado.toFixed(1)}% (${g.curva})</span>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                ${g.ocorrencias.map((o, i) => `
-                  <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col justify-between gap-1 text-[11px]">
-                    <div class="flex justify-between items-center">
-                      <span class="font-mono font-black text-amber-400 text-xs">${i + 1}. Reserva #${o.reserva}</span>
-                      <span class="font-bold text-red-300">R$ ${o.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                    </div>
-                    <div class="text-slate-300 flex justify-between">
-                      <span>Data: <strong>${o.data || '-'}</strong></span>
-                      <span>Qtd Retirada: <strong>${o.qtd}</strong></span>
-                    </div>
-                    <div class="pt-1 border-t border-slate-800/80 text-emerald-400 font-bold truncate" title="${o.aprovador}">
-                      Aprovador (ZRESERVA): ${o.aprovador}
-                    </div>
-                    <div class="text-slate-400 truncate" title="${o.recebedor}">
-                      Recebedor (RH): ${o.recebedor}
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </td>
+            <td class="p-3 text-slate-300 text-[11px]">${recebedoresUnicos}</td>
+            <td class="p-3 text-right font-black text-red-400">R$ ${g.custoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
         `;
       }).join('');
 
-      // RANKING DE FREQUÊNCIA NO BALCÃO (ÚLTIMOS 12 MESES)
       const gruposBalcao = {};
       zFiltrada.forEach(z => {
         if (!z.recebedor) return;
@@ -986,14 +756,12 @@
         `;
       }).join('');
 
-      // KPIs Superiores
       const somaAprovZ = zFiltrada.reduce((acc, z) => acc + z.valor_aprov, 0);
       const somaRetZ = zFiltrada.reduce((acc, z) => acc + z.valor_ret, 0);
       document.getElementById('kpiValorTotal').textContent = 'R$ ' + somaAprovZ.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById('kpiSubValor').textContent = 'Valor Retirado: R$ ' + somaRetZ.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById('kpiQtdReservas').textContent = zFiltrada.length.toLocaleString('pt-BR');
-      document.getElementById('kpiReincidencias').textContent = todasReinc.length.toLocaleString('pt-BR') + ' alertas';
-      document.getElementById('kpiValorCurvaA').textContent = `Curva A: ${qtdCurvaA} itens (R$ ${valorCurvaA.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`;
+      document.getElementById('kpiReincidencias').textContent = listaReinc.length.toLocaleString('pt-BR') + ' alertas';
       document.getElementById('kpiIdasBalcao').textContent = qtdMovMB51.toLocaleString('pt-BR') + ' itens';
       document.getElementById('kpiValorMB51').textContent = 'Montante MB51: R$ ' + somaMB51.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
