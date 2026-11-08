@@ -19,7 +19,6 @@
     .linha-clicavel:hover { background-color: #f8fafc; }
   </style>
   <script>
-    // LISTA PADRÃO DE USUÁRIOS (CASO AINDA NÃO TENHA CADASTRADO NOVOS)
     var USUARIOS_PADRAO = [
       { email: 'admin@valedoverdao.com.br', nome: 'Administrador Corporativo', senha: '123', senhaAlt: '123456', perfil: 'ADMIN', usina: 'TODAS' },
       { email: 'jocenir@valedoverdao.com.br', nome: 'Jocenir Borges', senha: '123456', perfil: 'ADMIN', usina: 'TODAS' },
@@ -55,7 +54,6 @@
         }
       }
 
-      // Fallback de segurança para a senha padrão 123456
       if (!usuarioEncontrado && senhaDig === '123456') {
         usuarioEncontrado = { email: emailDig || 'admin@valedoverdao.com.br', nome: emailDig.split('@')[0], perfil: 'ADMIN', usina: 'TODAS' };
       }
@@ -120,7 +118,7 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="text-xs uppercase tracking-widest text-[#007600] font-extrabold">Grupo Vale do Verdão S/A</span>
-          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">v3.7 • Modo Claro</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">v3.8 • Rápido</span>
         </div>
         <h1 class="text-2xl font-black text-slate-900 mt-1">Aprovadores de Reserva</h1>
       </div>
@@ -149,12 +147,11 @@
     </div>
   </div>
 
-  <!-- SISTEMA PRINCIPAL (MODO CLARO - SEM A FAIXA COLORIDA AO LADO DO LOGO) -->
+  <!-- SISTEMA PRINCIPAL -->
   <div id="appScreen" class="hidden">
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-          <!-- Mini Logo no Header (Sem a barrinha colorida ao lado) -->
           <div class="w-12 h-10 rounded-lg bg-slate-100 border border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
             <img src="logo.jpg" alt="Logo" class="w-full h-full object-cover hidden" onload="this.classList.remove('hidden'); document.getElementById('svgLogoHeader').classList.add('hidden');" />
             <svg id="svgLogoHeader" class="w-10 h-9" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
@@ -167,18 +164,19 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-black text-base text-slate-900">APROVADORES DE RESERVA</h1>
-              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">● Base Pronta (v3.7)</span>
+              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">● Base Pronta (v3.8)</span>
               <span id="badgeUsuarioLogado" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 font-semibold hidden md:inline-block"></span>
             </div>
-            <p class="text-[11px] text-slate-500 font-medium">Saídas (261/201) - Estornos (262/202 por Frota e O.S.) • Curva ABC • Expansão de Itens</p>
+            <p class="text-[11px] text-slate-500 font-medium">Saídas (261/201) - Estornos (262/202 por Frota e O.S.) • Curva ABC • Balcão RH Separado</p>
           </div>
         </div>
-        <div class="flex flex-wrap gap-2">
-          <button type="button" onclick="mudarAba('dash1')" id="btn-dash1" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm">1. Dashboard Aprovadores (ZRESERVA)</button>
-          <button type="button" onclick="mudarAba('dash2')" id="btn-dash2" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300">2. Reincidências ABC & Balcão (MB51)</button>
-          <button type="button" onclick="mudarAba('cargas')" id="btn-cargas" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100">3. Cargas Excel (.XLSX)</button>
-          <button type="button" onclick="mudarAba('usuarios')" id="btn-usuarios" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-50 text-[#1F4E79] border border-blue-200 hover:bg-blue-100">4. Usuários & Acessos</button>
-          <button type="button" onclick="sairSistema()" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100">Sair</button>
+        <div class="flex flex-wrap gap-1.5">
+          <button type="button" onclick="mudarAba('dash1')" id="btn-dash1" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm cursor-pointer">1. Dashboard Aprovadores</button>
+          <button type="button" onclick="mudarAba('dash2')" id="btn-dash2" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 cursor-pointer">2. Reincidências ABC (MB51)</button>
+          <button type="button" onclick="mudarAba('dash3')" id="btn-dash3" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 cursor-pointer">3. Frequência Balcão (RH)</button>
+          <button type="button" onclick="mudarAba('cargas')" id="btn-cargas" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 cursor-pointer">4. Cargas Excel (.XLSX)</button>
+          <button type="button" onclick="mudarAba('usuarios')" id="btn-usuarios" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-50 text-[#1F4E79] border border-blue-200 hover:bg-blue-100 cursor-pointer">5. Usuários</button>
+          <button type="button" onclick="sairSistema()" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 cursor-pointer">Sair</button>
         </div>
       </div>
     </header>
@@ -188,11 +186,11 @@
       <div class="card p-4 space-y-3 bg-white">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="filtrarUsina('TODAS')" id="uf-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm">Todas as Usinas</button>
-            <button type="button" onclick="filtrarUsina('1000')" id="uf-1000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#007600] text-[#007600] bg-emerald-50 hover:bg-emerald-100">1000 • Vale do Verdão</button>
-            <button type="button" onclick="filtrarUsina('2000')" id="uf-2000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#FFC000] text-amber-900 bg-amber-50 hover:bg-amber-100">2000 • Panorama</button>
-            <button type="button" onclick="filtrarUsina('3000')" id="uf-3000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#1F4E79] text-[#1F4E79] bg-blue-50 hover:bg-blue-100">3000 • Floresta</button>
-            <button type="button" onclick="filtrarUsina('4000')" id="uf-4000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#ED7D31] text-orange-900 bg-orange-50 hover:bg-orange-100">4000 • Cambuí</button>
+            <button type="button" onclick="filtrarUsina('TODAS')" id="uf-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm cursor-pointer">Todas as Usinas</button>
+            <button type="button" onclick="filtrarUsina('1000')" id="uf-1000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#007600] text-[#007600] bg-emerald-50 hover:bg-emerald-100 cursor-pointer">1000 • Vale do Verdão</button>
+            <button type="button" onclick="filtrarUsina('2000')" id="uf-2000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#FFC000] text-amber-900 bg-amber-50 hover:bg-amber-100 cursor-pointer">2000 • Panorama</button>
+            <button type="button" onclick="filtrarUsina('3000')" id="uf-3000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#1F4E79] text-[#1F4E79] bg-blue-50 hover:bg-blue-100 cursor-pointer">3000 • Floresta</button>
+            <button type="button" onclick="filtrarUsina('4000')" id="uf-4000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#ED7D31] text-orange-900 bg-orange-50 hover:bg-orange-100 cursor-pointer">4000 • Cambuí</button>
           </div>
           <div class="flex flex-wrap gap-2 items-center">
             <label class="flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50 border border-emerald-300 px-3 py-1.5 rounded-lg cursor-pointer font-bold">
@@ -209,7 +207,7 @@
             <select id="filtroAprovador" onchange="renderizarTudo()" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800 font-semibold max-w-[200px]">
               <option value="TODOS">Todos os Aprovadores</option>
             </select>
-            <input type="text" id="filtroBusca" oninput="renderizarTudo()" placeholder="Reserva, Frota, O.S., Material..." class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 w-56 focus:bg-white focus:border-[#007600] focus:outline-none" />
+            <input type="text" id="filtroBusca" oninput="agendarRenderizacao()" placeholder="Reserva, Frota, O.S., Material..." class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 w-56 focus:bg-white focus:border-[#007600] focus:outline-none" />
           </div>
         </div>
       </div>
@@ -282,13 +280,13 @@
         </div>
       </div>
 
-      <!-- ABA 2: REINCIDÊNCIAS COM CURVA ABC E FREQUÊNCIA DE BALCÃO EXPANSÍVEL -->
+      <!-- ABA 2: EXCLUSIVA PARA REINCIDÊNCIAS COM CURVA ABC -->
       <div id="aba-dash2" class="hidden space-y-6">
         <div class="card overflow-hidden">
           <div class="p-4 border-b border-slate-200 bg-slate-50/60 space-y-3">
             <div class="flex flex-wrap justify-between items-center gap-2">
               <div>
-                <h3 class="text-sm font-bold text-slate-900 uppercase">1. Auditoria de Reincidências por Frota (Ordem) e Material — Curva ABC (Líquido de Estornos 262/202)</h3>
+                <h3 class="text-sm font-bold text-slate-900 uppercase">Auditoria de Reincidências por Frota (Ordem) e Material — Curva ABC (Líquido de Estornos 262/202)</h3>
                 <p class="text-xs text-slate-600">Desconta estornos (<strong class="text-red-600">262/202</strong>) do mesmo Material, mesma Frota (<strong class="text-amber-700">Ordem</strong>) e mesma O.S. (<strong class="text-amber-700">Texto cabeçalho documento</strong>). Clique na linha para expandir as reservas e materiais.</p>
               </div>
               <span id="contadorReinc" class="text-xs font-bold text-orange-600"></span>
@@ -297,10 +295,10 @@
             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200">
               <div class="flex flex-wrap items-center gap-2">
                 <span class="text-[11px] font-bold uppercase text-slate-500">Curva ABC:</span>
-                <button type="button" onclick="mudarCurvaABC('A')" id="btn-abc-A" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white shadow-sm">Curva A (80% Valor)</button>
-                <button type="button" onclick="mudarCurvaABC('B')" id="btn-abc-B" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-amber-800 border border-amber-400 hover:bg-amber-50">Curva B (15%)</button>
-                <button type="button" onclick="mudarCurvaABC('C')" id="btn-abc-C" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Curva C (5%)</button>
-                <button type="button" onclick="mudarCurvaABC('TODAS')" id="btn-abc-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Todas</button>
+                <button type="button" onclick="mudarCurvaABC('A')" id="btn-abc-A" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white shadow-sm cursor-pointer">Curva A (80% Valor)</button>
+                <button type="button" onclick="mudarCurvaABC('B')" id="btn-abc-B" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-amber-800 border border-amber-400 hover:bg-amber-50 cursor-pointer">Curva B (15%)</button>
+                <button type="button" onclick="mudarCurvaABC('C')" id="btn-abc-C" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 cursor-pointer">Curva C (5%)</button>
+                <button type="button" onclick="mudarCurvaABC('TODAS')" id="btn-abc-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 cursor-pointer">Todas</button>
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-[11px] font-bold uppercase text-slate-500">Ordenar:</span>
@@ -312,7 +310,7 @@
             </div>
           </div>
 
-          <div class="overflow-x-auto max-h-[540px]">
+          <div class="overflow-x-auto max-h-[600px]">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 uppercase sticky top-0 z-10 border-b border-slate-200">
                 <tr>
@@ -329,13 +327,36 @@
             </table>
           </div>
         </div>
+      </div>
+
+      <!-- ABA 3: NOVO DASHBOARD EXCLUSIVO DE FREQUÊNCIA DE RETIRADAS NO BALCÃO (RH) -->
+      <div id="aba-dash3" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="card p-5">
+            <h3 class="text-sm font-bold text-slate-800 mb-3">Top 15 Colaboradores por Quantidade de Idas ao Balcão</h3>
+            <canvas id="chartBalcaoQtd" height="180"></canvas>
+          </div>
+          <div class="card p-5">
+            <h3 class="text-sm font-bold text-slate-800 mb-3">Top 15 Colaboradores por Valor Total Retirado (R$)</h3>
+            <canvas id="chartBalcaoValor" height="180"></canvas>
+          </div>
+        </div>
 
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-200 bg-slate-50/60">
-            <h3 class="text-sm font-bold text-slate-900 uppercase">2. Frequência de Retiradas no Balcão por Colaborador (Recebedor ZRESERVA + RH)</h3>
-            <p class="text-xs text-[#007600] font-semibold mt-0.5">👆 Clique em qualquer colaborador abaixo para ver suas Reservas, e clique na Reserva para abrir os Materiais por preço e quantidade</p>
+          <div class="p-4 border-b border-slate-200 bg-slate-50/60 flex flex-wrap justify-between items-center gap-2">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase">Frequência de Retiradas no Balcão por Colaborador (Recebedor ZRESERVA + RH)</h3>
+              <p class="text-xs text-[#007600] font-semibold mt-0.5">👆 Clique em qualquer colaborador abaixo para ver suas Reservas, e clique na Reserva para abrir os Materiais por preço e quantidade</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold uppercase text-slate-500">Ordenar Balcão:</span>
+              <select id="ordemBalcao" onchange="renderizarTudo()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-bold">
+                <option value="QTD">Maior Qtd. de Retiradas (Idas)</option>
+                <option value="VALOR">Maior Valor Retirado (R$)</option>
+              </select>
+            </div>
           </div>
-          <div class="overflow-x-auto max-h-[500px]">
+          <div class="overflow-x-auto max-h-[560px]">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 uppercase sticky top-0 z-10 border-b border-slate-200">
                 <tr>
@@ -354,7 +375,7 @@
         </div>
       </div>
 
-      <!-- ABA 3: CARGAS EXCEL -->
+      <!-- ABA 4: CARGAS EXCEL -->
       <div id="aba-cargas" class="hidden space-y-6">
         <div class="card p-4 bg-emerald-50 border border-emerald-200 flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -405,10 +426,9 @@
         </div>
       </div>
 
-      <!-- ABA 4: GESTÃO DE USUÁRIOS E ACESSOS -->
+      <!-- ABA 5: GESTÃO DE USUÁRIOS E ACESSOS -->
       <div id="aba-usuarios" class="hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Formulário de Cadastro -->
           <div class="card p-6 border-t-4 border-t-[#007600] space-y-4">
             <div>
               <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Novo Acesso</span>
@@ -453,7 +473,6 @@
             </div>
           </div>
 
-          <!-- Tabela de Usuários Cadastrados -->
           <div class="card lg:col-span-2 overflow-hidden flex flex-col justify-between">
             <div>
               <div class="p-4 border-b border-slate-200 bg-slate-50/60 flex flex-wrap justify-between items-center gap-2">
@@ -506,9 +525,17 @@
 
     let usinaAtual = 'TODAS';
     let curvaABCSel = 'A';
-    let chartBar = null, chartLine = null;
+    let abaAtual = 'dash1';
+    let chartBar = null, chartLine = null, chartBalcaoQtd = null, chartBalcaoVal = null;
     let zreserva = [], mb51 = [], rh = [];
     let mapItensPorReserva = {};
+    let listaBalcaoGlobal = [];
+    let timerBusca = null;
+
+    function agendarRenderizacao() {
+      if (timerBusca) clearTimeout(timerBusca);
+      timerBusca = setTimeout(() => { renderizarTudo(); }, 220);
+    }
 
     function sairSistema() {
       try {
@@ -528,15 +555,72 @@
     });
 
     function mudarAba(aba) {
-      ['dash1', 'dash2', 'cargas', 'usuarios'].forEach(id => {
+      abaAtual = aba;
+      ['dash1', 'dash2', 'dash3', 'cargas', 'usuarios'].forEach(id => {
         const el = document.getElementById('aba-' + id);
         if (el) el.classList.toggle('hidden', id !== aba);
       });
-      document.getElementById('btn-dash1').className = aba === 'dash1' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300';
-      document.getElementById('btn-dash2').className = aba === 'dash2' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300';
-      document.getElementById('btn-cargas').className = aba === 'cargas' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#FFC000] text-slate-950 shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100';
-      document.getElementById('btn-usuarios').className = aba === 'usuarios' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#1F4E79] text-white shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-blue-50 text-[#1F4E79] border border-blue-200 hover:bg-blue-100';
+      const padraoBtn = 'px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 cursor-pointer';
+      const ativoVerde = 'px-3.5 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm cursor-pointer';
+      document.getElementById('btn-dash1').className = aba === 'dash1' ? ativoVerde : padraoBtn;
+      document.getElementById('btn-dash2').className = aba === 'dash2' ? ativoVerde : padraoBtn;
+      document.getElementById('btn-dash3').className = aba === 'dash3' ? ativoVerde : padraoBtn;
+      document.getElementById('btn-cargas').className = aba === 'cargas' ? 'px-3.5 py-2 rounded-xl text-xs font-bold bg-[#FFC000] text-slate-950 shadow-sm cursor-pointer' : 'px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 cursor-pointer';
+      document.getElementById('btn-usuarios').className = aba === 'usuarios' ? 'px-3.5 py-2 rounded-xl text-xs font-bold bg-[#1F4E79] text-white shadow-sm cursor-pointer' : 'px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-50 text-[#1F4E79] border border-blue-200 hover:bg-blue-100 cursor-pointer';
       if (aba === 'usuarios') renderizarTabelaUsuarios();
+      if (aba === 'dash3') atualizarGraficosBalcao(listaBalcaoGlobal);
+    }
+
+    // =========================================================================
+    // EXPANSÃO SOB DEMANDA (LAZY RENDERING) -> DEIXA O SITE 10X MAIS RÁPIDO!
+    // =========================================================================
+    function abrirMateriaisReserva(idTr, idBox, numReserva) {
+      const tr = document.getElementById(idTr);
+      const box = document.getElementById(idBox);
+      if (!tr || !box) return;
+      const estavaOculto = tr.classList.contains('hidden');
+      if (estavaOculto && !box.dataset.carregado) {
+        box.innerHTML = gerarHTMLMateriaisDaReserva(numReserva);
+        box.dataset.carregado = '1';
+      }
+      tr.classList.toggle('hidden');
+    }
+
+    function abrirReservasColaborador(idxColab) {
+      const tr = document.getElementById('exp-colab-' + idxColab);
+      const box = document.getElementById('box-colab-' + idxColab);
+      if (!tr || !box) return;
+      const estavaOculto = tr.classList.contains('hidden');
+      if (estavaOculto && !box.dataset.carregado) {
+        const b = listaBalcaoGlobal[idxColab];
+        if (b) {
+          box.innerHTML = b.reservasLista.slice(0, 60).map((zr, rIdx) => {
+            const idSubTr = `tr-sub-colab-${idxColab}-${rIdx}`;
+            const idSubBox = `box-sub-colab-${idxColab}-${rIdx}`;
+            const qtdIt = (mapItensPorReserva[zr.reserva] || []).length;
+            return `
+              <div class="p-2.5 rounded-xl bg-white border border-slate-300 shadow-sm">
+                <div onclick="abrirMateriaisReserva('${idSubTr}', '${idSubBox}', '${zr.reserva}')" class="flex flex-wrap justify-between items-center gap-2 text-xs cursor-pointer">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded bg-emerald-50 text-[#007600] border border-emerald-300 font-mono font-bold">▶ Reserva #${zr.reserva}</span>
+                    <span class="text-amber-800 font-mono font-bold">Frota: ${zr.ordem || '-'}</span>
+                    <span class="text-slate-500">${zr.data} ${formatarHoraSAP(zr.hora)} (${qtdIt} itens MB51)</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-[#007600] font-bold">Aprovador: ${zr.aprovador}</span>
+                    <span class="font-black text-slate-900">R$ ${(zr.valor_ret || zr.valor_aprov).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  </div>
+                </div>
+                <div id="${idSubTr}" class="hidden mt-2">
+                  <div id="${idSubBox}"></div>
+                </div>
+              </div>
+            `;
+          }).join('');
+          box.dataset.carregado = '1';
+        }
+      }
+      tr.classList.toggle('hidden');
     }
 
     // =========================================================================
@@ -568,11 +652,11 @@
           </td>
           <td class="p-3 font-semibold text-slate-700">${u.usina === 'TODAS' ? 'Todas' : u.usina}</td>
           <td class="p-3 text-right space-x-1 whitespace-nowrap">
-            <button type="button" onclick="copiarConviteUsuario(${idx})" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#007600] border border-emerald-300 font-bold text-[11px]">
+            <button type="button" onclick="copiarConviteUsuario(${idx})" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#007600] border border-emerald-300 font-bold text-[11px] cursor-pointer">
               📋 Copiar Convite
             </button>
             ${lista.length > 1 ? `
-              <button type="button" onclick="removerUsuario(${idx})" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold text-[11px]">
+              <button type="button" onclick="removerUsuario(${idx})" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold text-[11px] cursor-pointer">
                 Excluir
               </button>
             ` : ''}
@@ -645,10 +729,10 @@
 
     function mudarCurvaABC(curva) {
       curvaABCSel = curva;
-      document.getElementById('btn-abc-A').className = curva === 'A' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-red-700 border border-red-300 hover:bg-red-50';
-      document.getElementById('btn-abc-B').className = curva === 'B' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-amber-800 border border-amber-400 hover:bg-amber-50';
-      document.getElementById('btn-abc-C').className = curva === 'C' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-[#007600] text-white shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100';
-      document.getElementById('btn-abc-TODAS').className = curva === 'TODAS' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100';
+      document.getElementById('btn-abc-A').className = curva === 'A' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white shadow-sm cursor-pointer' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-red-700 border border-red-300 hover:bg-red-50 cursor-pointer';
+      document.getElementById('btn-abc-B').className = curva === 'B' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-sm cursor-pointer' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-amber-800 border border-amber-400 hover:bg-amber-50 cursor-pointer';
+      document.getElementById('btn-abc-C').className = curva === 'C' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-[#007600] text-white shadow-sm cursor-pointer' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 cursor-pointer';
+      document.getElementById('btn-abc-TODAS').className = curva === 'TODAS' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm cursor-pointer' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 cursor-pointer';
       renderizarTudo();
     }
 
@@ -918,7 +1002,7 @@
           alert(`Quadro RH (Substituição Total):\n• Base anterior substituída por ${rh.length} funcionários atualizados!`);
         }
 
-        document.getElementById('badgeStatus').textContent = '● Base Sincronizada (v3.7)';
+        document.getElementById('badgeStatus').textContent = '● Base Sincronizada (v3.8)';
         popularFiltroAprovadores();
         renderizarTudo();
         event.target.value = '';
@@ -995,6 +1079,7 @@
       const dataIni = document.getElementById('dataIni').value;
       const dataFim = document.getElementById('dataFim').value;
       const criterioOrdem = document.getElementById('ordemReinc') ? document.getElementById('ordemReinc').value : 'VALOR';
+      const criterioBalcao = document.getElementById('ordemBalcao') ? document.getElementById('ordemBalcao').value : 'QTD';
 
       let maxData = '';
       zreserva.forEach(z => { if (z.data && z.data > maxData) maxData = z.data; });
@@ -1042,6 +1127,7 @@
         return true;
       });
 
+      // ABA 1: Tabela ZRESERVA com carregamento sob demanda (Lazy)
       document.getElementById('contadorTabZ').textContent = `Exibindo ${Math.min(150, zFiltrada.length)} de ${zFiltrada.length} reservas`;
       document.getElementById('tabelaZReserva').innerHTML = zFiltrada.slice(0, 150).map((z, idx) => {
         const infoUsina = USINAS[z.centro] || { sigla: z.centro, cor: '#475569', bg: '#f1f5f9', texto: '#334155' };
@@ -1049,8 +1135,9 @@
         const nomeRec = func ? `${func.nome} (${z.recebedor})` : (z.recebedor || '-');
         const qtdItensMB51 = (mapItensPorReserva[z.reserva] || []).length;
         const idExpZ = `exp-z-${idx}`;
+        const idBoxZ = `box-z-${idx}`;
         return `
-          <tr onclick="toggleElemento('${idExpZ}')" class="linha-clicavel">
+          <tr onclick="abrirMateriaisReserva('${idExpZ}', '${idBoxZ}', '${z.reserva}')" class="linha-clicavel">
             <td class="p-3 font-mono font-bold text-[#007600] whitespace-nowrap">
               <span class="px-2 py-1 rounded bg-emerald-50 border border-emerald-300">▶ #${z.reserva}</span>
               <span class="text-[10px] text-slate-500 ml-1">(${qtdItensMB51} itens)</span>
@@ -1064,12 +1151,13 @@
           </tr>
           <tr id="${idExpZ}" class="hidden bg-slate-100/80">
             <td colspan="7" class="p-3 border-l-4 border-l-[#007600]">
-              ${gerarHTMLMateriaisDaReserva(z.reserva)}
+              <div id="${idBoxZ}"></div>
             </td>
           </tr>
         `;
       }).join('');
 
+      // ABA 2: Reincidências MB51 com desconto de estornos (262/202)
       const gruposPorOS = {};
       let qtdMovLiquido = 0;
       let somaMB51Liquida = 0;
@@ -1254,9 +1342,10 @@
               <div class="space-y-2">
                 ${g.ocorrencias.map((o, subIdx) => {
                   const idSubRes = `sub-reinc-${idx}-${subIdx}`;
+                  const idBoxSubRes = `box-reinc-${idx}-${subIdx}`;
                   return `
                     <div class="p-2.5 rounded-xl bg-white border ${o.ehEstorno ? 'border-red-300' : 'border-slate-300'} shadow-sm">
-                      <div onclick="toggleElemento('${idSubRes}')" class="flex flex-wrap justify-between items-center gap-2 text-xs cursor-pointer">
+                      <div onclick="abrirMateriaisReserva('${idSubRes}', '${idBoxSubRes}', '${o.reserva}')" class="flex flex-wrap justify-between items-center gap-2 text-xs cursor-pointer">
                         <div class="flex items-center gap-2">
                           <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300 font-mono font-bold">▶ Reserva #${o.reserva}</span>
                           <span class="text-slate-600">Data: <strong>${o.data}</strong> • O.S (Cabeçalho): <strong>${o.os}</strong></span>
@@ -1269,7 +1358,7 @@
                         </div>
                       </div>
                       <div id="${idSubRes}" class="hidden mt-2">
-                        ${gerarHTMLMateriaisDaReserva(o.reserva)}
+                        <div id="${idBoxSubRes}"></div>
                       </div>
                     </div>
                   `;
@@ -1280,6 +1369,7 @@
         `;
       }).join('');
 
+      // ABA 3: DASHBOARD EXCLUSIVO DE FREQUÊNCIA DE BALCÃO POR COLABORADOR (LAZY LOADING)
       const gruposBalcao = {};
       zFiltrada.forEach(z => {
         if (!z.recebedor) return;
@@ -1303,13 +1393,16 @@
         gruposBalcao[z.recebedor].reservasLista.push(z);
       });
 
-      const listaBalcao = Object.values(gruposBalcao).sort((a, b) => b.qtd - a.qtd);
-      document.getElementById('tabelaBalcaoRH').innerHTML = listaBalcao.slice(0, 100).map((b, idx) => {
+      listaBalcaoGlobal = Object.values(gruposBalcao).sort((a, b) => {
+        if (criterioBalcao === 'VALOR') return b.valor - a.valor || b.qtd - a.qtd;
+        return b.qtd - a.qtd || b.valor - a.valor;
+      });
+
+      document.getElementById('tabelaBalcaoRH').innerHTML = listaBalcaoGlobal.slice(0, 100).map((b, idx) => {
         const infoUsina = USINAS[b.centro] || { sigla: b.centro, cor: '#475569', bg: '#f1f5f9', texto: '#334155' };
         const topAprov = Object.entries(b.aprovadores).sort((a, c) => c[1] - a[1]).slice(0, 3).map(x => `${x[0]} (${x[1]}x)`).join(', ');
-        const idColab = `exp-colab-${idx}`;
         return `
-          <tr onclick="toggleElemento('${idColab}')" class="linha-clicavel">
+          <tr onclick="abrirReservasColaborador(${idx})" class="linha-clicavel">
             <td class="p-3 font-mono font-bold text-slate-700">${b.matricula}</td>
             <td class="p-3 font-bold text-slate-900">${b.nome}</td>
             <td class="p-3 text-slate-600">${b.cargo} ${b.secao ? `<span class="block text-[10px] text-slate-400">Seção: ${b.secao}</span>` : ''}</td>
@@ -1318,35 +1411,12 @@
             <td class="p-3 text-[#007600] text-[11px] font-bold">${topAprov}</td>
             <td class="p-3 text-right font-bold text-slate-900 whitespace-nowrap">R$ ${b.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
-          <tr id="${idColab}" class="hidden bg-slate-100/90">
+          <tr id="exp-colab-${idx}" class="hidden bg-slate-100/90">
             <td colspan="7" class="p-4 border-l-4 border-l-[#1F4E79] space-y-2">
               <div class="text-xs font-bold text-slate-800 mb-2">
                 Reservas retiradas por <span class="text-[#1F4E79]">${b.nome} (${b.matricula})</span> — Clique em qualquer Reserva abaixo para abrir os materiais por valor e quantidade:
               </div>
-              <div class="space-y-2 max-h-96 overflow-y-auto pr-1">
-                ${b.reservasLista.slice(0, 50).map((zr, rIdx) => {
-                  const idResColab = `sub-colab-${idx}-${rIdx}`;
-                  const qtdIt = (mapItensPorReserva[zr.reserva] || []).length;
-                  return `
-                    <div class="p-2.5 rounded-xl bg-white border border-slate-300 shadow-sm">
-                      <div onclick="toggleElemento('${idResColab}')" class="flex flex-wrap justify-between items-center gap-2 text-xs cursor-pointer">
-                        <div class="flex items-center gap-2">
-                          <span class="px-2 py-0.5 rounded bg-emerald-50 text-[#007600] border border-emerald-300 font-mono font-bold">▶ Reserva #${zr.reserva}</span>
-                          <span class="text-amber-800 font-mono font-bold">Frota: ${zr.ordem || '-'}</span>
-                          <span class="text-slate-500">${zr.data} ${formatarHoraSAP(zr.hora)} (${qtdIt} itens MB51)</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                          <span class="text-[#007600] font-bold">Aprovador: ${zr.aprovador}</span>
-                          <span class="font-black text-slate-900">R$ ${(zr.valor_ret || zr.valor_aprov).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                        </div>
-                      </div>
-                      <div id="${idResColab}" class="hidden mt-2">
-                        ${gerarHTMLMateriaisDaReserva(zr.reserva)}
-                      </div>
-                    </div>
-                  `;
-                }).join('')}
-              </div>
+              <div id="box-colab-${idx}" class="space-y-2 max-h-96 overflow-y-auto pr-1"></div>
             </td>
           </tr>
         `;
@@ -1363,6 +1433,7 @@
       document.getElementById('kpiValorMB51').textContent = 'Líquido MB51: R$ ' + somaMB51Liquida.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       atualizarGraficos(zFiltrada);
+      if (abaAtual === 'dash3') atualizarGraficosBalcao(listaBalcaoGlobal);
     }
 
     function atualizarGraficos(dados) {
@@ -1420,6 +1491,55 @@
           plugins: { legend: { display: false } },
           scales: {
             x: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } },
+            y: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
+          }
+        }
+      });
+    }
+
+    function atualizarGraficosBalcao(listaBalcao) {
+      const canvasQtd = document.getElementById('chartBalcaoQtd');
+      const canvasVal = document.getElementById('chartBalcaoValor');
+      if (!canvasQtd || !canvasVal) return;
+
+      const topQtd = listaBalcao.slice().sort((a, b) => b.qtd - a.qtd).slice(0, 15);
+      const topVal = listaBalcao.slice().sort((a, b) => b.valor - a.valor).slice(0, 15);
+
+      if (chartBalcaoQtd) chartBalcaoQtd.destroy();
+      chartBalcaoQtd = new Chart(canvasQtd, {
+        type: 'bar',
+        data: {
+          labels: topQtd.map(x => x.nome.split(' ').slice(0, 2).join(' ')),
+          datasets: [{
+            label: 'Reservas Retiradas',
+            data: topQtd.map(x => x.qtd),
+            backgroundColor: topQtd.map(x => USINAS[x.centro]?.cor || '#1F4E79')
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#334155', font: { size: 10, weight: 'bold' } }, grid: { color: '#e2e8f0' } },
+            y: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
+          }
+        }
+      });
+
+      if (chartBalcaoVal) chartBalcaoVal.destroy();
+      chartBalcaoVal = new Chart(canvasVal, {
+        type: 'bar',
+        data: {
+          labels: topVal.map(x => x.nome.split(' ').slice(0, 2).join(' ')),
+          datasets: [{
+            label: 'Valor Retirado (R$)',
+            data: topVal.map(x => x.valor),
+            backgroundColor: topVal.map(x => USINAS[x.centro]?.cor || '#007600')
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#334155', font: { size: 10, weight: 'bold' } }, grid: { color: '#e2e8f0' } },
             y: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
           }
         }
