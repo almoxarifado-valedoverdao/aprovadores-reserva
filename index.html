@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { background-color: #f1f5f9; color: #0f172a; font-family: 'Inter', system-ui, sans-serif; }
     .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06); }
@@ -18,12 +19,53 @@
     .linha-clicavel:hover { background-color: #f8fafc; }
   </style>
   <script>
-    // FUNÇÃO DE LOGIN NO TOPO PARA NUNCA TRAVAR O BOTÃO VERDE
+    // LISTA PADRÃO DE USUÁRIOS (CASO AINDA NÃO TENHA CADASTRADO NOVOS)
+    var USUARIOS_PADRAO = [
+      { email: 'admin@valedoverdao.com.br', nome: 'Administrador Corporativo', senha: '123', senhaAlt: '123456', perfil: 'ADMIN', usina: 'TODAS' },
+      { email: 'jocenir@valedoverdao.com.br', nome: 'Jocenir Borges', senha: '123456', perfil: 'ADMIN', usina: 'TODAS' },
+      { email: 'fabio@valedoverdao.com.br', nome: 'Fabio Amaral', senha: '123456', perfil: 'GESTOR', usina: 'TODAS' },
+      { email: 'edimar@valedoverdao.com.br', nome: 'Edimar Moraes', senha: '123456', perfil: 'GESTOR', usina: 'TODAS' }
+    ];
+
+    function obterUsuariosCadastrados() {
+      try {
+        var salvos = localStorage.getItem('vv_usuarios_v37');
+        if (salvos) {
+          var lista = JSON.parse(salvos);
+          if (Array.isArray(lista) && lista.length > 0) return lista;
+        }
+      } catch (e) {}
+      return USUARIOS_PADRAO;
+    }
+
     function liberarAcessoPainel() {
+      var campoEmail = document.getElementById('userEmail');
       var campoSenha = document.getElementById('userPass');
-      var senha = campoSenha ? String(campoSenha.value).trim() : '123456';
-      if (senha === '123456' || senha === '') {
-        try { sessionStorage.setItem('vv_auth_ok', '1'); } catch(e) {}
+      var emailDig = campoEmail ? String(campoEmail.value).trim().toLowerCase() : 'admin@valedoverdao.com.br';
+      var senhaDig = campoSenha ? String(campoSenha.value).trim() : '123456';
+
+      var lista = obterUsuariosCadastrados();
+      var usuarioEncontrado = null;
+
+      for (var i = 0; i < lista.length; i++) {
+        var u = lista[i];
+        if (u.email.toLowerCase() === emailDig && (String(u.senha) === senhaDig || String(u.senhaAlt || '') === senhaDig)) {
+          usuarioEncontrado = u;
+          break;
+        }
+      }
+
+      // Fallback de segurança para a senha padrão 123456
+      if (!usuarioEncontrado && senhaDig === '123456') {
+        usuarioEncontrado = { email: emailDig || 'admin@valedoverdao.com.br', nome: emailDig.split('@')[0], perfil: 'ADMIN', usina: 'TODAS' };
+      }
+
+      if (usuarioEncontrado) {
+        try {
+          sessionStorage.setItem('vv_auth_ok', '1');
+          sessionStorage.setItem('vv_user_atual', JSON.stringify(usuarioEncontrado));
+        } catch(e) {}
+        document.getElementById('loginError').classList.add('hidden');
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('appScreen').classList.remove('hidden');
         document.getElementById('appScreen').style.display = 'block';
@@ -42,7 +84,6 @@
   <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-100 to-emerald-50/40">
     <div class="card max-w-md w-full p-8 shadow-xl border border-slate-200 bg-white">
       <div class="flex flex-col items-center text-center mb-6">
-        <!-- LOGO 3D EM VETOR EMBUTIDO (NUNCA QUEBRA E TENTA LER logo.jpg SE EXISTIR) -->
         <div class="w-36 h-28 rounded-2xl bg-gradient-to-b from-slate-100 to-slate-200 border border-slate-300 shadow-inner overflow-hidden mb-3 flex items-center justify-center p-1">
           <img src="logo.jpg" alt="Grupo Vale do Verdão" class="w-full h-full object-cover rounded-xl hidden" onload="this.classList.remove('hidden'); document.getElementById('svgLogoLogin').classList.add('hidden');" />
           <svg id="svgLogoLogin" class="w-32 h-24" viewBox="0 0 220 175" xmlns="http://www.w3.org/2000/svg">
@@ -79,7 +120,7 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="text-xs uppercase tracking-widest text-[#007600] font-extrabold">Grupo Vale do Verdão S/A</span>
-          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">v3.6 • Modo Claro</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">v3.7 • Modo Claro</span>
         </div>
         <h1 class="text-2xl font-black text-slate-900 mt-1">Aprovadores de Reserva</h1>
       </div>
@@ -93,7 +134,7 @@
           <label class="text-xs font-bold uppercase text-slate-600">Senha de Acesso</label>
           <input id="userPass" type="password" value="123456" onkeydown="if(event.key==='Enter'){ event.preventDefault(); liberarAcessoPainel(); }" class="w-full mt-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 font-medium focus:outline-none focus:border-[#007600] focus:bg-white" />
         </div>
-        <p id="loginError" class="text-xs text-red-600 hidden font-bold">Senha incorreta! Use: 123456</p>
+        <p id="loginError" class="text-xs text-red-600 hidden font-bold">Usuário ou senha inválidos! Verifique seus dados.</p>
         <button type="button" onclick="liberarAcessoPainel()" class="w-full py-3.5 rounded-xl bg-[#007600] hover:bg-emerald-700 active:scale-[0.99] font-bold text-sm text-white transition shadow-md cursor-pointer">
           Entrar no Painel Corporativo
         </button>
@@ -108,13 +149,13 @@
     </div>
   </div>
 
-  <!-- SISTEMA PRINCIPAL (MODO CLARO) -->
+  <!-- SISTEMA PRINCIPAL (MODO CLARO - SEM A FAIXA COLORIDA AO LADO DO LOGO) -->
   <div id="appScreen" class="hidden">
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-          <!-- Mini Logo no Header -->
-          <div class="w-12 h-10 rounded-lg bg-slate-100 border border-slate-300 flex items-center justify-center overflow-hidden shrink-0">
+          <!-- Mini Logo no Header (Sem a barrinha colorida ao lado) -->
+          <div class="w-12 h-10 rounded-lg bg-slate-100 border border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
             <img src="logo.jpg" alt="Logo" class="w-full h-full object-cover hidden" onload="this.classList.remove('hidden'); document.getElementById('svgLogoHeader').classList.add('hidden');" />
             <svg id="svgLogoHeader" class="w-10 h-9" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
               <rect x="35" y="10" width="130" height="135" rx="8" fill="#cbd5e1" stroke="#64748b" stroke-width="4"/>
@@ -123,16 +164,11 @@
               <path d="M12 116 H60 C75 116 80 146 100 146 C120 146 125 116 140 116 H188" fill="none" stroke="#007600" stroke-width="18"/>
             </svg>
           </div>
-          <div class="flex h-8 rounded overflow-hidden shadow-sm">
-            <span class="w-1.5 bg-[#007600]"></span>
-            <span class="w-1.5 bg-[#FFC000]"></span>
-            <span class="w-1.5 bg-[#1F4E79]"></span>
-            <span class="w-1.5 bg-[#ED7D31]"></span>
-          </div>
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-black text-base text-slate-900">APROVADORES DE RESERVA</h1>
-              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">● Base Pronta (v3.6)</span>
+              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">● Base Pronta (v3.7)</span>
+              <span id="badgeUsuarioLogado" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 font-semibold hidden md:inline-block"></span>
             </div>
             <p class="text-[11px] text-slate-500 font-medium">Saídas (261/201) - Estornos (262/202 por Frota e O.S.) • Curva ABC • Expansão de Itens</p>
           </div>
@@ -141,6 +177,7 @@
           <button type="button" onclick="mudarAba('dash1')" id="btn-dash1" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm">1. Dashboard Aprovadores (ZRESERVA)</button>
           <button type="button" onclick="mudarAba('dash2')" id="btn-dash2" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300">2. Reincidências ABC & Balcão (MB51)</button>
           <button type="button" onclick="mudarAba('cargas')" id="btn-cargas" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100">3. Cargas Excel (.XLSX)</button>
+          <button type="button" onclick="mudarAba('usuarios')" id="btn-usuarios" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-50 text-[#1F4E79] border border-blue-200 hover:bg-blue-100">4. Usuários & Acessos</button>
           <button type="button" onclick="sairSistema()" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100">Sair</button>
         </div>
       </div>
@@ -257,7 +294,6 @@
               <span id="contadorReinc" class="text-xs font-bold text-orange-600"></span>
             </div>
 
-            <!-- Botões Curva ABC -->
             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200">
               <div class="flex flex-wrap items-center gap-2">
                 <span class="text-[11px] font-bold uppercase text-slate-500">Curva ABC:</span>
@@ -369,10 +405,98 @@
         </div>
       </div>
 
+      <!-- ABA 4: GESTÃO DE USUÁRIOS E ACESSOS -->
+      <div id="aba-usuarios" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Formulário de Cadastro -->
+          <div class="card p-6 border-t-4 border-t-[#007600] space-y-4">
+            <div>
+              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Novo Acesso</span>
+              <h3 class="text-base font-black text-slate-900 mt-1">Cadastrar Usuário no Painel</h3>
+              <p class="text-xs text-slate-500">Crie logins para diretores, gerentes ou supervisores.</p>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="text-xs font-bold uppercase text-slate-600">Nome Completo</label>
+                <input id="cadNome" type="text" placeholder="Ex: Fabio Amaral" class="w-full mt-1 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:bg-white focus:border-[#007600] focus:outline-none" />
+              </div>
+              <div>
+                <label class="text-xs font-bold uppercase text-slate-600">E-mail ou Login Corporativo</label>
+                <input id="cadEmail" type="text" placeholder="Ex: fabio@valedoverdao.com.br" class="w-full mt-1 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:bg-white focus:border-[#007600] focus:outline-none" />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-xs font-bold uppercase text-slate-600">Senha</label>
+                  <input id="cadSenha" type="text" value="123456" class="w-full mt-1 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-mono font-bold focus:bg-white focus:border-[#007600] focus:outline-none" />
+                </div>
+                <div>
+                  <label class="text-xs font-bold uppercase text-slate-600">Usina Padrão</label>
+                  <select id="cadUsina" class="w-full mt-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 font-semibold">
+                    <option value="TODAS">Todas as Usinas</option>
+                    <option value="1000">1000 • Vale do Verdão</option>
+                    <option value="2000">2000 • Panorama</option>
+                    <option value="3000">3000 • Floresta</option>
+                    <option value="4000">4000 • Cambuí</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="text-xs font-bold uppercase text-slate-600">Perfil de Permissão</label>
+                <select id="cadPerfil" class="w-full mt-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 font-semibold">
+                  <option value="GESTOR">Visualizador / Gestor (Apenas Dashboards)</option>
+                  <option value="ADMIN">Administrador Total (Inclui Cargas Excel e Usuários)</option>
+                </select>
+              </div>
+              <button type="button" onclick="salvarNovoUsuario()" class="w-full py-3 rounded-xl bg-[#007600] hover:bg-emerald-700 text-white font-bold text-xs shadow-sm cursor-pointer transition">
+                + Salvar e Liberar Acesso
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabela de Usuários Cadastrados -->
+          <div class="card lg:col-span-2 overflow-hidden flex flex-col justify-between">
+            <div>
+              <div class="p-4 border-b border-slate-200 bg-slate-50/60 flex flex-wrap justify-between items-center gap-2">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900 uppercase">Usuários com Acesso Liberado</h3>
+                  <p class="text-xs text-slate-500">Clique em "Copiar Convite" para enviar o link e a senha no WhatsApp do colaborador.</p>
+                </div>
+                <span id="statusSyncUsuarios" class="text-[11px] font-bold text-[#007600]">● Sincronizado</span>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-100 text-slate-600 uppercase border-b border-slate-200">
+                    <tr>
+                      <th class="p-3">Nome</th>
+                      <th class="p-3">Usuário / E-mail</th>
+                      <th class="p-3">Senha</th>
+                      <th class="p-3">Perfil</th>
+                      <th class="p-3">Usina</th>
+                      <th class="p-3 text-right">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tabelaUsuarios" class="divide-y divide-slate-200"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-600">
+              💡 <strong>Dica:</strong> Usuários com perfil <strong>Visualizador / Gestor</strong> entram direto nos Dashboards e não visualizam o botão de zerar histórico.
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 
   <script>
+    const SUPABASE_URL = 'https://nhegnmciuowrezwccfqr.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_lfXGjdSs32_WMZG1f0KYiA_wcPP1Bfm';
+    let supaClient = null;
+    try {
+      if (window.supabase) supaClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } catch(e) {}
+
     const USINAS = {
       '1000': { nome: '1. Vale do Verdão', sigla: 'VV (1000)', cor: '#007600', bg: '#ecfdf5', texto: '#065f46' },
       '2000': { nome: '2. Panorama',       sigla: 'PAN (2000)', cor: '#d97706', bg: '#fffbeb', texto: '#92400e' },
@@ -387,11 +511,15 @@
     let mapItensPorReserva = {};
 
     function sairSistema() {
-      try { sessionStorage.removeItem('vv_auth_ok'); } catch(e) {}
+      try {
+        sessionStorage.removeItem('vv_auth_ok');
+        sessionStorage.removeItem('vv_user_atual');
+      } catch(e) {}
       location.reload();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      sincronizarUsuariosNuvem();
       try {
         if (sessionStorage.getItem('vv_auth_ok') === '1') {
           liberarAcessoPainel();
@@ -400,12 +528,114 @@
     });
 
     function mudarAba(aba) {
-      ['dash1', 'dash2', 'cargas'].forEach(id => {
-        document.getElementById('aba-' + id).classList.toggle('hidden', id !== aba);
+      ['dash1', 'dash2', 'cargas', 'usuarios'].forEach(id => {
+        const el = document.getElementById('aba-' + id);
+        if (el) el.classList.toggle('hidden', id !== aba);
       });
       document.getElementById('btn-dash1').className = aba === 'dash1' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300';
       document.getElementById('btn-dash2').className = aba === 'dash2' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300';
       document.getElementById('btn-cargas').className = aba === 'cargas' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#FFC000] text-slate-950 shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100';
+      document.getElementById('btn-usuarios').className = aba === 'usuarios' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#1F4E79] text-white shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-blue-50 text-[#1F4E79] border border-blue-200 hover:bg-blue-100';
+      if (aba === 'usuarios') renderizarTabelaUsuarios();
+    }
+
+    // =========================================================================
+    // GESTÃO DE USUÁRIOS E ACESSOS
+    // =========================================================================
+    async function sincronizarUsuariosNuvem() {
+      if (!supaClient) return;
+      try {
+        const { data, error } = await supaClient.from('usuarios_painel').select('*');
+        if (!error && Array.isArray(data) && data.length > 0) {
+          localStorage.setItem('vv_usuarios_v37', JSON.stringify(data));
+        }
+      } catch(e) {}
+    }
+
+    function renderizarTabelaUsuarios() {
+      const lista = obterUsuariosCadastrados();
+      const tbody = document.getElementById('tabelaUsuarios');
+      if (!tbody) return;
+      tbody.innerHTML = lista.map((u, idx) => `
+        <tr class="hover:bg-slate-50">
+          <td class="p-3 font-bold text-slate-900">${u.nome || '-'}</td>
+          <td class="p-3 font-mono text-slate-700">${u.email}</td>
+          <td class="p-3 font-mono text-slate-600">${u.senha}</td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.perfil === 'ADMIN' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-blue-100 text-blue-800 border border-blue-300'}">
+              ${u.perfil === 'ADMIN' ? 'Administrador' : 'Visualizador / Gestor'}
+            </span>
+          </td>
+          <td class="p-3 font-semibold text-slate-700">${u.usina === 'TODAS' ? 'Todas' : u.usina}</td>
+          <td class="p-3 text-right space-x-1 whitespace-nowrap">
+            <button type="button" onclick="copiarConviteUsuario(${idx})" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#007600] border border-emerald-300 font-bold text-[11px]">
+              📋 Copiar Convite
+            </button>
+            ${lista.length > 1 ? `
+              <button type="button" onclick="removerUsuario(${idx})" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold text-[11px]">
+                Excluir
+              </button>
+            ` : ''}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function salvarNovoUsuario() {
+      const nome = document.getElementById('cadNome').value.trim();
+      const email = document.getElementById('cadEmail').value.trim().toLowerCase();
+      const senha = document.getElementById('cadSenha').value.trim() || '123456';
+      const usina = document.getElementById('cadUsina').value;
+      const perfil = document.getElementById('cadPerfil').value;
+
+      if (!nome || !email) {
+        alert('Preencha o Nome e o E-mail/Login do usuário!');
+        return;
+      }
+
+      const lista = obterUsuariosCadastrados();
+      const idxExistente = lista.findIndex(u => u.email.toLowerCase() === email);
+      const novoObj = { nome, email, senha, perfil, usina };
+
+      if (idxExistente >= 0) {
+        lista[idxExistente] = novoObj;
+      } else {
+        lista.push(novoObj);
+      }
+
+      localStorage.setItem('vv_usuarios_v37', JSON.stringify(lista));
+
+      if (supaClient) {
+        try {
+          await supaClient.from('usuarios_painel').upsert([novoObj], { onConflict: 'email' });
+        } catch(e) {}
+      }
+
+      document.getElementById('cadNome').value = '';
+      document.getElementById('cadEmail').value = '';
+      renderizarTabelaUsuarios();
+      alert(`Usuário "${nome}" (${email}) salvo e liberado com sucesso!`);
+    }
+
+    function removerUsuario(idx) {
+      const lista = obterUsuariosCadastrados();
+      const alvo = lista[idx];
+      if (!alvo) return;
+      if (!confirm(`Deseja remover o acesso de ${alvo.nome} (${alvo.email})?`)) return;
+      lista.splice(idx, 1);
+      localStorage.setItem('vv_usuarios_v37', JSON.stringify(lista));
+      renderizarTabelaUsuarios();
+    }
+
+    function copiarConviteUsuario(idx) {
+      const lista = obterUsuariosCadastrados();
+      const u = lista[idx];
+      if (!u) return;
+      const urlSite = window.location.origin + window.location.pathname;
+      const texto = `Olá, *${u.nome}*!\nSeu acesso ao painel *Aprovadores de Reserva - Grupo Vale do Verdão S/A* está liberado:\n\n🔗 *Link:* ${urlSite}\n👤 *Usuário:* ${u.email}\n🔑 *Senha:* ${u.senha}`;
+      navigator.clipboard.writeText(texto).then(() => {
+        alert(`Convite de ${u.nome} copiado! Agora é só colar (Ctrl+V) no WhatsApp ou e-mail.`);
+      });
     }
 
     function filtrarUsina(uf) {
@@ -469,11 +699,28 @@
     }
 
     async function iniciarDadosPainel() {
+      try {
+        const uLogado = JSON.parse(sessionStorage.getItem('vv_user_atual') || 'null');
+        if (uLogado) {
+          const badgeU = document.getElementById('badgeUsuarioLogado');
+          if (badgeU) badgeU.textContent = `👤 ${uLogado.nome || uLogado.email}`;
+          if (uLogado.usina && uLogado.usina !== 'TODAS') usinaAtual = uLogado.usina;
+          if (uLogado.perfil === 'GESTOR') {
+            document.getElementById('btn-cargas').classList.add('hidden');
+            document.getElementById('btn-usuarios').classList.add('hidden');
+          } else {
+            document.getElementById('btn-cargas').classList.remove('hidden');
+            document.getElementById('btn-usuarios').classList.remove('hidden');
+          }
+        }
+      } catch(e) {}
+
       const [z, m, r] = await Promise.all([lerDoDB('zreserva'), lerDoDB('mb51'), lerDoDB('rh')]);
       if (z.length) { zreserva = z; document.getElementById('status-zreserva').textContent = z.length + ' reservas acumuladas'; }
       if (m.length) { mb51 = m; document.getElementById('status-mb51').textContent = m.length + ' movimentos acumulados'; }
       if (r.length) { rh = r; document.getElementById('status-rh').textContent = r.length + ' funcionários ativos'; }
       popularFiltroAprovadores();
+      renderizarTabelaUsuarios();
       renderizarTudo();
     }
 
@@ -579,7 +826,6 @@
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-        // 1. ZRESERVA -> ACUMULATIVA
         if (tipo === 'zreserva') {
           const novosZ = rows.map(r => ({
             reserva: limparID(extrair(r, ['Numero da Reserva', 'Nº reserva', 'Reserva'])),
@@ -611,7 +857,6 @@
           alert(`ZRESERVA (Acumulativa):\n• Linhas lidas: ${novosZ.length}\n• Novas reservas adicionadas: ${adicionados}\n• Duplicidades atualizadas: ${substituidos}\n• Total acumulado no banco: ${zreserva.length}`);
         }
 
-        // 2. MB51 -> ACUMULATIVA COM TIPO DE MOVIMENTO (261/201 SAÍDA | 262/202 ESTORNO) E TEXTO CABEÇALHO (O.S.)
         if (tipo === 'mb51') {
           const novosM = rows.map(r => {
             const docMat = limparID(extrair(r, ['Doc.material', 'Documento de Material']));
@@ -660,7 +905,6 @@
           alert(`MB51 (Acumulativa):\n• Linhas na planilha: ${novosM.length}\n• Novos movimentos adicionados: ${adicionados}\n• Duplicidades substituídas: ${duplicadosSubstituidos}\n• Total acumulado no banco: ${mb51.length}`);
         }
 
-        // 3. RH -> SUBSTITUIÇÃO SEMPRE
         if (tipo === 'rh') {
           rh = rows.map(r => ({
             matricula: limparID(extrair(r, ['Cod.Funcionário', 'Matricula', 'Cod Funcionario'])),
@@ -674,7 +918,7 @@
           alert(`Quadro RH (Substituição Total):\n• Base anterior substituída por ${rh.length} funcionários atualizados!`);
         }
 
-        document.getElementById('badgeStatus').textContent = '● Base Sincronizada (v3.6)';
+        document.getElementById('badgeStatus').textContent = '● Base Sincronizada (v3.7)';
         popularFiltroAprovadores();
         renderizarTudo();
         event.target.value = '';
@@ -691,7 +935,6 @@
       if (nomes.includes(atual)) sel.value = atual;
     }
 
-    // Renderiza a tabela interna de materiais constantes em uma Reserva (ordenados por Valor)
     function gerarHTMLMateriaisDaReserva(numReserva) {
       const itens = (mapItensPorReserva[numReserva] || []).slice().sort((a, b) => b.valorSinal - a.valorSinal);
       if (!itens.length) {
@@ -827,7 +1070,6 @@
         `;
       }).join('');
 
-      // REINCIDÊNCIAS MB51 COM ABATIMENTO DE ESTORNO (262/202) POR FROTA + MATERIAL + O.S. (CABEÇALHO)
       const gruposPorOS = {};
       let qtdMovLiquido = 0;
       let somaMB51Liquida = 0;
@@ -1038,7 +1280,6 @@
         `;
       }).join('');
 
-      // 2. FREQUÊNCIA DE RETIRADAS NO BALCÃO POR COLABORADOR
       const gruposBalcao = {};
       zFiltrada.forEach(z => {
         if (!z.recebedor) return;
