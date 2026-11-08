@@ -8,13 +8,14 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { background-color: #0b1120; color: #f1f5f9; font-family: 'Inter', system-ui, sans-serif; }
-    .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 1rem; }
+    body { background-color: #f1f5f9; color: #0f172a; font-family: 'Inter', system-ui, sans-serif; }
+    .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06); }
     ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #090d16; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     .linha-clicavel { transition: background-color 0.15s ease; cursor: pointer; }
-    .linha-clicavel:hover { background-color: rgba(30, 41, 59, 0.75); }
+    .linha-clicavel:hover { background-color: #f8fafc; }
   </style>
   <script>
     // FUNÇÃO DE LOGIN NO TOPO PARA NUNCA TRAVAR O BOTÃO VERDE
@@ -37,51 +38,92 @@
 </head>
 <body class="min-h-screen">
 
-  <!-- TELA DE LOGIN -->
-  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
-    <div class="card max-w-md w-full p-8 shadow-2xl">
+  <!-- TELA DE LOGIN (MODO CLARO) -->
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-100 to-emerald-50/40">
+    <div class="card max-w-md w-full p-8 shadow-xl border border-slate-200 bg-white">
       <div class="flex flex-col items-center text-center mb-6">
-        <div class="w-36 h-28 rounded-2xl bg-slate-950 border border-slate-700 shadow-xl overflow-hidden mb-3 flex items-center justify-center p-1">
-          <img class="logo-verdao w-full h-full object-cover rounded-xl" alt="Grupo Vale do Verdão" />
+        <!-- LOGO 3D EM VETOR EMBUTIDO (NUNCA QUEBRA E TENTA LER logo.jpg SE EXISTIR) -->
+        <div class="w-36 h-28 rounded-2xl bg-gradient-to-b from-slate-100 to-slate-200 border border-slate-300 shadow-inner overflow-hidden mb-3 flex items-center justify-center p-1">
+          <img src="logo.jpg" alt="Grupo Vale do Verdão" class="w-full h-full object-cover rounded-xl hidden" onload="this.classList.remove('hidden'); document.getElementById('svgLogoLogin').classList.add('hidden');" />
+          <svg id="svgLogoLogin" class="w-32 h-24" viewBox="0 0 220 175" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="metalFrame" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#f8fafc"/>
+                <stop offset="50%" stop-color="#cbd5e1"/>
+                <stop offset="100%" stop-color="#64748b"/>
+              </linearGradient>
+              <linearGradient id="dropGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="65%" stop-color="#e2e8f0"/>
+                <stop offset="100%" stop-color="#94a3b8"/>
+              </linearGradient>
+              <linearGradient id="waveTop" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#2e7d32"/>
+                <stop offset="50%" stop-color="#66bb6a"/>
+                <stop offset="100%" stop-color="#4caf50"/>
+              </linearGradient>
+              <linearGradient id="waveBot" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#005005"/>
+                <stop offset="50%" stop-color="#007600"/>
+                <stop offset="100%" stop-color="#1b5e20"/>
+              </linearGradient>
+            </defs>
+            <rect x="45" y="10" width="130" height="135" rx="6" fill="url(#metalFrame)" stroke="#94a3b8" stroke-width="2.5"/>
+            <rect x="55" y="20" width="110" height="112" rx="3" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
+            <path d="M110 25 C110 25 136 68 136 88 C136 103 124 115 110 115 C96 115 84 103 84 88 C84 68 110 25 110 25 Z" fill="url(#dropGrad)" stroke="#64748b" stroke-width="2"/>
+            <path d="M105 40 C105 40 92 70 92 86 C92 95 98 103 106 105" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+            <path d="M22 84 H68 C82 84 88 112 110 112 C132 112 138 84 152 84 H198" fill="none" stroke="url(#waveTop)" stroke-width="14"/>
+            <path d="M22 106 H68 C82 106 88 134 110 134 C132 134 138 106 152 106 H198" fill="none" stroke="url(#waveBot)" stroke-width="14"/>
+            <text x="110" y="164" text-anchor="middle" fill="#1e293b" font-size="14.5" font-weight="900" font-family="sans-serif">Grupo Vale do Verdão</text>
+          </svg>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold">Grupo Vale do Verdão S/A</span>
-          <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">v3.5 • Curva ABC & Estornos</span>
+          <span class="text-xs uppercase tracking-widest text-[#007600] font-extrabold">Grupo Vale do Verdão S/A</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">v3.6 • Modo Claro</span>
         </div>
-        <h1 class="text-2xl font-black text-white mt-1">Aprovadores de Reserva</h1>
+        <h1 class="text-2xl font-black text-slate-900 mt-1">Aprovadores de Reserva</h1>
       </div>
 
       <div class="space-y-4">
         <div>
-          <label class="text-xs font-bold uppercase text-slate-400">Usuário Corporativo</label>
-          <input id="userEmail" type="text" value="admin@valedoverdao.com.br" class="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500" />
+          <label class="text-xs font-bold uppercase text-slate-600">Usuário Corporativo</label>
+          <input id="userEmail" type="text" value="admin@valedoverdao.com.br" class="w-full mt-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 font-medium focus:outline-none focus:border-[#007600] focus:bg-white" />
         </div>
         <div>
-          <label class="text-xs font-bold uppercase text-slate-400">Senha de Acesso</label>
-          <input id="userPass" type="password" value="123456" onkeydown="if(event.key==='Enter'){ event.preventDefault(); liberarAcessoPainel(); }" class="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500" />
+          <label class="text-xs font-bold uppercase text-slate-600">Senha de Acesso</label>
+          <input id="userPass" type="password" value="123456" onkeydown="if(event.key==='Enter'){ event.preventDefault(); liberarAcessoPainel(); }" class="w-full mt-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 font-medium focus:outline-none focus:border-[#007600] focus:bg-white" />
         </div>
-        <p id="loginError" class="text-xs text-red-400 hidden font-bold">Senha incorreta! Use: 123456</p>
-        <button type="button" onclick="liberarAcessoPainel()" class="w-full py-3.5 rounded-xl bg-[#007600] hover:bg-emerald-600 active:scale-[0.99] font-bold text-sm text-white transition shadow-lg cursor-pointer">
+        <p id="loginError" class="text-xs text-red-600 hidden font-bold">Senha incorreta! Use: 123456</p>
+        <button type="button" onclick="liberarAcessoPainel()" class="w-full py-3.5 rounded-xl bg-[#007600] hover:bg-emerald-700 active:scale-[0.99] font-bold text-sm text-white transition shadow-md cursor-pointer">
           Entrar no Painel Corporativo
         </button>
       </div>
 
-      <div class="grid grid-cols-4 gap-2 mt-6 pt-5 border-t border-slate-800 text-[10px] text-center font-bold">
-        <div class="p-1.5 rounded bg-slate-950 border border-[#007600] text-emerald-400">1000 • Verdão</div>
-        <div class="p-1.5 rounded bg-slate-950 border border-[#FFC000] text-amber-400">2000 • Panorama</div>
-        <div class="p-1.5 rounded bg-slate-950 border border-[#1F4E79] text-blue-300">3000 • Floresta</div>
-        <div class="p-1.5 rounded bg-slate-950 border border-[#ED7D31] text-orange-400">4000 • Cambuí</div>
+      <div class="grid grid-cols-4 gap-2 mt-6 pt-5 border-t border-slate-200 text-[10px] text-center font-bold">
+        <div class="p-1.5 rounded bg-emerald-50 border border-[#007600] text-[#007600]">1000 • Verdão</div>
+        <div class="p-1.5 rounded bg-amber-50 border border-[#FFC000] text-amber-800">2000 • Panorama</div>
+        <div class="p-1.5 rounded bg-blue-50 border border-[#1F4E79] text-[#1F4E79]">3000 • Floresta</div>
+        <div class="p-1.5 rounded bg-orange-50 border border-[#ED7D31] text-orange-800">4000 • Cambuí</div>
       </div>
     </div>
   </div>
 
-  <!-- SISTEMA PRINCIPAL -->
+  <!-- SISTEMA PRINCIPAL (MODO CLARO) -->
   <div id="appScreen" class="hidden">
-    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-          <img class="logo-verdao w-12 h-10 object-cover rounded-lg border border-slate-700 shadow" alt="Logo" />
-          <div class="flex h-8 rounded overflow-hidden">
+          <!-- Mini Logo no Header -->
+          <div class="w-12 h-10 rounded-lg bg-slate-100 border border-slate-300 flex items-center justify-center overflow-hidden shrink-0">
+            <img src="logo.jpg" alt="Logo" class="w-full h-full object-cover hidden" onload="this.classList.remove('hidden'); document.getElementById('svgLogoHeader').classList.add('hidden');" />
+            <svg id="svgLogoHeader" class="w-10 h-9" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+              <rect x="35" y="10" width="130" height="135" rx="8" fill="#cbd5e1" stroke="#64748b" stroke-width="4"/>
+              <path d="M100 25 C100 25 130 70 130 92 C130 110 116 122 100 122 C84 122 70 110 70 92 C70 70 100 25 100 25 Z" fill="#ffffff" stroke="#64748b" stroke-width="3"/>
+              <path d="M12 90 H60 C75 90 80 120 100 120 C120 120 125 90 140 90 H188" fill="none" stroke="#4caf50" stroke-width="18"/>
+              <path d="M12 116 H60 C75 116 80 146 100 146 C120 146 125 116 140 116 H188" fill="none" stroke="#007600" stroke-width="18"/>
+            </svg>
+          </div>
+          <div class="flex h-8 rounded overflow-hidden shadow-sm">
             <span class="w-1.5 bg-[#007600]"></span>
             <span class="w-1.5 bg-[#FFC000]"></span>
             <span class="w-1.5 bg-[#1F4E79]"></span>
@@ -89,48 +131,48 @@
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h1 class="font-black text-base text-white">APROVADORES DE RESERVA</h1>
-              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-700 font-bold">● Base Pronta (v3.5)</span>
+              <h1 class="font-black text-base text-slate-900">APROVADORES DE RESERVA</h1>
+              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">● Base Pronta (v3.6)</span>
             </div>
-            <p class="text-[11px] text-slate-400">Saídas (261/201) - Estornos (262/202 por Frota e O.S.) • Curva ABC • Expansão de Itens</p>
+            <p class="text-[11px] text-slate-500 font-medium">Saídas (261/201) - Estornos (262/202 por Frota e O.S.) • Curva ABC • Expansão de Itens</p>
           </div>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button type="button" onclick="mudarAba('dash1')" id="btn-dash1" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white">1. Dashboard Aprovadores (ZRESERVA)</button>
-          <button type="button" onclick="mudarAba('dash2')" id="btn-dash2" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300">2. Reincidências ABC & Balcão (MB51)</button>
-          <button type="button" onclick="mudarAba('cargas')" id="btn-cargas" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-amber-400">3. Cargas Excel (.XLSX)</button>
-          <button type="button" onclick="sairSistema()" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-950/60 text-red-300 border border-red-800/50">Sair</button>
+          <button type="button" onclick="mudarAba('dash1')" id="btn-dash1" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm">1. Dashboard Aprovadores (ZRESERVA)</button>
+          <button type="button" onclick="mudarAba('dash2')" id="btn-dash2" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300">2. Reincidências ABC & Balcão (MB51)</button>
+          <button type="button" onclick="mudarAba('cargas')" id="btn-cargas" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100">3. Cargas Excel (.XLSX)</button>
+          <button type="button" onclick="sairSistema()" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-50 text-red-700 border border-red-200 hover:bg-red-100">Sair</button>
         </div>
       </div>
     </header>
 
     <!-- BARRA DE FILTROS GLOBAIS -->
     <section class="max-w-7xl mx-auto px-4 pt-5">
-      <div class="card p-4 space-y-3">
+      <div class="card p-4 space-y-3 bg-white">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="filtrarUsina('TODAS')" id="uf-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900">Todas as Usinas</button>
-            <button type="button" onclick="filtrarUsina('1000')" id="uf-1000" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#007600] text-white" style="background:#00760033">1000 • Vale do Verdão</button>
-            <button type="button" onclick="filtrarUsina('2000')" id="uf-2000" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#FFC000] text-amber-300" style="background:#FFC00033">2000 • Panorama</button>
-            <button type="button" onclick="filtrarUsina('3000')" id="uf-3000" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#1F4E79] text-blue-200" style="background:#1F4E7966">3000 • Floresta</button>
-            <button type="button" onclick="filtrarUsina('4000')" id="uf-4000" class="px-3 py-1.5 rounded-lg text-xs font-bold border border-[#ED7D31] text-orange-300" style="background:#ED7D3133">4000 • Cambuí</button>
+            <button type="button" onclick="filtrarUsina('TODAS')" id="uf-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm">Todas as Usinas</button>
+            <button type="button" onclick="filtrarUsina('1000')" id="uf-1000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#007600] text-[#007600] bg-emerald-50 hover:bg-emerald-100">1000 • Vale do Verdão</button>
+            <button type="button" onclick="filtrarUsina('2000')" id="uf-2000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#FFC000] text-amber-900 bg-amber-50 hover:bg-amber-100">2000 • Panorama</button>
+            <button type="button" onclick="filtrarUsina('3000')" id="uf-3000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#1F4E79] text-[#1F4E79] bg-blue-50 hover:bg-blue-100">3000 • Floresta</button>
+            <button type="button" onclick="filtrarUsina('4000')" id="uf-4000" class="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-[#ED7D31] text-orange-900 bg-orange-50 hover:bg-orange-100">4000 • Cambuí</button>
           </div>
           <div class="flex flex-wrap gap-2 items-center">
-            <label class="flex items-center gap-1.5 text-xs text-emerald-300 bg-emerald-950/40 border border-emerald-800 px-3 py-1.5 rounded-lg cursor-pointer font-semibold">
-              <input type="checkbox" id="filtro12Meses" checked onchange="renderizarTudo()" class="rounded text-emerald-500" />
+            <label class="flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50 border border-emerald-300 px-3 py-1.5 rounded-lg cursor-pointer font-bold">
+              <input type="checkbox" id="filtro12Meses" checked onchange="renderizarTudo()" class="rounded text-[#007600]" />
               Últimos 12 Meses
             </label>
-            <label class="flex items-center gap-1.5 text-xs text-slate-300 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg cursor-pointer">
-              <input type="checkbox" id="ocultarAutomatico" onchange="renderizarTudo()" class="rounded text-emerald-500" />
+            <label class="flex items-center gap-1.5 text-xs text-slate-700 bg-slate-50 border border-slate-300 px-3 py-1.5 rounded-lg cursor-pointer font-semibold">
+              <input type="checkbox" id="ocultarAutomatico" onchange="renderizarTudo()" class="rounded text-[#007600]" />
               Ocultar "Automatico"
             </label>
-            <input type="date" id="dataIni" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-            <span class="text-xs text-slate-500">até</span>
-            <input type="date" id="dataFim" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white" />
-            <select id="filtroAprovador" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white max-w-[200px]">
+            <input type="date" id="dataIni" onchange="renderizarTudo()" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-medium" />
+            <span class="text-xs text-slate-500 font-medium">até</span>
+            <input type="date" id="dataFim" onchange="renderizarTudo()" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-medium" />
+            <select id="filtroAprovador" onchange="renderizarTudo()" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800 font-semibold max-w-[200px]">
               <option value="TODOS">Todos os Aprovadores</option>
             </select>
-            <input type="text" id="filtroBusca" oninput="renderizarTudo()" placeholder="Reserva, Frota, O.S., Material..." class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white w-56" />
+            <input type="text" id="filtroBusca" oninput="renderizarTudo()" placeholder="Reserva, Frota, O.S., Material..." class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 w-56 focus:bg-white focus:border-[#007600] focus:outline-none" />
           </div>
         </div>
       </div>
@@ -142,24 +184,24 @@
       <!-- KPIs -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="card p-4 border-l-4 border-l-[#007600]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Total Aprovado (ZRESERVA)</span>
-          <p id="kpiValorTotal" class="text-xl font-black text-white mt-1">R$ 0,00</p>
-          <span id="kpiSubValor" class="text-[10px] text-emerald-400">Valor Retirado: R$ 0,00</span>
+          <span class="text-[11px] text-slate-500 uppercase font-bold">Total Aprovado (ZRESERVA)</span>
+          <p id="kpiValorTotal" class="text-xl font-black text-slate-900 mt-1">R$ 0,00</p>
+          <span id="kpiSubValor" class="text-[11px] text-[#007600] font-semibold">Valor Retirado: R$ 0,00</span>
         </div>
         <div class="card p-4 border-l-4 border-l-[#FFC000]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Reservas Acumuladas</span>
-          <p id="kpiQtdReservas" class="text-xl font-black text-amber-400 mt-1">0</p>
-          <span class="text-[10px] text-slate-400">Clique na reserva p/ ver os materiais</span>
+          <span class="text-[11px] text-slate-500 uppercase font-bold">Reservas Acumuladas</span>
+          <p id="kpiQtdReservas" class="text-xl font-black text-amber-600 mt-1">0</p>
+          <span class="text-[11px] text-slate-500">Clique na reserva p/ ver os materiais</span>
         </div>
         <div class="card p-4 border-l-4 border-l-[#ED7D31]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Reincidências (Líquidas)</span>
-          <p id="kpiReincidencias" class="text-xl font-black text-orange-400 mt-1">0 alertas</p>
-          <span id="kpiDetCurvaA" class="text-[10px] text-orange-300">Descontados estornos 262/202</span>
+          <span class="text-[11px] text-slate-500 uppercase font-bold">Reincidências (Líquidas)</span>
+          <p id="kpiReincidencias" class="text-xl font-black text-orange-600 mt-1">0 alertas</p>
+          <span id="kpiDetCurvaA" class="text-[11px] text-orange-700 font-semibold">Descontados estornos 262/202</span>
         </div>
         <div class="card p-4 border-l-4 border-l-[#1F4E79]">
-          <span class="text-[11px] text-slate-400 uppercase font-bold">Consumo Líquido (MB51)</span>
-          <p id="kpiIdasBalcao" class="text-xl font-black text-blue-400 mt-1">0 itens</p>
-          <span id="kpiValorMB51" class="text-[10px] text-blue-300">Líquido (261/201 - 262/202): R$ 0,00</span>
+          <span class="text-[11px] text-slate-500 uppercase font-bold">Consumo Líquido (MB51)</span>
+          <p id="kpiIdasBalcao" class="text-xl font-black text-[#1F4E79] mt-1">0 itens</p>
+          <span id="kpiValorMB51" class="text-[11px] text-blue-800 font-semibold">Líquido (261/201 - 262/202): R$ 0,00</span>
         </div>
       </div>
 
@@ -167,26 +209,26 @@
       <div id="aba-dash1" class="space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div class="card p-5">
-            <h3 class="text-sm font-bold text-white mb-3">Top 15 Aprovadores por Valor (ZRESERVA)</h3>
+            <h3 class="text-sm font-bold text-slate-800 mb-3">Top 15 Aprovadores por Valor (ZRESERVA)</h3>
             <canvas id="chartAprovadores" height="180"></canvas>
           </div>
           <div class="card p-5">
-            <h3 class="text-sm font-bold text-white mb-3">Evolução de Aprovações por Data (ZRESERVA)</h3>
+            <h3 class="text-sm font-bold text-slate-800 mb-3">Evolução de Aprovações por Data (ZRESERVA)</h3>
             <canvas id="chartLinhaDatas" height="180"></canvas>
           </div>
         </div>
 
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-800 flex flex-wrap justify-between items-center gap-2">
+          <div class="p-4 border-b border-slate-200 bg-slate-50/60 flex flex-wrap justify-between items-center gap-2">
             <div>
-              <h3 class="text-sm font-bold text-white uppercase">Relatório ZRESERVA (Cruzado com Funcionários RH e Materiais MB51)</h3>
-              <p class="text-xs text-emerald-400 font-semibold mt-0.5">👆 Clique em qualquer Nº de Reserva abaixo para expandir todos os materiais constantes nela por preço e quantidade</p>
+              <h3 class="text-sm font-bold text-slate-900 uppercase">Relatório ZRESERVA (Cruzado com Funcionários RH e Materiais MB51)</h3>
+              <p class="text-xs text-[#007600] font-semibold mt-0.5">👆 Clique em qualquer Nº de Reserva abaixo para expandir todos os materiais constantes nela por preço e quantidade</p>
             </div>
-            <span id="contadorTabZ" class="text-xs text-slate-400">Exibindo top 150 registros</span>
+            <span id="contadorTabZ" class="text-xs text-slate-500 font-semibold">Exibindo top 150 registros</span>
           </div>
           <div class="overflow-x-auto max-h-[500px]">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-950 text-slate-400 uppercase sticky top-0 z-10">
+              <thead class="bg-slate-100 text-slate-600 uppercase sticky top-0 z-10 border-b border-slate-200">
                 <tr>
                   <th class="p-3">Nº Reserva (Expandir)</th>
                   <th class="p-3">Usina (Centro)</th>
@@ -197,7 +239,7 @@
                   <th class="p-3 text-right">Valor Aprovação</th>
                 </tr>
               </thead>
-              <tbody id="tabelaZReserva" class="divide-y divide-slate-800"></tbody>
+              <tbody id="tabelaZReserva" class="divide-y divide-slate-200"></tbody>
             </table>
           </div>
         </div>
@@ -206,27 +248,27 @@
       <!-- ABA 2: REINCIDÊNCIAS COM CURVA ABC E FREQUÊNCIA DE BALCÃO EXPANSÍVEL -->
       <div id="aba-dash2" class="hidden space-y-6">
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-800 space-y-3">
+          <div class="p-4 border-b border-slate-200 bg-slate-50/60 space-y-3">
             <div class="flex flex-wrap justify-between items-center gap-2">
               <div>
-                <h3 class="text-sm font-bold text-white uppercase">1. Auditoria de Reincidências por Frota (Ordem) e Material — Curva ABC (Líquido de Estornos 262/202)</h3>
-                <p class="text-xs text-slate-400">Desconta estornos (<strong class="text-red-400">262/202</strong>) do mesmo Material, mesma Frota (<strong class="text-amber-300">Ordem</strong>) e mesma O.S. (<strong class="text-amber-300">Texto cabeçalho documento</strong>). Clique na linha para expandir as reservas e materiais.</p>
+                <h3 class="text-sm font-bold text-slate-900 uppercase">1. Auditoria de Reincidências por Frota (Ordem) e Material — Curva ABC (Líquido de Estornos 262/202)</h3>
+                <p class="text-xs text-slate-600">Desconta estornos (<strong class="text-red-600">262/202</strong>) do mesmo Material, mesma Frota (<strong class="text-amber-700">Ordem</strong>) e mesma O.S. (<strong class="text-amber-700">Texto cabeçalho documento</strong>). Clique na linha para expandir as reservas e materiais.</p>
               </div>
-              <span id="contadorReinc" class="text-xs font-bold text-orange-400"></span>
+              <span id="contadorReinc" class="text-xs font-bold text-orange-600"></span>
             </div>
 
             <!-- Botões Curva ABC -->
-            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200">
               <div class="flex flex-wrap items-center gap-2">
-                <span class="text-[11px] font-bold uppercase text-slate-400">Curva ABC:</span>
-                <button type="button" onclick="mudarCurvaABC('A')" id="btn-abc-A" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white">Curva A (80% Valor)</button>
-                <button type="button" onclick="mudarCurvaABC('B')" id="btn-abc-B" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-amber-300 border border-amber-700/50">Curva B (15%)</button>
-                <button type="button" onclick="mudarCurvaABC('C')" id="btn-abc-C" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700">Curva C (5%)</button>
-                <button type="button" onclick="mudarCurvaABC('TODAS')" id="btn-abc-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700">Todas</button>
+                <span class="text-[11px] font-bold uppercase text-slate-500">Curva ABC:</span>
+                <button type="button" onclick="mudarCurvaABC('A')" id="btn-abc-A" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white shadow-sm">Curva A (80% Valor)</button>
+                <button type="button" onclick="mudarCurvaABC('B')" id="btn-abc-B" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-amber-800 border border-amber-400 hover:bg-amber-50">Curva B (15%)</button>
+                <button type="button" onclick="mudarCurvaABC('C')" id="btn-abc-C" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Curva C (5%)</button>
+                <button type="button" onclick="mudarCurvaABC('TODAS')" id="btn-abc-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">Todas</button>
               </div>
               <div class="flex items-center gap-2">
-                <span class="text-[11px] font-bold uppercase text-slate-400">Ordenar:</span>
-                <select id="ordemReinc" onchange="renderizarTudo()" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold">
+                <span class="text-[11px] font-bold uppercase text-slate-500">Ordenar:</span>
+                <select id="ordemReinc" onchange="renderizarTudo()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-bold">
                   <option value="VALOR">Maior Valor Líquido (Curva ABC)</option>
                   <option value="VEZES">Maior Qtd. de Vezes</option>
                 </select>
@@ -236,7 +278,7 @@
 
           <div class="overflow-x-auto max-h-[540px]">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-950 text-slate-400 uppercase sticky top-0 z-10">
+              <thead class="bg-slate-100 text-slate-600 uppercase sticky top-0 z-10 border-b border-slate-200">
                 <tr>
                   <th class="p-3">Usina</th>
                   <th class="p-3">Curva</th>
@@ -247,19 +289,19 @@
                   <th class="p-3 text-right">Custo Líquido (MB51)</th>
                 </tr>
               </thead>
-              <tbody id="tabelaReincidencias" class="divide-y divide-slate-800"></tbody>
+              <tbody id="tabelaReincidencias" class="divide-y divide-slate-200"></tbody>
             </table>
           </div>
         </div>
 
         <div class="card overflow-hidden">
-          <div class="p-4 border-b border-slate-800">
-            <h3 class="text-sm font-bold text-white uppercase">2. Frequência de Retiradas no Balcão por Colaborador (Recebedor ZRESERVA + RH)</h3>
-            <p class="text-xs text-emerald-400 font-semibold mt-0.5">👆 Clique em qualquer colaborador abaixo para ver suas Reservas, e clique na Reserva para abrir os Materiais por preço e quantidade</p>
+          <div class="p-4 border-b border-slate-200 bg-slate-50/60">
+            <h3 class="text-sm font-bold text-slate-900 uppercase">2. Frequência de Retiradas no Balcão por Colaborador (Recebedor ZRESERVA + RH)</h3>
+            <p class="text-xs text-[#007600] font-semibold mt-0.5">👆 Clique em qualquer colaborador abaixo para ver suas Reservas, e clique na Reserva para abrir os Materiais por preço e quantidade</p>
           </div>
           <div class="overflow-x-auto max-h-[500px]">
             <table class="w-full text-left text-xs">
-              <thead class="bg-slate-950 text-slate-400 uppercase sticky top-0 z-10">
+              <thead class="bg-slate-100 text-slate-600 uppercase sticky top-0 z-10 border-b border-slate-200">
                 <tr>
                   <th class="p-3">Matrícula</th>
                   <th class="p-3">Funcionário (Quadro RH)</th>
@@ -270,7 +312,7 @@
                   <th class="p-3 text-right">Valor Retirado</th>
                 </tr>
               </thead>
-              <tbody id="tabelaBalcaoRH" class="divide-y divide-slate-800"></tbody>
+              <tbody id="tabelaBalcaoRH" class="divide-y divide-slate-200"></tbody>
             </table>
           </div>
         </div>
@@ -278,15 +320,15 @@
 
       <!-- ABA 3: CARGAS EXCEL -->
       <div id="aba-cargas" class="hidden space-y-6">
-        <div class="card p-4 bg-emerald-950/20 border-emerald-800/50 flex flex-wrap items-center justify-between gap-4">
+        <div class="card p-4 bg-emerald-50 border border-emerald-200 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h4 class="text-sm font-bold text-emerald-400">Regra de Negócio Ativa: Cargas Acumulativas + Abatimento de Estornos (262/202)</h4>
-            <p class="text-xs text-slate-300">
+            <h4 class="text-sm font-bold text-emerald-900">Regra de Negócio Ativa: Cargas Acumulativas + Abatimento de Estornos (262/202)</h4>
+            <p class="text-xs text-emerald-800 mt-0.5">
               • <strong>ZRESERVA e MB51:</strong> São <u>acumulativas</u> (mantêm todo o histórico anterior e substituem apenas os registros duplicados).<br/>
               • <strong>FUNCIONÁRIOS (RH):</strong> É <u>substitutiva</u> (atualiza integralmente a lista de colaboradores a cada nova carga).
             </p>
           </div>
-          <button type="button" onclick="limparBancoLocal()" class="px-4 py-2 rounded-xl bg-red-950 hover:bg-red-900 text-red-300 border border-red-800 text-xs font-bold cursor-pointer">
+          <button type="button" onclick="limparBancoLocal()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold cursor-pointer shadow-sm">
             Zerar Todo o Histórico
           </button>
         </div>
@@ -294,35 +336,35 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="card p-5 border-t-4 border-t-[#007600]">
             <div class="flex justify-between items-center">
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-950 text-emerald-400">1. Planilha Mãe SAP</span>
-              <span class="text-[10px] font-bold text-emerald-300">➕ ACUMULATIVA</span>
+              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">1. Planilha Mãe SAP</span>
+              <span class="text-[10px] font-bold text-[#007600]">➕ ACUMULATIVA</span>
             </div>
-            <h3 class="text-base font-bold text-white mt-2">ZRESERVA.XLSX</h3>
-            <p class="text-[11px] text-slate-400 mt-1 mb-3">Chave única de desduplicação: <code class="text-emerald-300">Numero da Reserva</code></p>
-            <p id="status-zreserva" class="text-xs text-emerald-400 mb-3 font-mono font-bold">0 reservas acumuladas</p>
-            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'zreserva')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-emerald-600 file:text-white file:font-bold cursor-pointer" />
+            <h3 class="text-base font-bold text-slate-900 mt-2">ZRESERVA.XLSX</h3>
+            <p class="text-[11px] text-slate-500 mt-1 mb-3">Chave única de desduplicação: <code class="text-emerald-700 font-bold">Numero da Reserva</code></p>
+            <p id="status-zreserva" class="text-xs text-[#007600] mb-3 font-mono font-bold">0 reservas acumuladas</p>
+            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'zreserva')" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-[#007600] file:text-white file:font-bold cursor-pointer" />
           </div>
 
           <div class="card p-5 border-t-4 border-t-[#FFC000]">
             <div class="flex justify-between items-center">
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-950 text-amber-400">2. Movimentações SAP</span>
-              <span class="text-[10px] font-bold text-amber-300">➕ ACUMULATIVA</span>
+              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-900">2. Movimentações SAP</span>
+              <span class="text-[10px] font-bold text-amber-700">➕ ACUMULATIVA</span>
             </div>
-            <h3 class="text-base font-bold text-white mt-2">MB51.XLSX</h3>
-            <p class="text-[11px] text-slate-400 mt-1 mb-3">Lê <code class="text-amber-300">261/201 (Saída)</code> e <code class="text-red-400">262/202 (Estorno por Frota e O.S.)</code></p>
-            <p id="status-mb51" class="text-xs text-amber-400 mb-3 font-mono font-bold">0 movimentos acumulados</p>
-            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'mb51')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold cursor-pointer" />
+            <h3 class="text-base font-bold text-slate-900 mt-2">MB51.XLSX</h3>
+            <p class="text-[11px] text-slate-500 mt-1 mb-3">Lê <code class="text-amber-800 font-bold">261/201 (Saída)</code> e <code class="text-red-600 font-bold">262/202 (Estorno por Frota e O.S.)</code></p>
+            <p id="status-mb51" class="text-xs text-amber-700 mb-3 font-mono font-bold">0 movimentos acumulados</p>
+            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'mb51')" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-[#FFC000] file:text-slate-950 file:font-bold cursor-pointer" />
           </div>
 
           <div class="card p-5 border-t-4 border-t-[#1F4E79]">
             <div class="flex justify-between items-center">
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-blue-950 text-blue-300">3. Quadro RH</span>
-              <span class="text-[10px] font-bold text-blue-300">🔄 SUBSTITUIÇÃO TOTAL</span>
+              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-blue-100 text-[#1F4E79]">3. Quadro RH</span>
+              <span class="text-[10px] font-bold text-[#1F4E79]">🔄 SUBSTITUIÇÃO TOTAL</span>
             </div>
-            <h3 class="text-base font-bold text-white mt-2">FUNCIONÁRIOS.xlsx</h3>
-            <p class="text-[11px] text-slate-400 mt-1 mb-3">Substitui a base antiga pela planilha mais recente do RH (<code class="text-blue-300">Cod.Funcionário</code>)</p>
-            <p id="status-rh" class="text-xs text-blue-400 mb-3 font-mono font-bold">0 funcionários ativos</p>
-            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'rh')" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white file:font-bold cursor-pointer" />
+            <h3 class="text-base font-bold text-slate-900 mt-2">FUNCIONÁRIOS.xlsx</h3>
+            <p class="text-[11px] text-slate-500 mt-1 mb-3">Substitui a base antiga pela planilha mais recente do RH (<code class="text-[#1F4E79] font-bold">Cod.Funcionário</code>)</p>
+            <p id="status-rh" class="text-xs text-[#1F4E79] mb-3 font-mono font-bold">0 funcionários ativos</p>
+            <input type="file" accept=".xlsx,.xls,.csv" onchange="importarPlanilha(event, 'rh')" class="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-[#1F4E79] file:text-white file:font-bold cursor-pointer" />
           </div>
         </div>
       </div>
@@ -331,14 +373,11 @@
   </div>
 
   <script>
-    // FOTO OFICIAL DO LOGO 3D GRUPO VALE DO VERDÃO EMBUTIDA EM BASE64 (NÃO PRECISA DE ARQUIVO EXTERNO)
-    const LOGO_VERDAO_B64 = "data:image/jpeg;base64,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";
-
     const USINAS = {
-      '1000': { nome: '1. Vale do Verdão', sigla: 'VV (1000)', cor: '#007600' },
-      '2000': { nome: '2. Panorama',       sigla: 'PAN (2000)', cor: '#FFC000' },
-      '3000': { nome: '3. Floresta',       sigla: 'FLO (3000)', cor: '#1F4E79' },
-      '4000': { nome: '4. Cambuí',         sigla: 'CAM (4000)', cor: '#ED7D31' }
+      '1000': { nome: '1. Vale do Verdão', sigla: 'VV (1000)', cor: '#007600', bg: '#ecfdf5', texto: '#065f46' },
+      '2000': { nome: '2. Panorama',       sigla: 'PAN (2000)', cor: '#d97706', bg: '#fffbeb', texto: '#92400e' },
+      '3000': { nome: '3. Floresta',       sigla: 'FLO (3000)', cor: '#1F4E79', bg: '#eff6ff', texto: '#1e40af' },
+      '4000': { nome: '4. Cambuí',         sigla: 'CAM (4000)', cor: '#ED7D31', bg: '#fff7ed', texto: '#9a3412' }
     };
 
     let usinaAtual = 'TODAS';
@@ -353,7 +392,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.logo-verdao').forEach(img => { img.src = LOGO_VERDAO_B64; });
       try {
         if (sessionStorage.getItem('vv_auth_ok') === '1') {
           liberarAcessoPainel();
@@ -365,9 +403,9 @@
       ['dash1', 'dash2', 'cargas'].forEach(id => {
         document.getElementById('aba-' + id).classList.toggle('hidden', id !== aba);
       });
-      document.getElementById('btn-dash1').className = aba === 'dash1' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white' : 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300';
-      document.getElementById('btn-dash2').className = aba === 'dash2' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white' : 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300';
-      document.getElementById('btn-cargas').className = aba === 'cargas' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950' : 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-amber-400';
+      document.getElementById('btn-dash1').className = aba === 'dash1' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300';
+      document.getElementById('btn-dash2').className = aba === 'dash2' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#007600] text-white shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300';
+      document.getElementById('btn-cargas').className = aba === 'cargas' ? 'px-4 py-2 rounded-xl text-xs font-bold bg-[#FFC000] text-slate-950 shadow-sm' : 'px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100';
     }
 
     function filtrarUsina(uf) {
@@ -377,10 +415,10 @@
 
     function mudarCurvaABC(curva) {
       curvaABCSel = curva;
-      document.getElementById('btn-abc-A').className = curva === 'A' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-red-300 border border-red-800/50';
-      document.getElementById('btn-abc-B').className = curva === 'B' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-amber-300 border border-amber-700/50';
-      document.getElementById('btn-abc-C').className = curva === 'C' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700';
-      document.getElementById('btn-abc-TODAS').className = curva === 'TODAS' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-900' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700';
+      document.getElementById('btn-abc-A').className = curva === 'A' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-red-700 border border-red-300 hover:bg-red-50';
+      document.getElementById('btn-abc-B').className = curva === 'B' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-amber-800 border border-amber-400 hover:bg-amber-50';
+      document.getElementById('btn-abc-C').className = curva === 'C' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-[#007600] text-white shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100';
+      document.getElementById('btn-abc-TODAS').className = curva === 'TODAS' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100';
       renderizarTudo();
     }
 
@@ -636,7 +674,7 @@
           alert(`Quadro RH (Substituição Total):\n• Base anterior substituída por ${rh.length} funcionários atualizados!`);
         }
 
-        document.getElementById('badgeStatus').textContent = '● Base Sincronizada (v3.5)';
+        document.getElementById('badgeStatus').textContent = '● Base Sincronizada (v3.6)';
         popularFiltroAprovadores();
         renderizarTudo();
         event.target.value = '';
@@ -657,18 +695,18 @@
     function gerarHTMLMateriaisDaReserva(numReserva) {
       const itens = (mapItensPorReserva[numReserva] || []).slice().sort((a, b) => b.valorSinal - a.valorSinal);
       if (!itens.length) {
-        return `<div class="text-xs text-slate-400 italic p-2">Nenhum item detalhado encontrado na MB51 para a Reserva #${numReserva} (ou a planilha MB51 correspondente ainda não foi carregada).</div>`;
+        return `<div class="text-xs text-slate-500 italic p-2 bg-white rounded-lg border border-slate-200">Nenhum item detalhado encontrado na MB51 para a Reserva #${numReserva}.</div>`;
       }
       const somaVal = itens.reduce((acc, i) => acc + i.valorSinal, 0);
       const somaQtd = itens.reduce((acc, i) => acc + i.qtdSinal, 0);
       return `
-        <div class="rounded-xl border border-slate-700 overflow-hidden bg-slate-900/90 mt-1">
-          <div class="px-3 py-2 bg-slate-950 border-b border-slate-800 flex flex-wrap justify-between items-center text-[11px]">
-            <span class="font-bold text-amber-300">📦 Materiais Constantes na Reserva #${numReserva} (${itens.length} itens na MB51)</span>
-            <span class="font-bold text-emerald-400">Qtd Líquida: ${somaQtd} • Total Líquido MB51: R$ ${somaVal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+        <div class="rounded-xl border border-slate-300 overflow-hidden bg-white shadow-sm mt-1">
+          <div class="px-3 py-2 bg-slate-100 border-b border-slate-200 flex flex-wrap justify-between items-center text-[11px]">
+            <span class="font-bold text-slate-800">📦 Materiais Constantes na Reserva #${numReserva} (${itens.length} itens na MB51)</span>
+            <span class="font-bold text-[#007600]">Qtd Líquida: ${somaQtd} • Total Líquido MB51: R$ ${somaVal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </div>
           <table class="w-full text-left text-[11px]">
-            <thead class="bg-slate-950/60 text-slate-400 uppercase">
+            <thead class="bg-slate-50 text-slate-600 uppercase border-b border-slate-200">
               <tr>
                 <th class="p-2">Cód. Material</th>
                 <th class="p-2">Descrição do Material</th>
@@ -679,21 +717,21 @@
                 <th class="p-2 text-right">Valor Total</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800/70">
+            <tbody class="divide-y divide-slate-200">
               ${itens.map(it => {
                 const unit = it.qtd > 0 ? (it.valor / it.qtd) : it.valor;
                 const badgeMov = it.ehEstorno
-                  ? `<span class="px-1.5 py-0.5 rounded bg-red-950 text-red-300 border border-red-700 font-bold">${it.tipo_mov} (Estorno)</span>`
-                  : `<span class="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-700 font-bold">${it.tipo_mov} (Saída)</span>`;
+                  ? `<span class="px-1.5 py-0.5 rounded bg-red-100 text-red-800 border border-red-300 font-bold">${it.tipo_mov} (Estorno)</span>`
+                  : `<span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">${it.tipo_mov} (Saída)</span>`;
                 return `
-                  <tr class="${it.ehEstorno ? 'bg-red-950/20 text-red-200' : 'hover:bg-slate-800/50'}">
-                    <td class="p-2 font-mono font-bold text-amber-300">${it.material}</td>
-                    <td class="p-2 font-semibold text-white">${it.desc_material}</td>
-                    <td class="p-2 font-mono text-slate-300">${it.ordem || '-'} ${it.cabecalho_os ? `<span class="text-slate-400">(O.S: ${it.cabecalho_os})</span>` : ''}</td>
+                  <tr class="${it.ehEstorno ? 'bg-red-50/70 text-red-900' : 'hover:bg-slate-50'}">
+                    <td class="p-2 font-mono font-bold text-amber-800">${it.material}</td>
+                    <td class="p-2 font-semibold text-slate-900">${it.desc_material}</td>
+                    <td class="p-2 font-mono text-slate-700">${it.ordem || '-'} ${it.cabecalho_os ? `<span class="text-slate-500">(O.S: ${it.cabecalho_os})</span>` : ''}</td>
                     <td class="p-2 text-center">${badgeMov}</td>
-                    <td class="p-2 text-right font-bold ${it.ehEstorno ? 'text-red-400' : 'text-slate-200'}">${it.ehEstorno ? '-' : ''}${it.qtd}</td>
-                    <td class="p-2 text-right text-slate-400">R$ ${unit.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td class="p-2 text-right font-black ${it.ehEstorno ? 'text-red-400' : 'text-emerald-400'}">${it.ehEstorno ? '- ' : ''}R$ ${it.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="p-2 text-right font-bold ${it.ehEstorno ? 'text-red-600' : 'text-slate-800'}">${it.ehEstorno ? '-' : ''}${it.qtd}</td>
+                    <td class="p-2 text-right text-slate-600">R$ ${unit.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="p-2 text-right font-black ${it.ehEstorno ? 'text-red-600' : 'text-[#007600]'}">${it.ehEstorno ? '- ' : ''}R$ ${it.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                   </tr>
                 `;
               }).join('')}
@@ -715,7 +753,6 @@
       const dataFim = document.getElementById('dataFim').value;
       const criterioOrdem = document.getElementById('ordemReinc') ? document.getElementById('ordemReinc').value : 'VALOR';
 
-      // Data de corte de 12 meses atrás baseada na data mais recente da base
       let maxData = '';
       zreserva.forEach(z => { if (z.data && z.data > maxData) maxData = z.data; });
       mb51.forEach(m => { if (m.data && m.data > maxData) maxData = m.data; });
@@ -729,7 +766,6 @@
       const mapRH = {};
       rh.forEach(f => { mapRH[f.matricula] = f; });
 
-      // Indexar todos os itens da MB51 por Nº de Reserva para expansão imediata em qualquer tela
       mapItensPorReserva = {};
       mb51.forEach(m => {
         if (!m.reserva) return;
@@ -746,7 +782,6 @@
         mapItensPorReserva[m.reserva].push(itemFormatado);
       });
 
-      // Filtrar ZRESERVA
       const zFiltrada = zreserva.filter(z => {
         if (usinaAtual !== 'TODAS' && z.centro !== usinaAtual) return false;
         if (usar12M && z.data && z.data < dataCorte12M) return false;
@@ -764,39 +799,35 @@
         return true;
       });
 
-      // Renderizar Tabela ZRESERVA com clique para expandir materiais por valor
       document.getElementById('contadorTabZ').textContent = `Exibindo ${Math.min(150, zFiltrada.length)} de ${zFiltrada.length} reservas`;
       document.getElementById('tabelaZReserva').innerHTML = zFiltrada.slice(0, 150).map((z, idx) => {
-        const infoUsina = USINAS[z.centro] || { sigla: z.centro, cor: '#475569' };
+        const infoUsina = USINAS[z.centro] || { sigla: z.centro, cor: '#475569', bg: '#f1f5f9', texto: '#334155' };
         const func = mapRH[z.recebedor];
         const nomeRec = func ? `${func.nome} (${z.recebedor})` : (z.recebedor || '-');
         const qtdItensMB51 = (mapItensPorReserva[z.reserva] || []).length;
         const idExpZ = `exp-z-${idx}`;
         return `
           <tr onclick="toggleElemento('${idExpZ}')" class="linha-clicavel">
-            <td class="p-3 font-mono font-bold text-emerald-400 whitespace-nowrap">
-              <span class="px-2 py-1 rounded bg-emerald-950/80 border border-emerald-700">▶ #${z.reserva}</span>
-              <span class="text-[10px] text-slate-400 ml-1">(${qtdItensMB51} itens)</span>
+            <td class="p-3 font-mono font-bold text-[#007600] whitespace-nowrap">
+              <span class="px-2 py-1 rounded bg-emerald-50 border border-emerald-300">▶ #${z.reserva}</span>
+              <span class="text-[10px] text-slate-500 ml-1">(${qtdItensMB51} itens)</span>
             </td>
-            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.cor}33; color:#fff; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span></td>
-            <td class="p-3 font-mono font-bold text-amber-300">${z.ordem || '-'}</td>
-            <td class="p-3 font-bold text-white">${z.aprovador}</td>
-            <td class="p-3 text-slate-300">${nomeRec}</td>
-            <td class="p-3 text-slate-400 whitespace-nowrap">${z.data} <span class="text-[10px] text-slate-500">${formatarHoraSAP(z.hora)}</span></td>
-            <td class="p-3 text-right font-bold text-emerald-400 whitespace-nowrap">R$ ${z.valor_aprov.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.bg}; color:${infoUsina.texto}; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span></td>
+            <td class="p-3 font-mono font-bold text-amber-800">${z.ordem || '-'}</td>
+            <td class="p-3 font-bold text-slate-900">${z.aprovador}</td>
+            <td class="p-3 text-slate-700 font-medium">${nomeRec}</td>
+            <td class="p-3 text-slate-600 whitespace-nowrap">${z.data} <span class="text-[10px] text-slate-400">${formatarHoraSAP(z.hora)}</span></td>
+            <td class="p-3 text-right font-bold text-[#007600] whitespace-nowrap">R$ ${z.valor_aprov.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
-          <tr id="${idExpZ}" class="hidden bg-slate-950/95">
-            <td colspan="7" class="p-3 border-l-4 border-l-emerald-500">
+          <tr id="${idExpZ}" class="hidden bg-slate-100/80">
+            <td colspan="7" class="p-3 border-l-4 border-l-[#007600]">
               ${gerarHTMLMateriaisDaReserva(z.reserva)}
             </td>
           </tr>
         `;
       }).join('');
 
-      // =========================================================================
       // REINCIDÊNCIAS MB51 COM ABATIMENTO DE ESTORNO (262/202) POR FROTA + MATERIAL + O.S. (CABEÇALHO)
-      // =========================================================================
-      // Passo A: Agrupa por (Centro + Frota/Ordem + Material + Texto Cabeçalho O.S.) para abater estornos 262/202 das saídas 261/201
       const gruposPorOS = {};
       let qtdMovLiquido = 0;
       let somaMB51Liquida = 0;
@@ -839,7 +870,6 @@
 
         if (!ordemFrota || !m.material) return;
 
-        // Chave de encontro de Saída x Estorno: Centro + Frota (Ordem) + Material + O.S. (Texto cabeçalho documento)
         const chaveOS = `${centroRef}_${ordemFrota}_${m.material}_${osCabecalho}`;
         if (!gruposPorOS[chaveOS]) {
           gruposPorOS[chaveOS] = {
@@ -879,14 +909,12 @@
         });
       });
 
-      // Passo B: Consolida o saldo líquido (após descontar estornos da mesma Frota + Material + O.S.) por Frota + Material
       const gruposReinc = {};
       Object.values(gruposPorOS).forEach(gOS => {
         const qtdLiquidaOS = gOS.qtdSaida - gOS.qtdEstorno;
         const valLiquidoOS = Math.max(0, gOS.valSaida - gOS.valEstorno);
         const vezesLiquidasOS = Math.max(0, gOS.vezesSaida - gOS.vezesEstorno);
 
-        // Se a saída daquela O.S. foi integralmente estornada (qtdLiquidaOS <= 0 ou vezesLiquidasOS <= 0), ela é descontada!
         if (qtdLiquidaOS <= 0 || vezesLiquidasOS <= 0) return;
 
         const chaveFrotaMat = `${gOS.centro}_${gOS.ordem}_${gOS.material}`;
@@ -910,7 +938,6 @@
         gOS.movimentos.forEach(mv => gruposReinc[chaveFrotaMat].ocorrencias.push(mv));
       });
 
-      // Filtra reincidências líquidas >= 2 vezes e calcula a Curva ABC por Valor
       const todasReinc = Object.values(gruposReinc)
         .filter(g => g.vezesLiquidas >= 2)
         .sort((a, b) => b.custoTotal - a.custoTotal || b.vezesLiquidas - a.vezesLiquidas);
@@ -943,60 +970,60 @@
 
       document.getElementById('contadorReinc').textContent = `${listaReinc.length} reincidências na Curva ${curvaABCSel} (Total Geral: ${todasReinc.length})`;
       document.getElementById('tabelaReincidencias').innerHTML = listaReinc.slice(0, 120).map((g, idx) => {
-        const infoUsina = USINAS[g.centro] || { sigla: g.centro, cor: '#475569' };
+        const infoUsina = USINAS[g.centro] || { sigla: g.centro, cor: '#475569', bg: '#f1f5f9', texto: '#334155' };
         const idReinc = `exp-reinc-${idx}`;
         const badgeCurva = g.curva === 'A'
-          ? '<span class="px-2 py-0.5 rounded bg-red-600/20 text-red-300 border border-red-500 font-black text-[11px]">Curva A</span>'
+          ? '<span class="px-2 py-0.5 rounded bg-red-100 text-red-800 border border-red-300 font-black text-[11px]">Curva A</span>'
           : (g.curva === 'B'
-              ? '<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500 font-bold text-[11px]">Curva B</span>'
-              : '<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-600 font-bold text-[11px]">Curva C</span>');
+              ? '<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 font-bold text-[11px]">Curva B</span>'
+              : '<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300 font-bold text-[11px]">Curva C</span>');
 
         const aprovadoresUnicos = [...new Set(g.ocorrencias.map(o => o.aprovador))].slice(0, 2).join(', ');
 
         return `
           <tr onclick="toggleElemento('${idReinc}')" class="linha-clicavel align-middle">
-            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.cor}33; color:#fff; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span></td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.bg}; color:${infoUsina.texto}; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span></td>
             <td class="p-3">${badgeCurva}</td>
-            <td class="p-3 font-mono font-black text-white text-sm">${g.ordem}</td>
+            <td class="p-3 font-mono font-black text-slate-900 text-sm">${g.ordem}</td>
             <td class="p-3">
-              <span class="font-bold text-amber-300 block">${g.desc_material}</span>
-              <span class="font-mono text-[11px] text-slate-400">Cód. Material: ${g.material} • Qtd Líquida: ${g.qtdLiquidaTotal}</span>
+              <span class="font-bold text-slate-900 block">${g.desc_material}</span>
+              <span class="font-mono text-[11px] text-slate-500">Cód. Material: ${g.material} • Qtd Líquida: ${g.qtdLiquidaTotal}</span>
             </td>
             <td class="p-3 text-center">
-              <span class="px-2.5 py-1 rounded-full bg-red-950 text-red-300 border border-red-700 font-black">${g.vezesLiquidas}x</span>
-              ${g.estornosAbatidos > 0 ? `<span class="block text-[10px] text-emerald-400 mt-0.5">(-${g.estornosAbatidos} estorno)</span>` : ''}
+              <span class="px-2.5 py-1 rounded-full bg-red-100 text-red-800 border border-red-300 font-black">${g.vezesLiquidas}x</span>
+              ${g.estornosAbatidos > 0 ? `<span class="block text-[10px] text-[#007600] font-bold mt-0.5">(-${g.estornosAbatidos} estorno)</span>` : ''}
             </td>
             <td class="p-3">
               <div class="flex items-center justify-between gap-2">
-                <span class="text-[11px] text-emerald-400 font-semibold truncate max-w-[220px]">Aprov: ${aprovadoresUnicos}</span>
-                <span class="px-2.5 py-1 rounded-lg bg-slate-800 text-amber-300 border border-slate-700 text-[11px] font-bold whitespace-nowrap">▶ Expandir (${g.ocorrencias.length})</span>
+                <span class="text-[11px] text-[#007600] font-bold truncate max-w-[220px]">Aprov: ${aprovadoresUnicos}</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-[11px] font-bold whitespace-nowrap">▶ Expandir (${g.ocorrencias.length})</span>
               </div>
             </td>
-            <td class="p-3 text-right font-black text-red-400 whitespace-nowrap">
+            <td class="p-3 text-right font-black text-red-600 whitespace-nowrap">
               R$ ${g.custoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               <span class="block text-[10px] text-slate-500 font-normal">${g.percIndividual.toFixed(1)}% do valor</span>
             </td>
           </tr>
-          <tr id="${idReinc}" class="hidden bg-slate-950/95">
+          <tr id="${idReinc}" class="hidden bg-slate-100/90">
             <td colspan="7" class="p-4 border-l-4 border-l-orange-500 space-y-2">
-              <div class="text-xs font-bold text-white mb-2">
-                Reservas envolvidas na Frota <span class="text-amber-300">${g.ordem}</span> • Material <span class="text-amber-300">${g.material} (${g.desc_material})</span> — Clique na Reserva para ver todos os materiais dela:
+              <div class="text-xs font-bold text-slate-800 mb-2">
+                Reservas envolvidas na Frota <span class="text-orange-700">${g.ordem}</span> • Material <span class="text-orange-700">${g.material} (${g.desc_material})</span> — Clique na Reserva para ver todos os materiais dela:
               </div>
               <div class="space-y-2">
                 ${g.ocorrencias.map((o, subIdx) => {
                   const idSubRes = `sub-reinc-${idx}-${subIdx}`;
                   return `
-                    <div class="p-2.5 rounded-xl bg-slate-900 border ${o.ehEstorno ? 'border-red-700' : 'border-slate-800'}">
+                    <div class="p-2.5 rounded-xl bg-white border ${o.ehEstorno ? 'border-red-300' : 'border-slate-300'} shadow-sm">
                       <div onclick="toggleElemento('${idSubRes}')" class="flex flex-wrap justify-between items-center gap-2 text-xs cursor-pointer">
                         <div class="flex items-center gap-2">
-                          <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-600/50 font-mono font-bold">▶ Reserva #${o.reserva}</span>
-                          <span class="text-slate-300">Data: <strong>${o.data}</strong> • O.S (Cabeçalho): <strong>${o.os}</strong></span>
-                          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${o.ehEstorno ? 'bg-red-950 text-red-300' : 'bg-emerald-950 text-emerald-300'}">Mov. ${o.tipo_mov} (${o.ehEstorno ? '-' : '+'}${o.qtd})</span>
+                          <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-300 font-mono font-bold">▶ Reserva #${o.reserva}</span>
+                          <span class="text-slate-600">Data: <strong>${o.data}</strong> • O.S (Cabeçalho): <strong>${o.os}</strong></span>
+                          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${o.ehEstorno ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'}">Mov. ${o.tipo_mov} (${o.ehEstorno ? '-' : '+'}${o.qtd})</span>
                         </div>
                         <div class="flex items-center gap-3">
-                          <span class="text-emerald-400 font-bold">Aprovador: ${o.aprovador}</span>
-                          <span class="text-slate-400">Recebedor: ${o.recebedor}</span>
-                          <span class="font-black ${o.ehEstorno ? 'text-red-400' : 'text-white'}">${o.ehEstorno ? '- ' : ''}R$ ${o.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                          <span class="text-[#007600] font-bold">Aprovador: ${o.aprovador}</span>
+                          <span class="text-slate-600">Recebedor: ${o.recebedor}</span>
+                          <span class="font-black ${o.ehEstorno ? 'text-red-600' : 'text-slate-900'}">${o.ehEstorno ? '- ' : ''}R$ ${o.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
                       </div>
                       <div id="${idSubRes}" class="hidden mt-2">
@@ -1011,9 +1038,7 @@
         `;
       }).join('');
 
-      // =========================================================================
-      // 2. FREQUÊNCIA DE RETIRADAS NO BALCÃO POR COLABORADOR (COM EXPANSÃO DE RESERVAS E MATERIAIS)
-      // =========================================================================
+      // 2. FREQUÊNCIA DE RETIRADAS NO BALCÃO POR COLABORADOR
       const gruposBalcao = {};
       zFiltrada.forEach(z => {
         if (!z.recebedor) return;
@@ -1039,39 +1064,39 @@
 
       const listaBalcao = Object.values(gruposBalcao).sort((a, b) => b.qtd - a.qtd);
       document.getElementById('tabelaBalcaoRH').innerHTML = listaBalcao.slice(0, 100).map((b, idx) => {
-        const infoUsina = USINAS[b.centro] || { sigla: b.centro, cor: '#475569' };
+        const infoUsina = USINAS[b.centro] || { sigla: b.centro, cor: '#475569', bg: '#f1f5f9', texto: '#334155' };
         const topAprov = Object.entries(b.aprovadores).sort((a, c) => c[1] - a[1]).slice(0, 3).map(x => `${x[0]} (${x[1]}x)`).join(', ');
         const idColab = `exp-colab-${idx}`;
         return `
           <tr onclick="toggleElemento('${idColab}')" class="linha-clicavel">
-            <td class="p-3 font-mono font-bold text-slate-300">${b.matricula}</td>
-            <td class="p-3 font-bold text-white">${b.nome}</td>
-            <td class="p-3 text-slate-400">${b.cargo} ${b.secao ? `<span class="block text-[10px] text-slate-500">Seção: ${b.secao}</span>` : ''}</td>
-            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.cor}33; color:#fff; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span></td>
-            <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full bg-blue-950 text-blue-300 border border-blue-700 font-black">▶ ${b.qtd}x</span></td>
-            <td class="p-3 text-emerald-400 text-[11px] font-semibold">${topAprov}</td>
-            <td class="p-3 text-right font-bold text-white whitespace-nowrap">R$ ${b.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td class="p-3 font-mono font-bold text-slate-700">${b.matricula}</td>
+            <td class="p-3 font-bold text-slate-900">${b.nome}</td>
+            <td class="p-3 text-slate-600">${b.cargo} ${b.secao ? `<span class="block text-[10px] text-slate-400">Seção: ${b.secao}</span>` : ''}</td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.bg}; color:${infoUsina.texto}; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span></td>
+            <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full bg-blue-100 text-[#1F4E79] border border-blue-300 font-black">▶ ${b.qtd}x</span></td>
+            <td class="p-3 text-[#007600] text-[11px] font-bold">${topAprov}</td>
+            <td class="p-3 text-right font-bold text-slate-900 whitespace-nowrap">R$ ${b.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           </tr>
-          <tr id="${idColab}" class="hidden bg-slate-950/95">
-            <td colspan="7" class="p-4 border-l-4 border-l-blue-500 space-y-2">
-              <div class="text-xs font-bold text-white mb-2">
-                Reservas retiradas por <span class="text-blue-300">${b.nome} (${b.matricula})</span> — Clique em qualquer Reserva abaixo para abrir os materiais por valor e quantidade:
+          <tr id="${idColab}" class="hidden bg-slate-100/90">
+            <td colspan="7" class="p-4 border-l-4 border-l-[#1F4E79] space-y-2">
+              <div class="text-xs font-bold text-slate-800 mb-2">
+                Reservas retiradas por <span class="text-[#1F4E79]">${b.nome} (${b.matricula})</span> — Clique em qualquer Reserva abaixo para abrir os materiais por valor e quantidade:
               </div>
               <div class="space-y-2 max-h-96 overflow-y-auto pr-1">
                 ${b.reservasLista.slice(0, 50).map((zr, rIdx) => {
                   const idResColab = `sub-colab-${idx}-${rIdx}`;
                   const qtdIt = (mapItensPorReserva[zr.reserva] || []).length;
                   return `
-                    <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                    <div class="p-2.5 rounded-xl bg-white border border-slate-300 shadow-sm">
                       <div onclick="toggleElemento('${idResColab}')" class="flex flex-wrap justify-between items-center gap-2 text-xs cursor-pointer">
                         <div class="flex items-center gap-2">
-                          <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-700 font-mono font-bold">▶ Reserva #${zr.reserva}</span>
-                          <span class="text-amber-300 font-mono font-bold">Frota: ${zr.ordem || '-'}</span>
-                          <span class="text-slate-400">${zr.data} ${formatarHoraSAP(zr.hora)} (${qtdIt} itens MB51)</span>
+                          <span class="px-2 py-0.5 rounded bg-emerald-50 text-[#007600] border border-emerald-300 font-mono font-bold">▶ Reserva #${zr.reserva}</span>
+                          <span class="text-amber-800 font-mono font-bold">Frota: ${zr.ordem || '-'}</span>
+                          <span class="text-slate-500">${zr.data} ${formatarHoraSAP(zr.hora)} (${qtdIt} itens MB51)</span>
                         </div>
                         <div class="flex items-center gap-3">
-                          <span class="text-emerald-400 font-bold">Aprovador: ${zr.aprovador}</span>
-                          <span class="font-black text-white">R$ ${(zr.valor_ret || zr.valor_aprov).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                          <span class="text-[#007600] font-bold">Aprovador: ${zr.aprovador}</span>
+                          <span class="font-black text-slate-900">R$ ${(zr.valor_ret || zr.valor_aprov).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         </div>
                       </div>
                       <div id="${idResColab}" class="hidden mt-2">
@@ -1122,7 +1147,10 @@
         },
         options: {
           plugins: { legend: { display: false } },
-          scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } } }, y: { ticks: { color: '#94a3b8' } } }
+          scales: {
+            x: { ticks: { color: '#334155', font: { size: 10, weight: 'bold' } }, grid: { color: '#e2e8f0' } },
+            y: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
+          }
         }
       });
 
@@ -1141,15 +1169,18 @@
           datasets: [{
             label: 'Aprovações no Dia (R$)',
             data: datas.map(dt => somaData[dt]),
-            borderColor: '#FFC000',
-            backgroundColor: '#FFC00033',
+            borderColor: '#d97706',
+            backgroundColor: '#fef3c7',
             fill: true,
             tension: 0.25
           }]
         },
         options: {
           plugins: { legend: { display: false } },
-          scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } }
+          scales: {
+            x: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } },
+            y: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
+          }
         }
       });
     }
