@@ -19,6 +19,7 @@
     .linha-clicavel { transition: background-color 0.15s ease; cursor: pointer; }
     .linha-clicavel:hover { background-color: #f8fafc; }
     .linha-selecionada { background-color: #ecfdf5 !important; }
+    .linha-tratada { background-color: #f0fdf4; }
   </style>
   <script>
     var USUARIOS_PADRAO = [
@@ -120,7 +121,7 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="text-xs uppercase tracking-widest text-[#007600] font-extrabold">Grupo Vale do Verdão S/A</span>
-          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">v4.1 • Somente Saídas Reais</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">v4.2 • Tratativas & Grupos</span>
         </div>
         <h1 class="text-2xl font-black text-slate-900 mt-1">Aprovadores de Reserva</h1>
       </div>
@@ -166,10 +167,10 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="font-black text-base text-slate-900">APROVADORES DE RESERVA</h1>
-              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">● Base Pronta (v4.1)</span>
+              <span id="badgeStatus" class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">● Base Pronta (v4.2)</span>
               <span id="badgeUsuarioLogado" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 font-semibold hidden md:inline-block"></span>
             </div>
-            <p class="text-[11px] text-slate-500 font-medium">Frota + Texto Cabeçalho (O.S.) + Material • Estornos 262 Calculados e Ocultos • Doc.material • Datas DD/MM/AAAA</p>
+            <p class="text-[11px] text-slate-500 font-medium">Curva ABC • Filtro por Grupo de Material • Gestão de Tratativas (Tratados / Não Tratados com Observação)</p>
           </div>
         </div>
         <div class="flex flex-wrap gap-1.5">
@@ -219,6 +220,9 @@
             <span id="contadorFlegados" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-300">
               ☑️ 0 itens flegados (Exportando todos os itens filtrados na tela)
             </span>
+            <button type="button" onclick="tratarSelecionadosEmLote()" id="btnTratarLote" class="hidden px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm cursor-pointer">
+              ✅ Marcar Flegados como Tratados
+            </button>
             <button type="button" onclick="limparSelecaoFlegados()" id="btnLimparFlegados" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-200 hover:bg-slate-300 text-slate-800 cursor-pointer">
               Desmarcar Todos
             </button>
@@ -252,9 +256,9 @@
           <span class="text-[11px] text-slate-500">Flegue ou clique p/ ver os materiais</span>
         </div>
         <div class="card p-4 border-l-4 border-l-[#ED7D31]">
-          <span class="text-[11px] text-slate-500 uppercase font-bold">Reincidências Reais (Líquidas)</span>
+          <span class="text-[11px] text-slate-500 uppercase font-bold">Reincidências na Visão Atual</span>
           <p id="kpiReincidencias" class="text-xl font-black text-orange-600 mt-1">0 alertas</p>
-          <span id="kpiDetCurvaA" class="text-[11px] text-orange-700 font-semibold">Estornos 262 calculados e abatidos</span>
+          <span id="kpiDetCurvaA" class="text-[11px] text-orange-700 font-semibold">Curva A: 0 itens</span>
         </div>
         <div class="card p-4 border-l-4 border-l-[#1F4E79]">
           <span class="text-[11px] text-slate-500 uppercase font-bold">Saídas Reais Líquidas (MB51)</span>
@@ -306,28 +310,65 @@
         </div>
       </div>
 
-      <!-- ABA 2: EXCLUSIVA PARA REINCIDÊNCIAS COM CURVA ABC (EXIBE SOMENTE AS REAIS) -->
+      <!-- ABA 2: EXCLUSIVA PARA REINCIDÊNCIAS COM CURVA ABC + GRUPO DE MATERIAL + TRATATIVAS -->
       <div id="aba-dash2" class="hidden space-y-6">
         <div class="card overflow-hidden">
           <div class="p-4 border-b border-slate-200 bg-slate-50/60 space-y-3">
             <div class="flex flex-wrap justify-between items-center gap-2">
               <div>
-                <h3 class="text-sm font-bold text-slate-900 uppercase">Auditoria de Reincidências Reais: Frota (Ordem) + Texto Cabeçalho (O.S.) + Material — Curva ABC</h3>
+                <h3 class="text-sm font-bold text-slate-900 uppercase">Auditoria de Reincidências Reais: Curva ABC • Grupo de Mercadoria • Gestão de Tratativas</h3>
                 <p class="text-xs text-slate-600">
-                  Os estornos (<strong class="text-red-600">262/202</strong>) são abatidos automaticamente nos bastidores (1º pelo mesmo <strong class="text-amber-800">Texto Cabeçalho + Frota</strong>, ou sucessivamente) e <strong class="text-[#007600]">apenas as retiradas reais líquidas são exibidas na expansão</strong>.
+                  Filtre por <strong class="text-slate-900">Grupo/Tipo de Material</strong> (ex.: ocultar pneus, facões e parafusos) ou digite uma <strong class="text-[#007600]">Observação</strong> e flegue <strong class="text-[#007600]">✅ Tratado</strong> para mover a divergência para a lista de tratados.
                 </p>
               </div>
               <span id="contadorReinc" class="text-xs font-bold text-orange-600"></span>
             </div>
 
-            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="text-[11px] font-bold uppercase text-slate-500">Curva ABC:</span>
+            <!-- LINHA 1 DE CONTROLES: CURVA ABC + STATUS DE TRATATIVA (NÃO TRATADOS / TRATADOS / TODOS) -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-200">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-[11px] font-bold uppercase text-slate-500 mr-1">Curva ABC:</span>
                 <button type="button" onclick="mudarCurvaABC('A')" id="btn-abc-A" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-600 text-white shadow-sm cursor-pointer">Curva A (80% Valor)</button>
                 <button type="button" onclick="mudarCurvaABC('B')" id="btn-abc-B" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-amber-800 border border-amber-400 hover:bg-amber-50 cursor-pointer">Curva B (15%)</button>
                 <button type="button" onclick="mudarCurvaABC('C')" id="btn-abc-C" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 cursor-pointer">Curva C (5%)</button>
                 <button type="button" onclick="mudarCurvaABC('TODAS')" id="btn-abc-TODAS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 cursor-pointer">Todas</button>
               </div>
+
+              <!-- Filtro de Status: Não Tratados (Pendentes) vs Tratados -->
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-[11px] font-bold uppercase text-slate-500 mr-1">Status Auditoria:</span>
+                <button type="button" onclick="mudarFiltroTratativa('PENDENTES')" id="btn-trat-PENDENTES" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-sm cursor-pointer">
+                  ⏳ Não Tratados (0)
+                </button>
+                <button type="button" onclick="mudarFiltroTratativa('TRATADOS')" id="btn-trat-TRATADOS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-[#007600] border border-emerald-400 hover:bg-emerald-50 cursor-pointer">
+                  ✅ Tratados / Auditados (0)
+                </button>
+                <button type="button" onclick="mudarFiltroTratativa('TODOS')" id="btn-trat-TODOS" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 cursor-pointer">
+                  📋 Todos
+                </button>
+              </div>
+            </div>
+
+            <!-- LINHA 2 DE CONTROLES: FILTRO POR GRUPO DE MERCADORIA / TIPO DE MATERIAL + ORDENAÇÃO -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-200/70">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-[11px] font-bold uppercase text-slate-600">Grupo / Tipo de Material:</span>
+                <select id="filtroGrupoMaterial" onchange="renderizarTudo()" class="bg-white border-2 border-emerald-600 rounded-lg px-3 py-1.5 text-xs text-slate-900 font-bold shadow-sm">
+                  <option value="TODOS">📦 Todos os Grupos de Mercadoria</option>
+                  <option value="OCULTAR_NORMAIS">🔥 Ocultar Recorrência Normal (Sem Pneus, Facões, Parafusos e Consumo)</option>
+                  <option value="SOMENTE_NORMAIS">🔄 Somente Itens de Troca/Desgaste Normal (Pneus, Facões, Parafusos...)</option>
+                  <option value="PNEUS_RODAGEM">🛞 Pneus, Câmaras & Rodagem</option>
+                  <option value="DESGASTE_COLHEDORA">🔪 Facões, Faquinhas & Corte Colhedora</option>
+                  <option value="FIXADORES_ABRACADEIRAS">🔩 Parafusos, Porcas, Arruelas & Abraçadeiras</option>
+                  <option value="FILTROS_LUBRIFICANTES">🛢️ Filtros, Óleos & Lubrificação</option>
+                  <option value="CONSUMO_QUIMICOS_OFICINA">🧪 Químicos, Solda & Consumo de Oficina</option>
+                  <option value="HIDRAULICA_VEDACAO">🔧 Hidráulica, Mangueiras & Vedações</option>
+                  <option value="ELETRICA_ILUMINACAO">⚡ Elétrica, Iluminação & Baterias</option>
+                  <option value="MECANICA_TRANSMISSAO">⚙️ Mecânica Pesada, Rolamentos & Transmissão</option>
+                  <option value="PECAS_GERAIS">🛠️ Outras Peças & Componentes Específicos</option>
+                </select>
+              </div>
+
               <div class="flex items-center gap-2">
                 <span class="text-[11px] font-bold uppercase text-slate-500">Ordenar:</span>
                 <select id="ordemReinc" onchange="renderizarTudo()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-bold">
@@ -339,20 +380,20 @@
             </div>
           </div>
 
-          <div class="overflow-x-auto max-h-[600px]">
+          <div class="overflow-x-auto max-h-[640px]">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 uppercase sticky top-0 z-10 border-b border-slate-200">
                 <tr>
                   <th class="p-3 w-10 text-center">
                     <input type="checkbox" id="chkAllR" onchange="marcarTodosTabela('R', this.checked)" class="rounded text-[#007600] cursor-pointer" title="Selecionar todas da tela" />
                   </th>
-                  <th class="p-3">Usina</th>
-                  <th class="p-3">Curva</th>
-                  <th class="p-3">Frota (Ordem) & O.S.</th>
-                  <th class="p-3">Material & Descrição</th>
+                  <th class="p-3">Usina / Curva</th>
+                  <th class="p-3">Frota & O.S.</th>
+                  <th class="p-3">Material & Grupo</th>
                   <th class="p-3 text-center">Vezes Reais</th>
-                  <th class="p-3">Aprovadores / Expandir Saídas Reais</th>
-                  <th class="p-3 text-right">Custo Líquido (MB51)</th>
+                  <th class="p-3">Aprovadores / Expandir</th>
+                  <th class="p-3 min-w-[290px]">Tratativa & Observação (Flegar Tratado)</th>
+                  <th class="p-3 text-right">Custo Líquido</th>
                 </tr>
               </thead>
               <tbody id="tabelaReincidencias" class="divide-y divide-slate-200"></tbody>
@@ -558,13 +599,62 @@
       '4000': { nome: '4. Cambuí',         sigla: 'CAM (4000)', cor: '#ED7D31', bg: '#fff7ed', texto: '#9a3412' }
     };
 
+    const NOMES_GRUPOS_MATERIAIS = {
+      'PNEUS_RODAGEM':            { label: '🛞 Pneus & Rodagem', normal: true, cor: 'bg-slate-100 text-slate-700 border-slate-300' },
+      'DESGASTE_COLHEDORA':       { label: '🔪 Facões, Faquinhas & Corte', normal: true, cor: 'bg-amber-50 text-amber-900 border-amber-300' },
+      'FIXADORES_ABRACADEIRAS':   { label: '🔩 Parafusos & Fixadores', normal: true, cor: 'bg-slate-100 text-slate-600 border-slate-300' },
+      'CONSUMO_QUIMICOS_OFICINA': { label: '🧪 Químicos & Consumo Oficina', normal: true, cor: 'bg-teal-50 text-teal-800 border-teal-200' },
+      'FILTROS_LUBRIFICANTES':    { label: '🛢️ Filtros & Lubrificação', normal: false, cor: 'bg-yellow-50 text-yellow-900 border-yellow-300' },
+      'HIDRAULICA_VEDACAO':       { label: '🔧 Hidráulica & Vedações', normal: false, cor: 'bg-blue-50 text-blue-800 border-blue-200' },
+      'ELETRICA_ILUMINACAO':      { label: '⚡ Elétrica & Baterias', normal: false, cor: 'bg-indigo-50 text-indigo-800 border-indigo-200' },
+      'MECANICA_TRANSMISSAO':     { label: '⚙️ Mecânica & Transmissão', normal: false, cor: 'bg-rose-50 text-rose-900 border-rose-200' },
+      'PECAS_GERAIS':             { label: '🛠️ Peças & Componentes', normal: false, cor: 'bg-purple-50 text-purple-900 border-purple-200' }
+    };
+
+    function classificarGrupoMaterial(desc, grupoSAP) {
+      const d = String(desc || '')
+        .toUpperCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const g = String(grupoSAP || '').toUpperCase();
+
+      if (/\b(PNEU|CAMARA AR|PROTETOR PNEU|ARO RODA|BICO PNEU|VALVULA PNEU)\b|^PNEU|^CAMARA/.test(d) || g.includes('PNEU')) {
+        return 'PNEUS_RODAGEM';
+      }
+      if (/\b(FACAO|FAQUINHA|FACA |NAVALHA|DESPONTADOR|PICADOR|EXTRATOR|ROLO ALIMENT|TALISCA|DISCO CORTE|DISCO BASE)\b|^FACAO|^FAQUINHA|^FACA/.test(d)) {
+        return 'DESGASTE_COLHEDORA';
+      }
+      if (/^(PARAF|PORCA|ARRUELA|ABRAC|PINO|REBITE|GRAMPO|CHAVETA|PRISIONEIRO|TRAVA)/.test(d)) {
+        return 'FIXADORES_ABRACADEIRAS';
+      }
+      if (/^(FILTRO|OLEO|GRAXA|ELEMENTO FILTR|LUBRIF)/.test(d)) {
+        return 'FILTROS_LUBRIFICANTES';
+      }
+      if (/^(DETERGENTE|LIMPA|DESINGRIPANTE|TRAPO|FITA|SILICONE|ADESIVO|COLA|LIXA|ELETRODO|SOLDA|BICO CORTE|ACETILENO|OXIGENIO|TINTA|ESTOPA|SOLVENTE)/.test(d)) {
+        return 'CONSUMO_QUIMICOS_OFICINA';
+      }
+      if (/^(LAMPADA|LANTERNA|FAROL|FUSIVEL|RELE|TERMINAL|TERM\.|CABO|CHICOTE|BATERIA|CHAVE|INTERRUPTOR|SENSOR|TOMADA|ALTERNADOR|INDUZIDO|MOTOR PARTIDA)/.test(d)) {
+        return 'ELETRICA_ILUMINACAO';
+      }
+      if (/^(MANG|CONEX|ENGATE|ANEL|RETENTOR|JUNTA|REPARO|VALV|TUBO|CILINDRO|ORING)/.test(d)) {
+        return 'HIDRAULICA_VEDACAO';
+      }
+      if (/^(ROLAMENTO|BUCHA|CORREIA|CORRENTE|CARDAN|EMBREAGEM|ENGREN|EIXO|COXIM|MOLA|CATRACA|TAMBOR|DISCO|PLAT|CUBO|CRUZETA|AMORTECEDOR)/.test(d)) {
+        return 'MECANICA_TRANSMISSAO';
+      }
+      return 'PECAS_GERAIS';
+    }
+
     let usinaAtual = 'TODAS';
     let curvaABCSel = 'A';
+    let filtroTratativaSel = 'PENDENTES'; // 'PENDENTES' | 'TRATADOS' | 'TODOS'
     let abaAtual = 'dash1';
     let chartBar = null, chartLine = null, chartBalcaoQtd = null, chartBalcaoVal = null;
     let zreserva = [], mb51 = [], rh = [];
     let mapItensPorReserva = {};
     let mapItensPorFrotaMat = {};
+
+    // Mapa de Tratativas salvas: chave (centro_ordem_material) -> { tratado: true/false, obs: '...', data: '...', usuario: '...' }
+    let mapTratativas = {};
 
     let zFiltradaGlobal = [];
     let listaReincGlobal = [];
@@ -578,6 +668,110 @@
     function agendarRenderizacao() {
       if (timerBusca) clearTimeout(timerBusca);
       timerBusca = setTimeout(() => { renderizarTudo(); }, 220);
+    }
+
+    // =========================================================================
+    // GESTÃO DE TRATATIVAS & OBSERVAÇÕES (PERSISTENTE EM LOCALSTORAGE + INDEXEDDB)
+    // =========================================================================
+    function carregarTratativasSalvas() {
+      try {
+        const salvo = localStorage.getItem('vv_tratativas_v42');
+        if (salvo) {
+          mapTratativas = JSON.parse(salvo) || {};
+        }
+      } catch(e) { mapTratativas = {}; }
+    }
+
+    async function persistirTratativas() {
+      try {
+        localStorage.setItem('vv_tratativas_v42', JSON.stringify(mapTratativas));
+        await salvarNoDB('tratativas', mapTratativas);
+      } catch(e) {}
+    }
+
+    function obterUsuarioLogadoNome() {
+      try {
+        const u = JSON.parse(sessionStorage.getItem('vv_user_atual') || 'null');
+        if (u && (u.nome || u.email)) return u.nome || u.email;
+      } catch(e) {}
+      return 'Auditor';
+    }
+
+    function salvarObservacaoSemMarcar(chave, valorObs) {
+      const atual = mapTratativas[chave] || { tratado: false, obs: '', data: '', usuario: '' };
+      atual.obs = String(valorObs || '').trim();
+      atual.data = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR').substring(0, 5);
+      atual.usuario = obterUsuarioLogadoNome();
+      mapTratativas[chave] = atual;
+      persistirTratativas();
+    }
+
+    function alternarStatusTratado(chave, marcarComoTratado, event) {
+      if (event) event.stopPropagation();
+      const inputEl = document.getElementById('obs-input-' + chave);
+      const textoObs = inputEl ? inputEl.value.trim() : (mapTratativas[chave]?.obs || '');
+
+      mapTratativas[chave] = {
+        tratado: Boolean(marcarComoTratado),
+        obs: textoObs || (marcarComoTratado ? 'Divergência analisada / tratada' : ''),
+        data: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR').substring(0, 5),
+        usuario: obterUsuarioLogadoNome()
+      };
+
+      persistirTratativas();
+      renderizarTudo();
+    }
+
+    function tratarSelecionadosEmLote() {
+      if (flegadosR.size === 0) {
+        alert('Flegue (☑️) pelo menos uma reincidência na tabela da Aba 2 para tratar em lote!');
+        return;
+      }
+      const obsLote = prompt(`Digite a Observação / Justificativa para marcar os ${flegadosR.size} itens flegados como TRATADOS:`, 'Recorrência normal / Divergência validada');
+      if (obsLote === null) return;
+      const agora = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR').substring(0, 5);
+      const resp = obterUsuarioLogadoNome();
+
+      flegadosR.forEach(chave => {
+        mapTratativas[chave] = {
+          tratado: true,
+          obs: obsLote.trim() || 'Tratado em lote',
+          data: agora,
+          usuario: resp
+        };
+      });
+      flegadosR.clear();
+      const cR = document.getElementById('chkAllR'); if (cR) cR.checked = false;
+      persistirTratativas();
+      renderizarTudo();
+    }
+
+    function mudarFiltroTratativa(novoStatus) {
+      filtroTratativaSel = novoStatus;
+      renderizarTudo();
+    }
+
+    function atualizarBotoesTratativa(qtdPendentes, qtdTratados, qtdTodos) {
+      const btnP = document.getElementById('btn-trat-PENDENTES');
+      const btnT = document.getElementById('btn-trat-TRATADOS');
+      const btnAll = document.getElementById('btn-trat-TODOS');
+      if (!btnP || !btnT || !btnAll) return;
+
+      btnP.textContent = `⏳ Não Tratados (${qtdPendentes})`;
+      btnT.textContent = `✅ Tratados / Auditados (${qtdTratados})`;
+      btnAll.textContent = `📋 Todos (${qtdTodos})`;
+
+      btnP.className = filtroTratativaSel === 'PENDENTES'
+        ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 shadow-sm cursor-pointer'
+        : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-amber-900 border border-amber-400 hover:bg-amber-50 cursor-pointer';
+
+      btnT.className = filtroTratativaSel === 'TRATADOS'
+        ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-[#007600] text-white shadow-sm cursor-pointer'
+        : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-[#007600] border border-emerald-400 hover:bg-emerald-50 cursor-pointer';
+
+      btnAll.className = filtroTratativaSel === 'TODOS'
+        ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm cursor-pointer'
+        : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-100 cursor-pointer';
     }
 
     // Formata qualquer data YYYY-MM-DD para o formato brasileiro DD/MM/AAAA
@@ -636,6 +830,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      carregarTratativasSalvas();
       sincronizarUsuariosNuvem();
       try {
         if (sessionStorage.getItem('vv_auth_ok') === '1') {
@@ -705,15 +900,18 @@
       const total = flegadosZ.size + flegadosR.size + flegadosB.size;
       const el = document.getElementById('contadorFlegados');
       const btn = document.getElementById('btnLimparFlegados');
+      const btnLote = document.getElementById('btnTratarLote');
       if (!el || !btn) return;
       if (total > 0) {
         el.textContent = `☑️ ${total} item(ns) flegado(s) (${flegadosR.size} Reincidências • ${flegadosZ.size} Reservas • ${flegadosB.size} Colaboradores) — Exportação focada na seleção!`;
         el.className = 'text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-900 border border-emerald-400';
         btn.classList.remove('hidden');
+        if (btnLote) btnLote.classList.toggle('hidden', flegadosR.size === 0);
       } else {
         el.textContent = '☑️ 0 itens flegados (Os botões exportarão todos os dados filtrados na tela)';
         el.className = 'text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-300';
         btn.classList.add('hidden');
+        if (btnLote) btnLote.classList.add('hidden');
       }
     }
 
@@ -942,7 +1140,11 @@
         }
       } catch(e) {}
 
-      const [z, m, r] = await Promise.all([lerDoDB('zreserva'), lerDoDB('mb51'), lerDoDB('rh')]);
+      carregarTratativasSalvas();
+      const [z, m, r, tDB] = await Promise.all([lerDoDB('zreserva'), lerDoDB('mb51'), lerDoDB('rh'), lerDoDB('tratativas')]);
+      if (tDB && typeof tDB === 'object' && !Array.isArray(tDB)) {
+        mapTratativas = { ...tDB, ...mapTratativas };
+      }
       if (z.length) { zreserva = z; document.getElementById('status-zreserva').textContent = z.length + ' reservas acumuladas'; }
       if (m.length) { mb51 = m; document.getElementById('status-mb51').textContent = m.length + ' movimentos acumulados'; }
       if (r.length) { rh = r; document.getElementById('status-rh').textContent = r.length + ' funcionários ativos'; }
@@ -1093,6 +1295,7 @@
             const ord = String(extrair(r, ['Ordem', 'Frota_Ordem', 'Número da Ordem']) || '').trim();
             const cabOS = limparID(extrair(r, ['Texto cabeçalho documento', 'Texto cabecalho documento', 'Número da Ordem de Serviço']));
             const mov = limparID(extrair(r, ['Tipo de movimento', 'Movimento', 'Tp.mov']));
+            const grpMerc = String(extrair(r, ['Grupo de mercadorias', 'Grupo Mercadoria', 'Tipo de material']) || '').trim();
             const qtd = Math.abs(converterNumero(extrair(r, ['Quantidade', 'Qtd'])));
             const val = Math.abs(converterNumero(extrair(r, ['Montante em MI', 'Valor', 'Montante'])));
             const dt = formatarDataSAP(extrair(r, ['Data do documento', 'Data']));
@@ -1103,6 +1306,7 @@
               reserva: res,
               material: mat,
               desc_material: String(extrair(r, ['Texto breve de material', 'Desc_Material', 'Descrição']) || '').trim(),
+              grupo_sap: grpMerc,
               qtd: qtd,
               centro: limparID(extrair(r, ['Centro', 'Empresa'])),
               ordem: ord,
@@ -1146,7 +1350,7 @@
           alert(`Quadro RH (Substituição Total):\n• Base anterior substituída por ${rh.length} funcionários atualizados!`);
         }
 
-        document.getElementById('badgeStatus').textContent = '● Base Sincronizada (v4.1)';
+        document.getElementById('badgeStatus').textContent = '● Base Sincronizada (v4.2)';
         popularFiltroAprovadores();
         renderizarTudo();
         event.target.value = '';
@@ -1175,7 +1379,6 @@
         brutos = mapItensPorFrotaMat[chaveFrotaMat].slice();
       }
 
-      // Captura também possíveis estornos sem reserva da mesma Frota + Texto Cabeçalho (O.S.) para garantir abatimento exato
       if (numReserva && numReserva !== 'SEM_RESERVA' && brutos.length > 0) {
         const ordensRes = new Set(brutos.map(i => i.ordem).filter(Boolean));
         const osRes = new Set(brutos.map(i => i.cabecalho_os).filter(Boolean));
@@ -1201,7 +1404,6 @@
         });
       }
 
-      // Separa saídas (261/201) e estornos (262/202) para abater silenciosamente
       const saidas = brutos.filter(i => !i.ehEstorno).map(s => ({
         ...s,
         qtdRestante: s.qtd,
@@ -1212,9 +1414,7 @@
       estornos.forEach(est => {
         let qAbater = est.qtd;
         let vAbater = est.valor;
-        // 1º mesmo Material + mesmo Texto Cabeçalho (O.S.) + mesma Frota
         const pri1 = saidas.filter(s => s.material === est.material && s.qtdRestante > 0 && est.cabecalho_os && s.cabecalho_os === est.cabecalho_os);
-        // 2º mesmo Material sucessivamente
         const pri2 = saidas.filter(s => s.material === est.material && s.qtdRestante > 0 && !pri1.includes(s));
         for (let s of [...pri1, ...pri2]) {
           if (qAbater <= 0) break;
@@ -1227,9 +1427,7 @@
         }
       });
 
-      // Mantém na tela SOMENTE os materiais reais que sobraram (qtdRestante > 0)
       const itensReais = saidas.filter(s => s.qtdRestante > 0 && s.valRestante > 0.001);
-
       itensReais.sort((a, b) => b.valRestante - a.valRestante);
 
       if (!itensReais.length) {
@@ -1281,7 +1479,7 @@
     }
 
     // =========================================================================
-    // MOTOR DE CRUZAMENTO RELACIONAL + ESTORNOS CALCULADOS E OCULTOS NA TELA
+    // MOTOR DE CRUZAMENTO RELACIONAL + GRUPOS DE MATERIAL + TRATATIVAS
     // =========================================================================
     function renderizarTudo() {
       const aprovadorSel = document.getElementById('filtroAprovador').value;
@@ -1292,6 +1490,7 @@
       const dataFim = document.getElementById('dataFim').value;
       const criterioOrdem = document.getElementById('ordemReinc') ? document.getElementById('ordemReinc').value : 'VALOR';
       const criterioBalcao = document.getElementById('ordemBalcao') ? document.getElementById('ordemBalcao').value : 'QTD';
+      const grupoMatSel = document.getElementById('filtroGrupoMaterial') ? document.getElementById('filtroGrupoMaterial').value : 'TODOS';
 
       let maxData = '';
       zreserva.forEach(z => { if (z.data && z.data > maxData) maxData = z.data; });
@@ -1390,11 +1589,7 @@
       }).join('');
 
       // =========================================================================
-      // ABA 2: REINCIDÊNCIAS REAIS
-      // Calcula o estorno (262/202) nos bastidores:
-      // 1º: Abate da saída com mesmo Texto Cabeçalho (O.S.) + mesma Frota + mesmo Material
-      // 2º: Senão, abate sucessivamente das demais saídas da mesma Frota + Material
-      // E EXIBE NA TELA SOMENTE AS SAÍDAS REAIS RESTANTES (Ex: 9 saídas - 3 estornos = exibe só as 6 reais!)
+      // ABA 2: REINCIDÊNCIAS REAIS + GRUPO DE MERCADORIA + TRATATIVAS
       // =========================================================================
       const gruposFrotaMat = {};
       let qtdMovLiquido = 0;
@@ -1430,14 +1625,16 @@
           if (aprovadorSel !== 'TODOS' && aprovadorRef !== aprovadorSel) return;
         }
 
-        if (busca) {
-          const textoM = `${m.reserva} ${docMat} ${ordemFrota} ${osCabecalho} ${m.material} ${m.desc_material} ${aprovadorRef} ${nomeRec}`.toLowerCase();
-          if (!textoM.includes(busca)) return;
-        }
-
         if (!ordemFrota || !m.material) return;
 
         const chaveFM = `${centroRef}_${ordemFrota}_${m.material}`;
+        const obsSalva = mapTratativas[chaveFM]?.obs || '';
+
+        if (busca) {
+          const textoM = `${m.reserva} ${docMat} ${ordemFrota} ${osCabecalho} ${m.material} ${m.desc_material} ${aprovadorRef} ${nomeRec} ${obsSalva}`.toLowerCase();
+          if (!textoM.includes(busca)) return;
+        }
+
         if (!gruposFrotaMat[chaveFM]) {
           gruposFrotaMat[chaveFM] = {
             chave: chaveFM,
@@ -1445,6 +1642,7 @@
             ordem: ordemFrota,
             material: m.material,
             desc_material: m.desc_material,
+            grupo_sap: m.grupo_sap || '',
             saidas: [],
             estornos: []
           };
@@ -1477,16 +1675,12 @@
       Object.values(gruposFrotaMat).forEach(gFM => {
         if (gFM.saidas.length === 0) return;
 
-        // Ordena as saídas por Texto Cabeçalho (O.S.) e depois por Data
         gFM.saidas.sort((a, b) => {
           const cmpOS = String(a.os || '').localeCompare(String(b.os || ''));
           if (cmpOS !== 0) return cmpOS;
           return (a.data || '').localeCompare(b.data || '');
         });
 
-        // Abate cada estorno (262/202) nos bastidores:
-        // 1º: Mesmo Texto Cabeçalho (O.S.) + mesma Frota
-        // 2º: Sucessivamente nas demais saídas da mesma Frota + Material
         gFM.estornos.forEach(est => {
           let qtdParaAbater = est.qtd;
           let valParaAbater = est.valor;
@@ -1518,7 +1712,6 @@
           }
         });
 
-        // Filtra APENAS as saídas reais que sobraram após descontar os estornos!
         const saidasReais = gFM.saidas.filter(s => s.qtdRestante > 0 && s.valRestante > 0.001).map(s => ({
           ...s,
           qtd: s.qtdRestante,
@@ -1534,7 +1727,6 @@
 
         if (qtdLiquida <= 0 || vezesReais <= 0) return;
 
-        // Ordena as saídas reais: 1º Texto Cabeçalho (O.S.) e depois Data (mais recente primeiro)
         saidasReais.sort((a, b) => {
           const cmpOS = String(a.os || '').localeCompare(String(b.os || ''));
           if (cmpOS !== 0) return cmpOS;
@@ -1544,6 +1736,8 @@
         const listaOSUnicas = [...new Set(saidasReais.map(o => o.os).filter(x => x && x !== '-'))];
         const primeiraOS = listaOSUnicas[0] || '';
         const ultimaData = saidasReais.reduce((max, o) => (o.data > max ? o.data : max), '');
+        const codGrupoMat = classificarGrupoMaterial(gFM.desc_material, gFM.grupo_sap);
+        const infoTrat = mapTratativas[gFM.chave] || { tratado: false, obs: '', data: '', usuario: '' };
 
         gruposReinc[gFM.chave] = {
           chave: gFM.chave,
@@ -1554,22 +1748,34 @@
           ultimaData: ultimaData,
           material: gFM.material,
           desc_material: gFM.desc_material,
+          grupoMat: codGrupoMat,
+          tratado: Boolean(infoTrat.tratado),
+          obsTratativa: infoTrat.obs || '',
+          dataTratativa: infoTrat.data || '',
+          usuarioTratativa: infoTrat.usuario || '',
           vezesLiquidas: vezesReais,
           qtdLiquidaTotal: qtdLiquida,
           custoTotal: valLiquido,
-          ocorrencias: saidasReais // Contém SOMENTE as saídas reais!
+          ocorrencias: saidasReais
         };
       });
 
-      const todasReinc = Object.values(gruposReinc)
-        .filter(g => g.vezesLiquidas >= 2)
-        .sort((a, b) => b.custoTotal - a.custoTotal || b.vezesLiquidas - a.vezesLiquidas);
+      // 1. Filtra reincidências (>= 2 vezes) e aplica o filtro de Grupo de Mercadoria / Tipo de Material
+      const reincAposGrupo = Object.values(gruposReinc).filter(g => {
+        if (g.vezesLiquidas < 2) return false;
+        const infoGrp = NOMES_GRUPOS_MATERIAIS[g.grupoMat] || { normal: false };
+        if (grupoMatSel === 'OCULTAR_NORMAIS') return !infoGrp.normal;
+        if (grupoMatSel === 'SOMENTE_NORMAIS') return infoGrp.normal;
+        if (grupoMatSel !== 'TODOS' && g.grupoMat !== grupoMatSel) return false;
+        return true;
+      }).sort((a, b) => b.custoTotal - a.custoTotal || b.vezesLiquidas - a.vezesLiquidas);
 
-      const somaCustoReinc = todasReinc.reduce((acc, g) => acc + g.custoTotal, 0) || 1;
+      // 2. Calcula a Curva ABC de Pareto (80 / 15 / 5)
+      const somaCustoReinc = reincAposGrupo.reduce((acc, g) => acc + g.custoTotal, 0) || 1;
       let acumABC = 0;
       let qtdCurvaA = 0, valorCurvaA = 0;
 
-      todasReinc.forEach((g, idx) => {
+      reincAposGrupo.forEach((g, idx) => {
         const percAntes = (acumABC / somaCustoReinc) * 100;
         acumABC += g.custoTotal;
         g.percIndividual = (g.custoTotal / somaCustoReinc) * 100;
@@ -1584,7 +1790,22 @@
         }
       });
 
-      listaReincGlobal = todasReinc.filter(g => curvaABCSel === 'TODAS' ? true : g.curva === curvaABCSel);
+      // 3. Filtra pela Curva ABC selecionada (A, B, C ou TODAS)
+      const reincNaCurva = reincAposGrupo.filter(g => curvaABCSel === 'TODAS' ? true : g.curva === curvaABCSel);
+
+      // Contadores de Tratados vs Não Tratados dentro da Curva e Grupo atuais
+      const qtdPendNaCurva = reincNaCurva.filter(g => !g.tratado).length;
+      const qtdTratNaCurva = reincNaCurva.filter(g => g.tratado).length;
+      atualizarBotoesTratativa(qtdPendNaCurva, qtdTratNaCurva, reincNaCurva.length);
+
+      // 4. Aplica o filtro de Status da Tratativa (Não Tratados / Tratados / Todos)
+      listaReincGlobal = reincNaCurva.filter(g => {
+        if (filtroTratativaSel === 'PENDENTES') return !g.tratado;
+        if (filtroTratativaSel === 'TRATADOS') return g.tratado;
+        return true;
+      });
+
+      // 5. Ordenação final
       if (criterioOrdem === 'VEZES') {
         listaReincGlobal.sort((a, b) => b.vezesLiquidas - a.vezesLiquidas || b.custoTotal - a.custoTotal);
       } else if (criterioOrdem === 'FROTA_OS_DATA') {
@@ -1599,42 +1820,86 @@
         listaReincGlobal.sort((a, b) => b.custoTotal - a.custoTotal || b.vezesLiquidas - a.vezesLiquidas);
       }
 
-      document.getElementById('contadorReinc').textContent = `${listaReincGlobal.length} reincidências reais na Curva ${curvaABCSel} (Total Geral: ${todasReinc.length})`;
+      const nomeVisaoStatus = filtroTratativaSel === 'PENDENTES' ? 'Não Tratados' : (filtroTratativaSel === 'TRATADOS' ? 'Tratados' : 'Todos');
+      document.getElementById('contadorReinc').textContent =
+        `${listaReincGlobal.length} itens em "${nomeVisaoStatus}" na Curva ${curvaABCSel} (${qtdPendNaCurva} pendentes | ${qtdTratNaCurva} tratados)`;
+
       document.getElementById('tabelaReincidencias').innerHTML = listaReincGlobal.slice(0, 120).map((g, idx) => {
         const infoUsina = USINAS[g.centro] || { sigla: g.centro, cor: '#475569', bg: '#f1f5f9', texto: '#334155' };
+        const infoGrp = NOMES_GRUPOS_MATERIAIS[g.grupoMat] || { label: '🛠️ Peças Gerais', cor: 'bg-slate-100 text-slate-700 border-slate-300' };
         const idReinc = `exp-reinc-${idx}`;
         const marcado = flegadosR.has(g.chave);
         const badgeCurva = g.curva === 'A'
-          ? '<span class="px-2 py-0.5 rounded bg-red-100 text-red-800 border border-red-300 font-black text-[11px]">Curva A</span>'
+          ? '<span class="px-2 py-0.5 rounded bg-red-100 text-red-800 border border-red-300 font-black text-[10px]">Curva A</span>'
           : (g.curva === 'B'
-              ? '<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 font-bold text-[11px]">Curva B</span>'
-              : '<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300 font-bold text-[11px]">Curva C</span>');
+              ? '<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 font-bold text-[10px]">Curva B</span>'
+              : '<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300 font-bold text-[10px]">Curva C</span>');
 
         const aprovadoresUnicos = [...new Set(g.ocorrencias.map(o => o.aprovador))].slice(0, 2).join(', ');
         const resumoOS = g.listaOS.slice(0, 2).join(', ') || '-';
+        const obsEscapada = g.obsTratativa.replace(/"/g, '&quot;');
 
         return `
-          <tr onclick="toggleElemento('${idReinc}')" class="linha-clicavel align-middle ${marcado ? 'linha-selecionada' : ''}">
+          <tr onclick="toggleElemento('${idReinc}')" class="linha-clicavel align-middle ${marcado ? 'linha-selecionada' : (g.tratado ? 'linha-tratada' : '')}">
             <td class="p-3 text-center" onclick="event.stopPropagation()">
               <input type="checkbox" ${marcado ? 'checked' : ''} onchange="toggleFlegado('R', '${g.chave}', this.checked, event)" class="rounded text-[#007600] cursor-pointer" />
             </td>
-            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.bg}; color:${infoUsina.texto}; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span></td>
-            <td class="p-3">${badgeCurva}</td>
+            <td class="p-3 space-y-1 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold block w-fit" style="background:${infoUsina.bg}; color:${infoUsina.texto}; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span>
+              ${badgeCurva}
+            </td>
             <td class="p-3">
               <span class="font-mono font-black text-slate-900 text-sm block">${g.ordem}</span>
               <span class="font-mono text-[10px] text-slate-500">Cabeçalho(s): ${resumoOS}</span>
             </td>
             <td class="p-3">
               <span class="font-bold text-slate-900 block">${g.desc_material}</span>
-              <span class="font-mono text-[11px] text-slate-500">Cód. Material: ${g.material} • Qtd Real Líquida: ${g.qtdLiquidaTotal} • Últ. Data: ${exibirDataBR(g.ultimaData)}</span>
+              <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                <span class="px-2 py-0.5 rounded border text-[10px] font-bold ${infoGrp.cor}">${infoGrp.label}</span>
+                <span class="font-mono text-[11px] text-slate-500">Cód: ${g.material} • Qtd: ${g.qtdLiquidaTotal} • Últ: ${exibirDataBR(g.ultimaData)}</span>
+              </div>
             </td>
             <td class="p-3 text-center">
               <span class="px-2.5 py-1 rounded-full bg-red-100 text-red-800 border border-red-300 font-black">${g.vezesLiquidas}x</span>
             </td>
             <td class="p-3">
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-[11px] text-[#007600] font-bold truncate max-w-[220px]">Aprov: ${aprovadoresUnicos}</span>
-                <span class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-[11px] font-bold whitespace-nowrap">▶ Expandir (${g.ocorrencias.length})</span>
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] text-[#007600] font-bold truncate max-w-[190px]" title="${aprovadoresUnicos}">Aprov: ${aprovadoresUnicos}</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-[11px] font-bold whitespace-nowrap w-fit">▶ Expandir (${g.ocorrencias.length})</span>
+              </div>
+            </td>
+            <!-- COLUNA DE TRATATIVA E OBSERVAÇÃO (NÃO PROPAGA CLIQUE DA LINHA) -->
+            <td class="p-3" onclick="event.stopPropagation()">
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-center gap-1.5">
+                  <input
+                    id="obs-input-${g.chave}"
+                    type="text"
+                    value="${obsEscapada}"
+                    onchange="salvarObservacaoSemMarcar('${g.chave}', this.value)"
+                    onkeydown="if(event.key==='Enter'){ event.preventDefault(); alternarStatusTratado('${g.chave}', true, event); }"
+                    placeholder="Digitar observação / justificativa..."
+                    class="w-full bg-white border ${g.tratado ? 'border-emerald-400 text-emerald-950' : 'border-slate-300 text-slate-800'} rounded-lg px-2.5 py-1.5 text-[11px] font-medium focus:outline-none focus:border-[#007600]"
+                  />
+                  ${g.tratado ? `
+                    <button type="button" onclick="alternarStatusTratado('${g.chave}', false, event)" class="px-2.5 py-1.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-[11px] font-bold whitespace-nowrap cursor-pointer" title="Voltar para Não Tratados">
+                      ↩️ Reabrir
+                    </button>
+                  ` : `
+                    <button type="button" onclick="alternarStatusTratado('${g.chave}', true, event)" class="px-2.5 py-1.5 rounded-lg bg-[#007600] hover:bg-emerald-700 text-white text-[11px] font-bold whitespace-nowrap shadow-sm cursor-pointer" title="Marcar como Tratado e ocultar das pendências">
+                      ✅ Tratado
+                    </button>
+                  `}
+                </div>
+                ${g.tratado ? `
+                  <span class="text-[10px] text-[#007600] font-bold">
+                    ✓ Tratado por ${g.usuarioTratativa || 'Auditor'} em ${g.dataTratativa}
+                  </span>
+                ` : (g.obsTratativa ? `
+                  <span class="text-[10px] text-amber-700 font-semibold">
+                    📝 Obs salva (${g.dataTratativa}) — clique em "✅ Tratado" p/ concluir
+                  </span>
+                ` : '')}
               </div>
             </td>
             <td class="p-3 text-right font-black text-red-600 whitespace-nowrap">
@@ -1740,7 +2005,7 @@
       document.getElementById('kpiValorTotal').textContent = 'R$ ' + somaAprovZ.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById('kpiSubValor').textContent = 'Valor Retirado: R$ ' + somaRetZ.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById('kpiQtdReservas').textContent = zFiltradaGlobal.length.toLocaleString('pt-BR');
-      document.getElementById('kpiReincidencias').textContent = todasReinc.length.toLocaleString('pt-BR') + ' alertas';
+      document.getElementById('kpiReincidencias').textContent = listaReincGlobal.length.toLocaleString('pt-BR') + ' alertas';
       document.getElementById('kpiDetCurvaA').textContent = `Curva A: ${qtdCurvaA} itens (R$ ${valorCurvaA.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`;
       document.getElementById('kpiIdasBalcao').textContent = qtdMovLiquido.toLocaleString('pt-BR') + ' itens';
       document.getElementById('kpiValorMB51').textContent = 'Líquido MB51: R$ ' + somaMB51Liquida.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1751,7 +2016,7 @@
     }
 
     // =========================================================================
-    // EXPORTAÇÃO PARA EXCEL (.XLSX) E POWERPOINT (.PPTX) COM LOGO E SOMENTE SAÍDAS REAIS
+    // EXPORTAÇÃO PARA EXCEL (.XLSX) E POWERPOINT (.PPTX) COM TRATATIVAS & OBSERVAÇÕES
     // =========================================================================
     function obterDadosParaExportacao() {
       const reincExp = flegadosR.size > 0
@@ -1774,6 +2039,7 @@
         { Indicador: 'Empresa', Valor: 'Grupo Vale do Verdão S/A' },
         { Indicador: 'Usina / Centro Filtrado', Valor: usinaAtual === 'TODAS' ? 'Todas as Usinas (1000, 2000, 3000, 4000)' : usinaAtual },
         { Indicador: 'Curva ABC Selecionada', Valor: curvaABCSel },
+        { Indicador: 'Status Tratativa Filtrado', Valor: filtroTratativaSel },
         { Indicador: 'Total Aprovado (ZRESERVA)', Valor: document.getElementById('kpiValorTotal').textContent },
         { Indicador: 'Reservas Filtradas', Valor: zExp.length },
         { Indicador: 'Reincidências Reais Exportadas', Valor: reincExp.length },
@@ -1784,6 +2050,7 @@
       const rowsReinc = reincExp.map(g => ({
         Usina: USINAS[g.centro]?.sigla || g.centro,
         Curva_ABC: g.curva,
+        Grupo_Material: NOMES_GRUPOS_MATERIAIS[g.grupoMat]?.label || g.grupoMat,
         Frota_Ordem: g.ordem,
         Texto_Cabecalho_OS: g.listaOS.join(', '),
         Cod_Material: g.material,
@@ -1792,6 +2059,10 @@
         Vezes_Reais: g.vezesLiquidas,
         Qtd_Real_Liquida: g.qtdLiquidaTotal,
         Custo_Liquido_RS: Number(g.custoTotal.toFixed(2)),
+        Status_Tratativa: g.tratado ? 'TRATADO' : 'NÃO TRATADO (PENDENTE)',
+        Observacao_Tratativa: g.obsTratativa || '',
+        Responsavel_Tratativa: g.usuarioTratativa || '',
+        Data_Tratativa: g.dataTratativa || '',
         Aprovadores: [...new Set(g.ocorrencias.map(o => o.aprovador))].join(' | ')
       }));
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rowsReinc.length ? rowsReinc : [{ Aviso: 'Nenhuma reincidência selecionada' }]), '2_Reincidencias_ABC');
@@ -1802,6 +2073,7 @@
           rowsDetReinc.push({
             Usina: USINAS[g.centro]?.sigla || g.centro,
             Curva_ABC: g.curva,
+            Grupo_Material: NOMES_GRUPOS_MATERIAIS[g.grupoMat]?.label || g.grupoMat,
             Frota_Ordem: g.ordem,
             Texto_Cabecalho_OS: o.os,
             Doc_Material: o.doc_material,
@@ -1812,6 +2084,8 @@
             Tipo_Movimento: o.tipo_mov,
             Quantidade_Real: o.qtd,
             Valor_Real_RS: Number(o.valor.toFixed(2)),
+            Status_Tratativa: g.tratado ? 'TRATADO' : 'PENDENTE',
+            Observacao_Tratativa: g.obsTratativa || '',
             Aprovador_ZRESERVA: o.aprovador,
             Recebedor_RH: o.recebedor
           });
@@ -1882,14 +2156,14 @@
       slide1.addText('GRUPO VALE DO VERDÃO S/A — AUDITORIA DE RESERVAS & CURVA ABC', {
         x: xTitulo1, y: 0.2, w: 11.4, h: 0.4, fontSize: 19, bold: true, color: 'FFFFFF'
       });
-      slide1.addText(`Filtro Usina: ${usinaAtual}  |  Curva ABC: ${curvaABCSel}  |  Data de Emissão: ${new Date().toLocaleDateString('pt-BR')}`, {
+      slide1.addText(`Filtro Usina: ${usinaAtual}  |  Curva ABC: ${curvaABCSel}  |  Visão: ${filtroTratativaSel}  |  Emissão: ${new Date().toLocaleDateString('pt-BR')}`, {
         x: xTitulo1, y: 0.64, w: 11.4, h: 0.3, fontSize: 11, color: 'E2E8F0'
       });
 
       const kpis = [
         { titulo: 'TOTAL APROVADO (ZRESERVA)', valor: document.getElementById('kpiValorTotal').textContent, sub: document.getElementById('kpiSubValor').textContent, cor: '007600' },
         { titulo: 'RESERVAS SELECIONADAS', valor: zExp.length.toLocaleString('pt-BR'), sub: 'Planilha Mãe ZRESERVA', cor: 'D97706' },
-        { titulo: 'REINCIDÊNCIAS REAIS', valor: reincExp.length.toLocaleString('pt-BR') + ' itens', sub: document.getElementById('kpiDetCurvaA').textContent, cor: 'ED7D31' },
+        { titulo: 'REINCIDÊNCIAS EXPORTADAS', valor: reincExp.length.toLocaleString('pt-BR') + ' itens', sub: document.getElementById('kpiDetCurvaA').textContent, cor: 'ED7D31' },
         { titulo: 'SAÍDAS REAIS LÍQUIDAS (MB51)', valor: document.getElementById('kpiIdasBalcao').textContent, sub: document.getElementById('kpiValorMB51').textContent, cor: '1F4E79' }
       ];
 
@@ -1916,45 +2190,45 @@
         elDash1.classList.add('hidden');
       }
 
-      // SLIDE 2: TABELA EXECUTIVA DE REINCIDÊNCIAS REAIS (COM LOGO NO CABEÇALHO)
+      // SLIDE 2: TABELA EXECUTIVA DE REINCIDÊNCIAS REAIS + TRATATIVA / OBSERVAÇÃO
       const slide2 = pptx.addSlide();
       slide2.background = { color: 'FFFFFF' };
       slide2.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.9, fill: { color: '1F4E79' } });
       if (logoPNG) slide2.addImage({ data: logoPNG, x: 0.35, y: 0.08, w: 0.92, h: 0.74 });
-      slide2.addText(`AUDITORIA DE REINCIDÊNCIAS REAIS: FROTA + TEXTO CABEÇALHO + MATERIAL (CURVA ${curvaABCSel})`, {
+      slide2.addText(`AUDITORIA DE REINCIDÊNCIAS REAIS & TRATATIVAS (CURVA ${curvaABCSel})`, {
         x: logoPNG ? 1.4 : 0.5, y: 0.22, w: 11.6, h: 0.45, fontSize: 14.5, bold: true, color: 'FFFFFF'
       });
 
       const cabTabelaReinc = [
-        { text: 'Usina', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
-        { text: 'Curva', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
-        { text: 'Frota / O.S.', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
-        { text: 'Cód. Material & Descrição', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
-        { text: 'Últ. Data', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5, align: 'center' } },
-        { text: 'Vezes Reais', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5, align: 'center' } },
-        { text: 'Principais Aprovadores (ZRESERVA)', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
-        { text: 'Custo Líquido (R$)', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5, align: 'right' } }
+        { text: 'Usina', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+        { text: 'Frota / O.S.', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+        { text: 'Material & Grupo', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+        { text: 'Últ. Data', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8, align: 'center' } },
+        { text: 'Vezes', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8, align: 'center' } },
+        { text: 'Aprovadores', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+        { text: 'Status & Observação da Tratativa', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+        { text: 'Custo Líquido', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8, align: 'right' } }
       ];
 
       const linhasSlideReinc = reincExp.slice(0, 14).map(g => [
-        { text: USINAS[g.centro]?.sigla || g.centro, options: { fontSize: 8, bold: true } },
-        { text: g.curva, options: { fontSize: 8, bold: true, color: g.curva === 'A' ? 'DC2626' : 'D97706' } },
-        { text: `${g.ordem} (${g.primeiraOS || '-'})`, options: { fontSize: 8, bold: true } },
-        { text: `${g.material} - ${g.desc_material.substring(0, 35)}`, options: { fontSize: 8 } },
-        { text: exibirDataBR(g.ultimaData), options: { fontSize: 8, align: 'center' } },
-        { text: `${g.vezesLiquidas}x`, options: { fontSize: 8, align: 'center', bold: true } },
-        { text: [...new Set(g.ocorrencias.map(o => o.aprovador))].slice(0, 2).join(', ').substring(0, 38), options: { fontSize: 7.5 } },
-        { text: 'R$ ' + g.custoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), options: { fontSize: 8.5, bold: true, align: 'right', color: 'DC2626' } }
+        { text: USINAS[g.centro]?.sigla || g.centro, options: { fontSize: 7.5, bold: true } },
+        { text: `${g.ordem} (${g.primeiraOS || '-'})`, options: { fontSize: 7.5, bold: true } },
+        { text: `${g.material} - ${g.desc_material.substring(0, 28)}`, options: { fontSize: 7.5 } },
+        { text: exibirDataBR(g.ultimaData), options: { fontSize: 7.5, align: 'center' } },
+        { text: `${g.vezesLiquidas}x`, options: { fontSize: 8, align: 'center', bold: true, color: 'DC2626' } },
+        { text: [...new Set(g.ocorrencias.map(o => o.aprovador))].slice(0, 2).join(', ').substring(0, 26), options: { fontSize: 7 } },
+        { text: `${g.tratado ? '[TRATADO] ' : '[PENDENTE] '}${g.obsTratativa || '-'}`.substring(0, 42), options: { fontSize: 7.5, bold: g.tratado, color: g.tratado ? '007600' : '475569' } },
+        { text: 'R$ ' + g.custoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), options: { fontSize: 8, bold: true, align: 'right', color: 'DC2626' } }
       ]);
 
       slide2.addTable([cabTabelaReinc, ...linhasSlideReinc], {
         x: 0.4, y: 1.05, w: 12.5,
-        colW: [1.0, 0.65, 1.5, 3.3, 1.0, 1.05, 2.5, 1.5],
+        colW: [0.95, 1.35, 2.8, 0.9, 0.65, 1.95, 2.5, 1.4],
         border: { pt: 0.5, color: 'CBD5E1' },
         rowH: 0.36
       });
 
-      // SLIDE 3: DETALHAMENTO DAS SAÍDAS REAIS COM DOC.MATERIAL E TEXTO CABEÇALHO (SEM ESTORNOS)
+      // SLIDE 3: DETALHAMENTO DAS SAÍDAS REAIS COM DOC.MATERIAL E TEXTO CABEÇALHO
       if (reincExp.length > 0) {
         const slide3 = pptx.addSlide();
         slide3.background = { color: 'FFFFFF' };
