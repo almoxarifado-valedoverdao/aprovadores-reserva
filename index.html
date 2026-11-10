@@ -1080,7 +1080,7 @@
           zreserva = Array.from(mapaAcumuladoZ.values());
           const adicionados = zreserva.length - qtdAntes;
 
-          document.getElementById('status-zreserva').textContent = `${zreserva.length} reservas acumuladas (+${adicionados} novas |${substituidos} atualizadas)`;
+          document.getElementById('status-zreserva').textContent = `${zreserva.length} reservas acumuladas (+${adicionados} novas | ${substituidos} atualizadas)`;
           await salvarNoDB('zreserva', zreserva);
           alert(`ZRESERVA (Acumulativa):\n• Linhas lidas: ${novosZ.length}\n• Novas reservas adicionadas: ${adicionados}\n• Duplicidades atualizadas: ${substituidos}\n• Total acumulado no banco: ${zreserva.length}`);
         }
@@ -1128,7 +1128,7 @@
           mb51 = Array.from(mapaAcumuladoM.values());
           const adicionados = mb51.length - qtdAntes;
 
-          document.getElementById('status-mb51').textContent = `${mb51.length} movimentos acumulados (+${adicionados} novos |${duplicadosSubstituidos} duplicidades filtradas)`;
+          document.getElementById('status-mb51').textContent = `${mb51.length} movimentos acumulados (+${adicionados} novos | ${duplicadosSubstituidos} duplicidades filtradas)`;
           await salvarNoDB('mb51', mb51);
           alert(`MB51 (Acumulativa):\n• Linhas na planilha: ${novosM.length}\n• Novos movimentos adicionados: ${adicionados}\n• Duplicidades substituídas: ${duplicadosSubstituidos}\n• Total acumulado no banco: ${mb51.length}`);
         }
@@ -1348,15 +1348,15 @@
         if (busca) {
           const func = mapRH[z.recebedor] || {};
           const itensRes = mapItensPorReserva[z.reserva] || [];
-          const matTexto = itensRes.map(i => `${i.material}${i.desc_material} ${i.cabecalho_os || ''}${i.doc_material || ''}`).join(' ');
-          const texto = `${z.reserva}${z.ordem} ${z.aprovador}${z.recebedor} ${func.nome || ''}${matTexto}`.toLowerCase();
+          const matTexto = itensRes.map(i => `${i.material} ${i.desc_material} ${i.cabecalho_os || ''} ${i.doc_material || ''}`).join(' ');
+          const texto = `${z.reserva} ${z.ordem} ${z.aprovador} ${z.recebedor} ${func.nome || ''} ${matTexto}`.toLowerCase();
           if (!texto.includes(busca)) return false;
         }
         return true;
       });
 
       // ABA 1: Tabela ZRESERVA
-      document.getElementById('contadorTabZ').textContent = `Exibindo ${Math.min(150, zFiltradaGlobal.length)} de${zFiltradaGlobal.length} reservas`;
+      document.getElementById('contadorTabZ').textContent = `Exibindo ${Math.min(150, zFiltradaGlobal.length)} de ${zFiltradaGlobal.length} reservas`;
       document.getElementById('tabelaZReserva').innerHTML = zFiltradaGlobal.slice(0, 150).map((z, idx) => {
         const infoUsina = USINAS[z.centro] || { sigla: z.centro, cor: '#475569', bg: '#f1f5f9', texto: '#334155' };
         const func = mapRH[z.recebedor];
@@ -1431,7 +1431,7 @@
         }
 
         if (busca) {
-          const textoM = `${m.reserva}${docMat} ${ordemFrota}${osCabecalho} ${m.material}${m.desc_material} ${aprovadorRef}${nomeRec}`.toLowerCase();
+          const textoM = `${m.reserva} ${docMat} ${ordemFrota} ${osCabecalho} ${m.material} ${m.desc_material} ${aprovadorRef} ${nomeRec}`.toLowerCase();
           if (!textoM.includes(busca)) return;
         }
 
@@ -1718,7 +1718,446 @@
             </td>
             <td class="p-3 font-mono font-bold text-slate-700">${b.matricula}</td>
             <td class="p-3 font-bold text-slate-900">${b.nome}</td>
-            <td class="p-3 text-slate-600">${b.cargo}${b.secao ? `<span class="block text-[10px] text-slate-400">Seção: ${b.secao}</span>` : ''}</td>
+            <td class="p-3 text-slate-600">${b.cargo} ${b.secao ? `<span class="block text-[10px] text-slate-400">Seção: ${b.secao}</span>` : ''}</td>
             <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold" style="background:${infoUsina.bg}; color:${infoUsina.texto}; border:1px solid ${infoUsina.cor}">${infoUsina.sigla}</span></td>
             <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full bg-blue-100 text-[#1F4E79] border border-blue-300 font-black">▶ ${b.qtd}x</span></td>
-            <td
+            <td class="p-3 text-[#007600] text-[11px] font-bold">${topAprov}</td>
+            <td class="p-3 text-right font-bold text-slate-900 whitespace-nowrap">R$ ${b.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          </tr>
+          <tr id="exp-colab-${idx}" class="hidden bg-slate-100/90">
+            <td colspan="8" class="p-4 border-l-4 border-l-[#1F4E79] space-y-2">
+              <div class="text-xs font-bold text-slate-800 mb-2">
+                Reservas retiradas por <span class="text-[#1F4E79]">${b.nome} (${b.matricula})</span> — Clique em qualquer Reserva abaixo para abrir os materiais por valor e quantidade:
+              </div>
+              <div id="box-colab-${idx}" class="space-y-2 max-h-96 overflow-y-auto pr-1"></div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      const somaAprovZ = zFiltradaGlobal.reduce((acc, z) => acc + z.valor_aprov, 0);
+      const somaRetZ = zFiltradaGlobal.reduce((acc, z) => acc + z.valor_ret, 0);
+      document.getElementById('kpiValorTotal').textContent = 'R$ ' + somaAprovZ.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('kpiSubValor').textContent = 'Valor Retirado: R$ ' + somaRetZ.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('kpiQtdReservas').textContent = zFiltradaGlobal.length.toLocaleString('pt-BR');
+      document.getElementById('kpiReincidencias').textContent = todasReinc.length.toLocaleString('pt-BR') + ' alertas';
+      document.getElementById('kpiDetCurvaA').textContent = `Curva A: ${qtdCurvaA} itens (R$ ${valorCurvaA.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`;
+      document.getElementById('kpiIdasBalcao').textContent = qtdMovLiquido.toLocaleString('pt-BR') + ' itens';
+      document.getElementById('kpiValorMB51').textContent = 'Líquido MB51: R$ ' + somaMB51Liquida.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      atualizarBarraFlegados();
+      if (abaAtual === 'dash1') atualizarGraficos(zFiltradaGlobal);
+      if (abaAtual === 'dash3') atualizarGraficosBalcao(listaBalcaoGlobal);
+    }
+
+    // =========================================================================
+    // EXPORTAÇÃO PARA EXCEL (.XLSX) E POWERPOINT (.PPTX) COM LOGO E SOMENTE SAÍDAS REAIS
+    // =========================================================================
+    function obterDadosParaExportacao() {
+      const reincExp = flegadosR.size > 0
+        ? listaReincGlobal.filter(g => flegadosR.has(g.chave))
+        : listaReincGlobal;
+      const zExp = flegadosZ.size > 0
+        ? zFiltradaGlobal.filter(z => flegadosZ.has(z.reserva))
+        : zFiltradaGlobal;
+      const balcaoExp = flegadosB.size > 0
+        ? listaBalcaoGlobal.filter(b => flegadosB.has(b.matricula))
+        : listaBalcaoGlobal;
+      return { reincExp, zExp, balcaoExp };
+    }
+
+    function exportarParaExcel() {
+      const { reincExp, zExp, balcaoExp } = obterDadosParaExportacao();
+      const wb = XLSX.utils.book_new();
+
+      const resumoRows = [
+        { Indicador: 'Empresa', Valor: 'Grupo Vale do Verdão S/A' },
+        { Indicador: 'Usina / Centro Filtrado', Valor: usinaAtual === 'TODAS' ? 'Todas as Usinas (1000, 2000, 3000, 4000)' : usinaAtual },
+        { Indicador: 'Curva ABC Selecionada', Valor: curvaABCSel },
+        { Indicador: 'Total Aprovado (ZRESERVA)', Valor: document.getElementById('kpiValorTotal').textContent },
+        { Indicador: 'Reservas Filtradas', Valor: zExp.length },
+        { Indicador: 'Reincidências Reais Exportadas', Valor: reincExp.length },
+        { Indicador: 'Colaboradores Balcão Exportados', Valor: balcaoExp.length }
+      ];
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(resumoRows), '1_Resumo_KPIs');
+
+      const rowsReinc = reincExp.map(g => ({
+        Usina: USINAS[g.centro]?.sigla || g.centro,
+        Curva_ABC: g.curva,
+        Frota_Ordem: g.ordem,
+        Texto_Cabecalho_OS: g.listaOS.join(', '),
+        Cod_Material: g.material,
+        Descricao_Material: g.desc_material,
+        Ultima_Data: exibirDataBR(g.ultimaData),
+        Vezes_Reais: g.vezesLiquidas,
+        Qtd_Real_Liquida: g.qtdLiquidaTotal,
+        Custo_Liquido_RS: Number(g.custoTotal.toFixed(2)),
+        Aprovadores: [...new Set(g.ocorrencias.map(o => o.aprovador))].join(' | ')
+      }));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rowsReinc.length ? rowsReinc : [{ Aviso: 'Nenhuma reincidência selecionada' }]), '2_Reincidencias_ABC');
+
+      const rowsDetReinc = [];
+      reincExp.slice(0, 350).forEach(g => {
+        g.ocorrencias.forEach(o => {
+          rowsDetReinc.push({
+            Usina: USINAS[g.centro]?.sigla || g.centro,
+            Curva_ABC: g.curva,
+            Frota_Ordem: g.ordem,
+            Texto_Cabecalho_OS: o.os,
+            Doc_Material: o.doc_material,
+            Reserva: o.reserva,
+            Data: exibirDataBR(o.data),
+            Cod_Material: g.material,
+            Descricao_Material: g.desc_material,
+            Tipo_Movimento: o.tipo_mov,
+            Quantidade_Real: o.qtd,
+            Valor_Real_RS: Number(o.valor.toFixed(2)),
+            Aprovador_ZRESERVA: o.aprovador,
+            Recebedor_RH: o.recebedor
+          });
+        });
+      });
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rowsDetReinc.length ? rowsDetReinc : [{ Aviso: 'Sem detalhes' }]), '3_Saidas_Reais_MB51');
+
+      const rowsZ = zExp.slice(0, 5000).map(z => ({
+        Reserva: z.reserva,
+        Doc_Material: z.doc_material || '-',
+        Usina: USINAS[z.centro]?.sigla || z.centro,
+        Frota_Ordem: z.ordem,
+        OS_Servico: z.os,
+        Aprovador: z.aprovador,
+        Recebedor_Matricula: z.recebedor,
+        Data_Aprovacao: exibirDataBR(z.data),
+        Hora_Aprovacao: z.hora,
+        Valor_Aprovacao_RS: Number(z.valor_aprov.toFixed(2)),
+        Valor_Retirado_RS: Number(z.valor_ret.toFixed(2))
+      }));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rowsZ.length ? rowsZ : [{ Aviso: 'Sem reservas' }]), '4_ZRESERVA');
+
+      const rowsB = balcaoExp.slice(0, 1000).map(b => ({
+        Matricula: b.matricula,
+        Funcionario_RH: b.nome,
+        Cargo: b.cargo,
+        Secao_Mecanica: b.secao,
+        Usina: USINAS[b.centro]?.sigla || b.centro,
+        Qtd_Reservas_Retiradas: b.qtd,
+        Valor_Total_Retirado_RS: Number(b.valor.toFixed(2)),
+        Principais_Aprovadores: Object.entries(b.aprovadores).sort((a, c) => c[1] - a[1]).slice(0, 3).map(x => `${x[0]} (${x[1]}x)`).join(', ')
+      }));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rowsB.length ? rowsB : [{ Aviso: 'Sem dados' }]), '5_Frequencia_Balcao_RH');
+
+      const dataHoje = new Date().toISOString().split('T')[0];
+      XLSX.writeFile(wb, `Auditoria_Reservas_ValeDoVerdao_${dataHoje}.xlsx`);
+    }
+
+    async function exportarParaPowerPoint() {
+      if (typeof PptxGenJS === 'undefined') {
+        alert('A biblioteca de PowerPoint ainda está carregando. Tente novamente em 2 segundos.');
+        return;
+      }
+
+      const { reincExp, zExp, balcaoExp } = obterDadosParaExportacao();
+      const logoPNG = await obterLogoPNGDataURL();
+
+      const elDash1 = document.getElementById('aba-dash1');
+      const estavaOcultoDash1 = elDash1.classList.contains('hidden');
+      if (estavaOcultoDash1) {
+        elDash1.classList.remove('hidden');
+        atualizarGraficos(zExp);
+      }
+
+      const pptx = new PptxGenJS();
+      pptx.layout = 'LAYOUT_WIDE';
+      pptx.author = 'Grupo Vale do Verdão S/A';
+      pptx.title = 'Auditoria de Aprovadores de Reserva, Reincidências ABC e Balcão';
+
+      // SLIDE 1: CAPA EXECUTIVA COM LOGO NO CABEÇALHO E KPIs
+      const slide1 = pptx.addSlide();
+      slide1.background = { color: 'F8FAFC' };
+      slide1.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 1.15, fill: { color: '007600' } });
+      if (logoPNG) {
+        slide1.addImage({ data: logoPNG, x: 0.35, y: 0.12, w: 1.1, h: 0.9 });
+      }
+      const xTitulo1 = logoPNG ? 1.6 : 0.5;
+      slide1.addText('GRUPO VALE DO VERDÃO S/A — AUDITORIA DE RESERVAS & CURVA ABC', {
+        x: xTitulo1, y: 0.2, w: 11.4, h: 0.4, fontSize: 19, bold: true, color: 'FFFFFF'
+      });
+      slide1.addText(`Filtro Usina: ${usinaAtual}  |  Curva ABC: ${curvaABCSel}  |  Data de Emissão: ${new Date().toLocaleDateString('pt-BR')}`, {
+        x: xTitulo1, y: 0.64, w: 11.4, h: 0.3, fontSize: 11, color: 'E2E8F0'
+      });
+
+      const kpis = [
+        { titulo: 'TOTAL APROVADO (ZRESERVA)', valor: document.getElementById('kpiValorTotal').textContent, sub: document.getElementById('kpiSubValor').textContent, cor: '007600' },
+        { titulo: 'RESERVAS SELECIONADAS', valor: zExp.length.toLocaleString('pt-BR'), sub: 'Planilha Mãe ZRESERVA', cor: 'D97706' },
+        { titulo: 'REINCIDÊNCIAS REAIS', valor: reincExp.length.toLocaleString('pt-BR') + ' itens', sub: document.getElementById('kpiDetCurvaA').textContent, cor: 'ED7D31' },
+        { titulo: 'SAÍDAS REAIS LÍQUIDAS (MB51)', valor: document.getElementById('kpiIdasBalcao').textContent, sub: document.getElementById('kpiValorMB51').textContent, cor: '1F4E79' }
+      ];
+
+      kpis.forEach((k, i) => {
+        const xPos = 0.5 + (i * 3.15);
+        slide1.addShape(pptx.ShapeType.roundRect, { x: xPos, y: 1.4, w: 2.95, h: 1.45, fill: { color: 'FFFFFF' }, line: { color: k.cor, width: 2 } });
+        slide1.addText(k.titulo, { x: xPos + 0.15, y: 1.5, w: 2.65, h: 0.3, fontSize: 9.5, bold: true, color: '64748B' });
+        slide1.addText(k.valor, { x: xPos + 0.15, y: 1.82, w: 2.65, h: 0.45, fontSize: 16, bold: true, color: '0F172A' });
+        slide1.addText(k.sub, { x: xPos + 0.15, y: 2.32, w: 2.65, h: 0.35, fontSize: 8.5, color: k.cor, bold: true });
+      });
+
+      try {
+        const c1 = document.getElementById('chartAprovadores');
+        const c2 = document.getElementById('chartLinhaDatas');
+        if (c1 && c2 && c1.width > 0 && c2.width > 0) {
+          slide1.addText('Top 15 Aprovadores por Valor (ZRESERVA)', { x: 0.5, y: 3.05, w: 6, h: 0.3, fontSize: 12, bold: true, color: '1E293B' });
+          slide1.addImage({ data: c1.toDataURL('image/png'), x: 0.5, y: 3.4, w: 5.9, h: 3.6 });
+          slide1.addText('Evolução de Aprovações por Data (DD/MM/AAAA)', { x: 6.8, y: 3.05, w: 6, h: 0.3, fontSize: 12, bold: true, color: '1E293B' });
+          slide1.addImage({ data: c2.toDataURL('image/png'), x: 6.8, y: 3.4, w: 5.9, h: 3.6 });
+        }
+      } catch(e) {}
+
+      if (estavaOcultoDash1) {
+        elDash1.classList.add('hidden');
+      }
+
+      // SLIDE 2: TABELA EXECUTIVA DE REINCIDÊNCIAS REAIS (COM LOGO NO CABEÇALHO)
+      const slide2 = pptx.addSlide();
+      slide2.background = { color: 'FFFFFF' };
+      slide2.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.9, fill: { color: '1F4E79' } });
+      if (logoPNG) slide2.addImage({ data: logoPNG, x: 0.35, y: 0.08, w: 0.92, h: 0.74 });
+      slide2.addText(`AUDITORIA DE REINCIDÊNCIAS REAIS: FROTA + TEXTO CABEÇALHO + MATERIAL (CURVA ${curvaABCSel})`, {
+        x: logoPNG ? 1.4 : 0.5, y: 0.22, w: 11.6, h: 0.45, fontSize: 14.5, bold: true, color: 'FFFFFF'
+      });
+
+      const cabTabelaReinc = [
+        { text: 'Usina', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
+        { text: 'Curva', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
+        { text: 'Frota / O.S.', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
+        { text: 'Cód. Material & Descrição', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
+        { text: 'Últ. Data', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5, align: 'center' } },
+        { text: 'Vezes Reais', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5, align: 'center' } },
+        { text: 'Principais Aprovadores (ZRESERVA)', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5 } },
+        { text: 'Custo Líquido (R$)', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8.5, align: 'right' } }
+      ];
+
+      const linhasSlideReinc = reincExp.slice(0, 14).map(g => [
+        { text: USINAS[g.centro]?.sigla || g.centro, options: { fontSize: 8, bold: true } },
+        { text: g.curva, options: { fontSize: 8, bold: true, color: g.curva === 'A' ? 'DC2626' : 'D97706' } },
+        { text: `${g.ordem} (${g.primeiraOS || '-'})`, options: { fontSize: 8, bold: true } },
+        { text: `${g.material} - ${g.desc_material.substring(0, 35)}`, options: { fontSize: 8 } },
+        { text: exibirDataBR(g.ultimaData), options: { fontSize: 8, align: 'center' } },
+        { text: `${g.vezesLiquidas}x`, options: { fontSize: 8, align: 'center', bold: true } },
+        { text: [...new Set(g.ocorrencias.map(o => o.aprovador))].slice(0, 2).join(', ').substring(0, 38), options: { fontSize: 7.5 } },
+        { text: 'R$ ' + g.custoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), options: { fontSize: 8.5, bold: true, align: 'right', color: 'DC2626' } }
+      ]);
+
+      slide2.addTable([cabTabelaReinc, ...linhasSlideReinc], {
+        x: 0.4, y: 1.05, w: 12.5,
+        colW: [1.0, 0.65, 1.5, 3.3, 1.0, 1.05, 2.5, 1.5],
+        border: { pt: 0.5, color: 'CBD5E1' },
+        rowH: 0.36
+      });
+
+      // SLIDE 3: DETALHAMENTO DAS SAÍDAS REAIS COM DOC.MATERIAL E TEXTO CABEÇALHO (SEM ESTORNOS)
+      if (reincExp.length > 0) {
+        const slide3 = pptx.addSlide();
+        slide3.background = { color: 'FFFFFF' };
+        slide3.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.9, fill: { color: 'ED7D31' } });
+        if (logoPNG) slide3.addImage({ data: logoPNG, x: 0.35, y: 0.08, w: 0.92, h: 0.74 });
+        slide3.addText('DETALHAMENTO DAS SAÍDAS REAIS: DOC.MATERIAL, TEXTO CABEÇALHO (O.S.) E RESERVAS', {
+          x: logoPNG ? 1.4 : 0.5, y: 0.22, w: 11.6, h: 0.45, fontSize: 14.5, bold: true, color: 'FFFFFF'
+        });
+
+        const cabDet = [
+          { text: 'Frota', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+          { text: 'Doc.Material', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+          { text: 'Reserva', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+          { text: 'Cabeçalho (O.S.)', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+          { text: 'Data', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8, align: 'center' } },
+          { text: 'Material', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+          { text: 'Mov / Qtd Real', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8, align: 'center' } },
+          { text: 'Aprovador / Recebedor', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8 } },
+          { text: 'Valor Líquido', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 8, align: 'right' } }
+        ];
+
+        const linhasDet = [];
+        reincExp.slice(0, 6).forEach(g => {
+          g.ocorrencias.slice(0, 4).forEach(o => {
+            if (linhasDet.length < 14) {
+              linhasDet.push([
+                { text: g.ordem, options: { fontSize: 7.5, bold: true } },
+                { text: String(o.doc_material || '-'), options: { fontSize: 7.5, bold: true, color: '1E40AF' } },
+                { text: '#' + o.reserva, options: { fontSize: 7.5, bold: true } },
+                { text: String(o.os), options: { fontSize: 7.5, bold: true } },
+                { text: exibirDataBR(o.data), options: { fontSize: 7.5, align: 'center' } },
+                { text: `${g.material} - ${g.desc_material.substring(0, 18)}`, options: { fontSize: 7.5 } },
+                { text: `${o.tipo_mov} (${o.qtd})`, options: { fontSize: 7.5, align: 'center', bold: true, color: '007600' } },
+                { text: `${o.aprovador} | ${o.recebedor}`.substring(0, 34), options: { fontSize: 7 } },
+                { text: 'R$ ' + o.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), options: { fontSize: 7.5, bold: true, align: 'right', color: '0F172A' } }
+              ]);
+            }
+          });
+        });
+
+        slide3.addTable([cabDet, ...linhasDet], {
+          x: 0.4, y: 1.05, w: 12.5,
+          colW: [0.85, 1.15, 1.05, 1.15, 0.95, 2.25, 0.95, 2.8, 1.35],
+          border: { pt: 0.5, color: 'CBD5E1' },
+          rowH: 0.36
+        });
+      }
+
+      // SLIDE 4: FREQUÊNCIA DE BALCÃO POR COLABORADOR (RH) COM LOGO NO CABEÇALHO
+      if (balcaoExp.length > 0) {
+        const slide4 = pptx.addSlide();
+        slide4.background = { color: 'FFFFFF' };
+        slide4.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.33, h: 0.9, fill: { color: '007600' } });
+        if (logoPNG) slide4.addImage({ data: logoPNG, x: 0.35, y: 0.08, w: 0.92, h: 0.74 });
+        slide4.addText('RANKING DE FREQUÊNCIA DE RETIRADAS NO BALCÃO POR COLABORADOR (RH + ZRESERVA)', {
+          x: logoPNG ? 1.4 : 0.5, y: 0.22, w: 11.6, h: 0.45, fontSize: 14.5, bold: true, color: 'FFFFFF'
+        });
+
+        const cabB = [
+          { text: 'Matrícula', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 9 } },
+          { text: 'Colaborador (Quadro RH)', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 9 } },
+          { text: 'Cargo / Seção', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 9 } },
+          { text: 'Usina', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 9 } },
+          { text: 'Idas ao Balcão', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 9, align: 'center' } },
+          { text: 'Principais Aprovadores', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 9 } },
+          { text: 'Valor Total Retirado', options: { fill: '0F172A', color: 'FFFFFF', bold: true, fontSize: 9, align: 'right' } }
+        ];
+
+        const linhasB = balcaoExp.slice(0, 14).map(b => [
+          { text: b.matricula, options: { fontSize: 8.5, bold: true } },
+          { text: b.nome.substring(0, 32), options: { fontSize: 8.5, bold: true } },
+          { text: `${b.cargo} ${b.secao ? '(' + b.secao + ')' : ''}`.substring(0, 30), options: { fontSize: 8 } },
+          { text: USINAS[b.centro]?.sigla || b.centro, options: { fontSize: 8.5 } },
+          { text: `${b.qtd}x`, options: { fontSize: 9, bold: true, align: 'center', color: '1F4E79' } },
+          { text: Object.entries(b.aprovadores).sort((a, c) => c[1] - a[1]).slice(0, 2).map(x => `${x[0]} (${x[1]}x)`).join(', ').substring(0, 38), options: { fontSize: 8 } },
+          { text: 'R$ ' + b.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), options: { fontSize: 9, bold: true, align: 'right', color: '007600' } }
+        ]);
+
+        slide4.addTable([cabB, ...linhasB], {
+          x: 0.4, y: 1.05, w: 12.5,
+          colW: [1.1, 2.8, 2.4, 1.1, 1.1, 2.4, 1.6],
+          border: { pt: 0.5, color: 'CBD5E1' },
+          rowH: 0.36
+        });
+      }
+
+      const dataHoje = new Date().toISOString().split('T')[0];
+      await pptx.writeFile({ fileName: `Apresentacao_Reservas_ValeDoVerdao_${dataHoje}.pptx` });
+    }
+
+    function atualizarGraficos(dados) {
+      const somaAprov = {};
+      const corAprov = {};
+      dados.forEach(d => {
+        somaAprov[d.aprovador] = (somaAprov[d.aprovador] || 0) + d.valor_aprov;
+        corAprov[d.aprovador] = USINAS[d.centro]?.cor || '#007600';
+      });
+
+      const top15 = Object.entries(somaAprov).sort((a, b) => b[1] - a[1]).slice(0, 15);
+
+      if (chartBar) chartBar.destroy();
+      chartBar = new Chart(document.getElementById('chartAprovadores'), {
+        type: 'bar',
+        data: {
+          labels: top15.map(x => x[0]),
+          datasets: [{
+            label: 'Total Aprovado (R$)',
+            data: top15.map(x => x[1]),
+            backgroundColor: top15.map(x => corAprov[x[0]])
+          }]
+        },
+        options: {
+          animation: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#334155', font: { size: 10, weight: 'bold' } }, grid: { color: '#e2e8f0' } },
+            y: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
+          }
+        }
+      });
+
+      const somaData = {};
+      dados.forEach(d => {
+        if (!d.data) return;
+        somaData[d.data] = (somaData[d.data] || 0) + d.valor_aprov;
+      });
+      const datasISO = Object.keys(somaData).sort();
+
+      if (chartLine) chartLine.destroy();
+      chartLine = new Chart(document.getElementById('chartLinhaDatas'), {
+        type: 'line',
+        data: {
+          labels: datasISO.map(dt => exibirDataBR(dt)),
+          datasets: [{
+            label: 'Aprovações no Dia (R$)',
+            data: datasISO.map(dt => somaData[dt]),
+            borderColor: '#d97706',
+            backgroundColor: '#fef3c7',
+            fill: true,
+            tension: 0.25
+          }]
+        },
+        options: {
+          animation: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } },
+            y: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
+          }
+        }
+      });
+    }
+
+    function atualizarGraficosBalcao(listaBalcao) {
+      const canvasQtd = document.getElementById('chartBalcaoQtd');
+      const canvasVal = document.getElementById('chartBalcaoValor');
+      if (!canvasQtd || !canvasVal) return;
+
+      const topQtd = listaBalcao.slice().sort((a, b) => b.qtd - a.qtd).slice(0, 15);
+      const topVal = listaBalcao.slice().sort((a, b) => b.valor - a.valor).slice(0, 15);
+
+      if (chartBalcaoQtd) chartBalcaoQtd.destroy();
+      chartBalcaoQtd = new Chart(canvasQtd, {
+        type: 'bar',
+        data: {
+          labels: topQtd.map(x => x.nome.split(' ').slice(0, 2).join(' ')),
+          datasets: [{
+            label: 'Reservas Retiradas',
+            data: topQtd.map(x => x.qtd),
+            backgroundColor: topQtd.map(x => USINAS[x.centro]?.cor || '#1F4E79')
+          }]
+        },
+        options: {
+          animation: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#334155', font: { size: 10, weight: 'bold' } }, grid: { color: '#e2e8f0' } },
+            y: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
+          }
+        }
+      });
+
+      if (chartBalcaoVal) chartBalcaoVal.destroy();
+      chartBalcaoVal = new Chart(canvasVal, {
+        type: 'bar',
+        data: {
+          labels: topVal.map(x => x.nome.split(' ').slice(0, 2).join(' ')),
+          datasets: [{
+            label: 'Valor Retirado (R$)',
+            data: topVal.map(x => x.valor),
+            backgroundColor: topVal.map(x => USINAS[x.centro]?.cor || '#007600')
+          }]
+        },
+        options: {
+          animation: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#334155', font: { size: 10, weight: 'bold' } }, grid: { color: '#e2e8f0' } },
+            y: { ticks: { color: '#334155' }, grid: { color: '#e2e8f0' } }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
